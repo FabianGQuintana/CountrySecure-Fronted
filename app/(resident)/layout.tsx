@@ -1,10 +1,9 @@
 "use client";
-
+import MenuResidente from "@/components/residentes/navbar";
+import { Menu } from "lucide-react";
 import { SessionProvider } from "next-auth/react";
-import Menu from "@/components/navbar";
-import Footer from "@/components/footer";
 
-export default function AdminLayout({
+export default function ResidenLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -12,7 +11,10 @@ export default function AdminLayout({
   return (
     <SessionProvider>
       <div className="min-h-screen flex flex-col">
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {children}
+          <MenuResidente />
+        </main>
 
         {/* <Footer /> */}
       </div>
