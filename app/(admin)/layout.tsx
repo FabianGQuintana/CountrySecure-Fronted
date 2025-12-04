@@ -1,6 +1,6 @@
 "use client";
-
 import { SessionProvider } from "next-auth/react";
+import MenuAdmin from "@/components/admin/navbar";
 
 export default function AdminLayout({
   children,
@@ -10,7 +10,10 @@ export default function AdminLayout({
   return (
     <SessionProvider>
       <div className="min-h-screen flex flex-col">
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 lg:ml-64 ">
+          {children}
+          <MenuAdmin />
+        </main>
       </div>
     </SessionProvider>
   );
