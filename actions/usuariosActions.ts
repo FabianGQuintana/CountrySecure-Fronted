@@ -3,7 +3,7 @@ import { IusuarioRegister } from "@/types";
 export async function newUsers(data: IusuarioRegister) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_HOST}/api/Users`,
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/Users/`,
       {
         method: "POST",
         headers: {
@@ -21,39 +21,46 @@ export async function newUsers(data: IusuarioRegister) {
     throw error;
   }
 }
-//
 
-// export async function newUsers(data: IusuarioRegister) {
-//   try {
-//     const response = await fetch(
-//       `${process.env.NEXT_PUBLIC_API_HOST}/api/users`,
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-type": "application/json",
-//         },
-//         body: JSON.stringify(data),
-//       }
-//     );
+export async function AltaBaja(id: string) {
+  // const session = await auth () cuando tenga el logn lo activo
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/users/${id}/toggle-active`,
+      {
+        method: "PATCH",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${session?.user.token}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error("error alta o baja de usuario");
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+}
 
-//     if (!response.ok) {
-//       let errorMessage = "Error al registrar usuario";
-
-//       try {
-//         const json = await response.json();
-//         if (json?.message) errorMessage = json.message;
-//       } catch {}
-
-//       throw new Error(errorMessage);
-//     }
-
-//     // Intentar parsear JSON solo si existe body
-//     try {
-//       return await response.json();
-//     } catch {
-//       return null; // en caso de que solo devuelva 201 sin body
-//     }
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+export async function updateUser(data: Partial<IusuarioRegister>, id: string) {
+  // const session = await auth () cuando tenga el logn lo activo
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/users/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json",
+          // Authorization: `Bearer ${session?.user.token}`,
+        },
+        cache: "no-store",
+        body: JSON.stringify(data),
+      }
+    );
+    if (!response.ok) throw new Error("error actualizar usuario");
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+}

@@ -5,6 +5,7 @@ export interface Iusuario {
   dni: number;
   phone: string;
   email: string;
+  active: boolean;
   password: string;
   role: string;
 }

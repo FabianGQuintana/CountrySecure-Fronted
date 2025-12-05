@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { TablaUsuarios } from "@/components/admin/usuarios";
 import { FiAlertCircle } from "react-icons/fi";
 
@@ -5,10 +6,14 @@ export default async function Page() {
   let usuarios: any[] | null = null; //el backend me devuelve un array de usuarios, por eso la variable usuarios es un []
 
   try {
-    const response = await fetch(`${process.env.API_HOST}/api/users`, {
-      method: "GET", // cuando es un get no es necesario aclarar
-      next: { revalidate: 0 }, // evita el cache
-    });
+    // const response = await fetch(`${process.env.API_HOST}/api/users`, {
+    const response = await fetch(
+      `${process.env.API_HOST}/api/users?role=Resident`,
+      {
+        method: "GET", // cuando es un get no es necesario aclarar
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) throw new Error("Error al obtener usuarios");
 

@@ -1,5 +1,6 @@
 "use client";
 import { SessionProvider } from "next-auth/react";
+// import MenuAdmin from "@/components/admin/navbar";
 import MenuAdmin from "@/components/admin/navbar";
 
 export default function AdminLayout({

@@ -1,257 +1,14 @@
-// "use client";
-
-// import { useState, useEffect, useRef } from "react";
-// import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
-// import { useSession } from "next-auth/react";
-// import Link from "next/link";
-// // import { logOut } from '@/utils/logOut';
-
-// export default function MenuResidente() {
-//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-//   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
-//   const menuRef = useRef<HTMLDivElement>(null);
-
-//   const { data: session } = useSession();
-
-//   useEffect(() => {
-//     function handleClickOutside(event: MouseEvent) {
-//       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-//         setIsMobileMenuOpen(false);
-//         setOpenSubMenu(null);
-//       }
-//     }
-
-//     function handleResize() {
-//       if (window.innerWidth >= 1024) {
-//         setIsMobileMenuOpen(false);
-//         setOpenSubMenu(null);
-//       }
-//     }
-
-//     document.addEventListener("mousedown", handleClickOutside);
-//     window.addEventListener("resize", handleResize);
-
-//     return () => {
-//       document.removeEventListener("mousedown", handleClickOutside);
-//       window.removeEventListener("resize", handleResize);
-//     };
-//   }, []);
-
-//   const toggleSubMenu = (menuName: string) => {
-//     setOpenSubMenu((prev) => (prev === menuName ? null : menuName));
-//   };
-
-//   return (
-//     <>
-//       {/* Botón de hamburguesa */}
-//       <button
-//         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-//         className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white"
-//         aria-label="Toggle menu"
-//       >
-//         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-//       </button>
-
-//       <div
-//         ref={menuRef}
-//         className={`fixed inset-y-0 left-0 z-40 w-64 h-screen bg-gray-900 p-6
-//         transform transition-transform duration-300 ease-in-out
-//         ${
-//           isMobileMenuOpen
-//             ? "translate-x-0"
-//             : "-translate-x-full lg:translate-x-0"
-//         }
-//         flex flex-col justify-between overflow-y-auto`}
-//       >
-//         <div>
-//           <h1 className="my-4 text-2xl text-gray-50 font-bold flex justify-center">
-//             Bienvenido
-//           </h1>
-//           <p className="text-gray-400 text-sm mb-8 flex justify-center">
-//             {/* {session?.user.nombre} {session?.user.apellido} */}
-//           </p>
-
-//           {/* Turnos */}
-//           <div className="mb-8 border-t border-gray-500 my-4 py-1">
-//             <button
-//               className="w-full flex justify-between items-center text-white py-2 px-4 rounded-lg hover:bg-gray-700"
-//               onClick={() => toggleSubMenu("turnos")}
-//             >
-//               <span>Permiso</span>
-//               {openSubMenu === "turnos" ? (
-//                 <ChevronUp size={18} />
-//               ) : (
-//                 <ChevronDown size={18} />
-//               )}
-//             </button>
-//             {openSubMenu === "turnos" && (
-//               <ul className="mt-2 space-y-1 pl-4">
-//                 <li>
-//                   <Link
-//                     href={`/resident/permiso/`}
-//                     className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Lista Permiso
-//                   </Link>
-//                 </li>
-//                 <li>
-//                   <Link
-//                     href={`/PerfilVendedor/usuarios/activos`}
-//                     className="block text-gray-300 hover:text-white px-4 py-1 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Pendientes
-//                   </Link>
-//                 </li>
-//                 <li>
-//                   <Link
-//                     href={`/PerfilAdmin/usuarios/inactivos`}
-//                     className="block text-gray-300 hover:text-white px-4 py-1  rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     En proceso
-//                   </Link>
-//                 </li>
-//                 <li>
-//                   <Link
-//                     href={`/PerfilAdmin/usuarios/inactivos`}
-//                     className="block text-gray-300 hover:text-white px-4  py-1 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Finalizado
-//                   </Link>
-//                 </li>
-//               </ul>
-//             )}
-//           </div>
-
-//           {/* Servicios */}
-//           <div className="mb-8 border-t border-gray-500 my-4 py-1">
-//             <button
-//               className="w-full flex justify-between items-center text-white py-2 px-4 rounded-lg hover:bg-gray-700"
-//               onClick={() => toggleSubMenu("servicios")}
-//             >
-//               <span>Servicios</span>
-//               {openSubMenu === "servicios" ? (
-//                 <ChevronUp size={18} />
-//               ) : (
-//                 <ChevronDown size={18} />
-//               )}
-//             </button>
-//             {openSubMenu === "servicios" && (
-//               <ul className="mt-2 space-y-1 pl-4">
-//                 <li>
-//                   <Link
-//                     href={`/PerfilVendedor/servicios/`}
-//                     className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Lista de Servicios
-//                   </Link>
-//                 </li>
-//                 <li>
-//                   <Link
-//                     href={`/PerfilVendedor/servicios/activos`}
-//                     className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Activos
-//                   </Link>
-//                 </li>
-//                 <li>
-//                   <Link
-//                     href={`/PerfilVendedor/servicios/inactivos`}
-//                     className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Inactivos
-//                   </Link>
-//                 </li>
-//               </ul>
-//             )}
-//           </div>
-
-//           {/* <div className="mb-8 border-t border-gray-500 my-4 py-1">
-//             <button
-//               className="w-full flex justify-between items-center text-white py-2 px-4 rounded-lg hover:bg-gray-700"
-//               onClick={() => toggleSubMenu('productos')}
-//             >
-//               <span>Productos</span>
-//               {openSubMenu === 'productos' ? (
-//                 <ChevronUp size={18} />
-//               ) : (
-//                 <ChevronDown size={18} />
-//               )}
-//             </button>
-//             {openSubMenu === 'productos' && (
-//               <ul className="mt-2 space-y-1 pl-4">
-//                 <li>
-//                   <Link
-//                     href={`/PerfilVendedor/productos/`}
-//                     className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Lista de Productos
-//                   </Link>
-//                 </li>
-//                 <li>
-//                   <Link
-//                     href={`/PerfilVendedor/productos/activos`}
-//                     className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Activos
-//                   </Link>
-//                 </li>
-//                 <li>
-//                   <Link
-//                     href={`/PerfilVendedor/productos/inactivos`}
-//                     className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-//                     onClick={() => setIsMobileMenuOpen(false)}
-//                   >
-//                     Inactivos
-//                   </Link>
-//                 </li>
-//               </ul>
-//             )}
-//           </div> */}
-//         </div>
-
-//         <div className="mb-4 border-t border-gray-500 my-4 mt-10 ">
-//           <ul className="space-y-2 ">
-//             <li className="text-white py-2 px-4 rounded-lg hover:bg-gray-700 cursor-pointer">
-//               {/* <Link
-//                 // href={`/residente/${session?.user?.id}`}
-//                 onClick={() => setIsMobileMenuOpen(false)}
-//               >
-//                 Perfil
-//               </Link> */}
-//             </li>
-//           </ul>
-//           <button
-//             className="text-white py-2 px-4 rounded-lg hover:bg-gray-700 cursor-pointer w-full text-left"
-//             // onClick={() => logOut()}
-//           >
-//             Cerrar sesión
-//           </button>
-//         </div>
-//       </div>
-
-//       {isMobileMenuOpen && (
-//         <div
-//           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-//           onClick={() => setIsMobileMenuOpen(false)}
-//         />
-//       )}
-//     </>
-//   );
-// }
-
 "use client";
-
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Users,
+  Home,
+  Settings,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -259,12 +16,11 @@ export default function MenuAdmin() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-
   const { data: session } = useSession();
 
-  // si existe id del usuario en la sesión, armamos la base path con el id dinámico
-  const userId = (session as any)?.user?.id; // ajustalo al tipo real si hace falta
-  const basePath = userId ? `/resident/${userId}` : "/resident";
+  const toggleSubMenu = (menuName: string) => {
+    setOpenSubMenu((prev) => (prev === menuName ? null : menuName));
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -290,165 +46,220 @@ export default function MenuAdmin() {
     };
   }, []);
 
-  const toggleSubMenu = (menuName: string) => {
-    setOpenSubMenu((prev) => (prev === menuName ? null : menuName));
-  };
-
   return (
     <>
-      {/* Botón de menú móvil */}
+      {/* Botón menú móvil */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white shadow-lg hover:bg-gray-700 transition-colors"
         aria-label="Toggle menu"
       >
-        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}{" "}
       </button>
 
-      {/* Menú lateral */}
+      {/* Sidebar */}
       <div
         ref={menuRef}
-        className={`fixed inset-y-0 left-0 z-40 w-64 h-screen bg-gray-900 p-6
-        transform transition-transform duration-300 ease-in-out
-        ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 h-screen bg-white p-6 flex flex-col justify-between shadow-xl border-r border-gray-200 transform transition-transform duration-300 ${
           isMobileMenuOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"
-        }
-        flex flex-col justify-between overflow-y-auto`}
+        }`}
       >
         <div>
-          <h1 className="my-4 text-2xl text-gray-50 font-bold flex justify-center">
-            Bienvenido
+          <h1 className="text-2xl text-gray-800 font-bold mb-6 flex justify-center">
+            Panel Admin
           </h1>
 
-          {/* ======== VISITAS ======== */}
-          <div className="mb-8 border-t border-gray-500 my-4 py-1">
-            <button
-              className="w-full flex justify-between items-center text-white py-2 px-4 rounded-lg hover:bg-gray-700"
-              onClick={() => toggleSubMenu("visitas")}
-            >
-              <span>Usuarios</span>
-              {openSubMenu === "visitas" ? (
-                <ChevronUp size={18} />
-              ) : (
-                <ChevronDown size={18} />
+          {/* Menú Items */}
+          <div className="space-y-4">
+            {/* Usuarios */}
+            <div>
+              <button
+                onClick={() => toggleSubMenu("usuarios")}
+                className={`w-full flex justify-between items-center py-2 px-4 rounded-lg transition-colors ${
+                  openSubMenu === "usuarios"
+                    ? "bg-linear-to-r from-indigo-500 to-violet-500 text-white shadow-md"
+                    : "hover:bg-gray-100 text-gray-800"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Users
+                    size={20}
+                    className={
+                      openSubMenu === "usuarios"
+                        ? "text-white drop-shadow-md"
+                        : "text-gray-600"
+                    }
+                  />
+                  <span
+                    className={
+                      openSubMenu === "usuarios"
+                        ? "text-white"
+                        : "text-gray-800"
+                    }
+                  >
+                    Usuarios
+                  </span>
+                </div>
+                {openSubMenu === "usuarios" ? (
+                  <ChevronUp size={18} />
+                ) : (
+                  <ChevronDown size={18} />
+                )}
+              </button>
+              {openSubMenu === "usuarios" && (
+                <ul className="mt-2 space-y-1 pl-6">
+                  <li>
+                    <Link
+                      href="/admin/residentes"
+                      className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Residentes
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/admin/seguridad"
+                      className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Personal Seguridad
+                    </Link>
+                  </li>
+                </ul>
               )}
-            </button>
+            </div>
 
-            {openSubMenu === "visitas" && (
-              <ul className="mt-2 space-y-1 pl-4">
-                <li>
-                  <Link
-                    href="/admin/usuarios"
-                    className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
+            {/* Amenities */}
+            <div>
+              <button
+                onClick={() => toggleSubMenu("amenities")}
+                className={`w-full flex justify-between items-center py-2 px-4 rounded-lg transition-colors ${
+                  openSubMenu === "amenities"
+                    ? "bg-linear-to-r from-emerald-400 to-teal-400 text-white shadow-md"
+                    : "hover:bg-gray-100 text-gray-800"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Home
+                    size={20}
+                    className={
+                      openSubMenu === "amenities"
+                        ? "text-white drop-shadow-md"
+                        : "text-gray-600"
+                    }
+                  />
+                  <span
+                    className={
+                      openSubMenu === "amenities"
+                        ? "text-white"
+                        : "text-gray-800"
+                    }
                   >
-                    Residen
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    href="/admin/usuarios"
-                    className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Personal Seguridad
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </div>
-
-          {/* ======== AMENITIES ======== */}
-          <div className="mb-8 border-t border-gray-500 my-4 py-1">
-            <button
-              className="w-full flex justify-between items-center text-white py-2 px-4 rounded-lg hover:bg-gray-700"
-              onClick={() => toggleSubMenu("amenities")}
-            >
-              <span>Amenities</span>
-              {openSubMenu === "amenities" ? (
-                <ChevronUp size={18} />
-              ) : (
-                <ChevronDown size={18} />
+                    Amenities
+                  </span>
+                </div>
+                {openSubMenu === "amenities" ? (
+                  <ChevronUp size={18} />
+                ) : (
+                  <ChevronDown size={18} />
+                )}
+              </button>
+              {openSubMenu === "amenities" && (
+                <ul className="mt-2 space-y-1 pl-6">
+                  <li>
+                    <Link
+                      href="/admin/usuarios"
+                      className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Mis solicitudes
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/admin/usuarios"
+                      className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Solicitar turno
+                    </Link>
+                  </li>
+                </ul>
               )}
-            </button>
+            </div>
 
-            {openSubMenu === "amenities" && (
-              <ul className="mt-2 space-y-1 pl-4">
-                <li>
-                  <Link
-                    href="/admin/usuarios"
-                    className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
+            {/* Servicios */}
+            <div>
+              <button
+                onClick={() => toggleSubMenu("servicios")}
+                className={`w-full flex justify-between items-center py-2 px-4 rounded-lg transition-colors ${
+                  openSubMenu === "servicios"
+                    ? "bg-linear-to-r from-amber-400 to-orange-400 text-white shadow-md"
+                    : "hover:bg-gray-100 text-gray-800"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Settings
+                    size={20}
+                    className={
+                      openSubMenu === "servicios"
+                        ? "text-white drop-shadow-md"
+                        : "text-gray-600"
+                    }
+                  />
+                  <span
+                    className={
+                      openSubMenu === "servicios"
+                        ? "text-white"
+                        : "text-gray-800"
+                    }
                   >
-                    Mis solicitudes
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    href="/admin/usuarios"
-                    className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Solicitar turno
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </div>
-
-          {/* ======== SERVICIOS ======== */}
-          <div className="mb-8 border-t border-gray-500 my-4 py-1">
-            <button
-              className="w-full flex justify-between items-center text-white py-2 px-4 rounded-lg hover:bg-gray-700"
-              onClick={() => toggleSubMenu("servicios_res")}
-            >
-              <span>Servicios</span>
-              {openSubMenu === "servicios_res" ? (
-                <ChevronUp size={18} />
-              ) : (
-                <ChevronDown size={18} />
+                    Servicios
+                  </span>
+                </div>
+                {openSubMenu === "servicios" ? (
+                  <ChevronUp size={18} />
+                ) : (
+                  <ChevronDown size={18} />
+                )}
+              </button>
+              {openSubMenu === "servicios" && (
+                <ul className="mt-2 space-y-1 pl-6">
+                  <li>
+                    <Link
+                      href="/admin/usuarios"
+                      className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Mis solicitudes
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/admin/usuarios"
+                      className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Solicitar Servicio
+                    </Link>
+                  </li>
+                </ul>
               )}
-            </button>
-
-            {openSubMenu === "servicios_res" && (
-              <ul className="mt-2 space-y-1 pl-4">
-                <li>
-                  <Link
-                    href={`${basePath}/servicios`}
-                    className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Mis solicitudes
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    href={`${basePath}/servicios/solicitar`}
-                    className="block text-gray-300 hover:text-white py-1 px-4 rounded-lg hover:bg-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Solicitar Servicio
-                  </Link>
-                </li>
-              </ul>
-            )}
+            </div>
           </div>
         </div>
 
         {/* Pie: cerrar sesión */}
-        <div className="mb-4 border-t border-gray-500 my-4 mt-10 ">
-          <button className="text-white py-2 px-4 rounded-lg hover:bg-gray-700 cursor-pointer w-full text-left">
+        <div className="mt-6">
+          <button className="w-full py-2 px-4 rounded-lg bg-linear-to-r from-red-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:scale-105 transition-all">
             Cerrar sesión
           </button>
         </div>
       </div>
-
-      {/* Sombra fondo móvil */}
+      {/* Overlay móvil */}
       {isMobileMenuOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"

@@ -6,6 +6,7 @@ import { Roles } from "@/components/roles";
 import { Iusuario } from "@/types";
 import { FiChevronUp, FiChevronDown, FiEye, FiUser } from "react-icons/fi";
 import ModalRegisterUser from "./modalNewUser";
+import { Estados } from "@/components/estados";
 
 export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
   const [usuarios, setUsuarios] = useState<Iusuario[]>(params || []);
@@ -13,13 +14,13 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
   const [filtro, setFiltro] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const [columnaOrden, setColumnaOrden] = useState<keyof Iusuario>("email");
-  const usuariosPorPagina = 10;
+  const usuariosPorPagina = 5;
   const [modalOpen, setModalOpen] = useState(false); //para abrir el modal
 
   const refreshUsers = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/users`,
+        `${process.env.NEXT_PUBLIC_API_HOST}/api/users?role=Resident`,
         {
           method: "GET",
           next: { revalidate: 0 }, // evita cache en server actions
@@ -150,7 +151,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
         {/* Botón Agregar Usuario */}
         <div className="mt-4 flex justify-center">
           <button
-            className="px-10 py-2 bg-orange-300 text-white rounded-lg hover:bg-orange-400 cursor-pointer"
+            className="px-10 py-2 bg-blue-950 text-white rounded-lg hover:bg-blue-500 cursor-pointer"
             onClick={() => setModalOpen(true)}
           >
             + Nuevo Usuario
@@ -266,6 +267,24 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
               </th>
               <th
                 scope="col"
+                className="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/60 transition-colors"
+                onClick={() => ordenarPorColumna("role")}
+              >
+                <div className="flex items-center">
+                  Estado
+                  {columnaOrden === "role" && (
+                    <span className="ml-1">
+                      {ordenAscendente ? (
+                        <FiChevronUp className="h-3 w-3" />
+                      ) : (
+                        <FiChevronDown className="h-3 w-3" />
+                      )}
+                    </span>
+                  )}
+                </div>
+              </th>
+              <th
+                scope="col"
                 className="px-3 py-2 sm:px-4 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Acciones
@@ -304,20 +323,21 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                       {usuario.email}
                     </div>
                   </td>
-                  {/* <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap">
-                    <Estados estado={usuario.estado} />
-                  </td> */}
+
                   <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap">
                     <Roles rol={usuario.role} />
+                  </td>
+                  <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap">
+                    <Estados estado={usuario.active} />
                   </td>
                   <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-1">
                       <Link
-                        href={`/admin/usuarios/${usuario.id}/`}
+                        href={`/admin/residentes/${usuario.id}/`}
                         className="flex items-center text-indigo-600 hover:text-indigo-900 transition-colors p-1 rounded-full hover:bg-indigo-50"
                         title="Ver detalles"
                       >
-                        <span className="mr-1">Editar</span>
+                        <span className="mr-1">Más</span>
                         <FiEye className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Link>
                     </div>
