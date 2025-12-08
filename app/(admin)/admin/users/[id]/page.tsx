@@ -107,9 +107,9 @@ export default function Page() {
       router.refresh();
 
       if (formData.role === "Resident") {
-        router.push("/admin/residentes");
+        router.push("/admin/users/residentes");
       } else if (formData.role === "Security") {
-        router.push("/admin/seguridad");
+        router.push("/admin/users/seguridad");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
@@ -244,13 +244,6 @@ export default function Page() {
         </div>
 
         <div className="flex justify-end gap-3 pt-4">
-          {/* <button
-            type="button"
-            onClick={() => router.push(`/admin/`)}
-            className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors flex items-center gap-2"
-          >
-            <FiX /> Cancelar
-          </button> */}
           <button
             type="submit"
             className="px-6 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2"

@@ -333,7 +333,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                   <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-1">
                       <Link
-                        href={`/admin/residentes/${usuario.id}/`}
+                        href={`/admin/users/${usuario.id}/`}
                         className="flex items-center text-indigo-600 hover:text-indigo-900 transition-colors p-1 rounded-full hover:bg-indigo-50"
                         title="Ver detalles"
                       >

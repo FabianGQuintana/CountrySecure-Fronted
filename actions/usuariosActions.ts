@@ -3,7 +3,8 @@ import { IusuarioRegister } from "@/types";
 export async function newUsers(data: IusuarioRegister) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_HOST}/api/Users/`,
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/auth/register`,
+      // `${process.env.NEXT_PUBLIC_API_HOST}/api/users`,
       {
         method: "POST",
         headers: {

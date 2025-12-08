@@ -112,7 +112,7 @@ export default function MenuAdmin() {
                 <ul className="mt-2 space-y-1 pl-6">
                   <li>
                     <Link
-                      href="/admin/residentes"
+                      href="/admin/users/residentes"
                       className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -121,7 +121,7 @@ export default function MenuAdmin() {
                   </li>
                   <li>
                     <Link
-                      href="/admin/seguridad"
+                      href="/admin/users/seguridad"
                       className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -171,11 +171,11 @@ export default function MenuAdmin() {
                 <ul className="mt-2 space-y-1 pl-6">
                   <li>
                     <Link
-                      href="/admin/usuarios"
+                      href="/admin/amenities/"
                       className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Mis solicitudes
+                      Amenities
                     </Link>
                   </li>
                   <li>
