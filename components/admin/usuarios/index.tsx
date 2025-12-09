@@ -14,7 +14,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
   const [filtro, setFiltro] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const [columnaOrden, setColumnaOrden] = useState<keyof Iusuario>("email");
-  const usuariosPorPagina = 5;
+  const usuariosPorPagina = 15;
   const [modalOpen, setModalOpen] = useState(false); //para abrir el modal
 
   const refreshUsers = async () => {

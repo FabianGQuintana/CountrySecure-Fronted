@@ -1,8 +1,47 @@
+// "use client";
+// import { IconAvatar, IconLock, IconEye, IconLoading } from "@/app/assets/icon";
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { signIn } from "next-auth/react";
+
+// export default function LoginFormulario() {
+//   const [verContraseña, setVerContraseña] = useState(false);
+//   const [cargando, setCargando] = useState(false);
+//   const [error, setError] = useState("");
+
+//   const router = useRouter();
+
+//   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+//     e.preventDefault();
+//     setError("");
+//     setCargando(true);
+
+//     const form = e.target as HTMLFormElement;
+//     const formData = new FormData(form);
+//     const email = formData.get("email") as string;
+//     const password = formData.get("password") as string;
+
+//     const result = await signIn("credentials", {
+//       redirect: false,
+//       email,
+//       password,
+//     });
+
+//     if (result?.error) {
+//       setError("Datos Incorrectos.");
+//     } else if (result?.ok) {
+//       router.replace("/");
+//     }
+
+//     setCargando(false);
+//   }
+
 "use client";
+
 import { IconAvatar, IconLock, IconEye, IconLoading } from "@/app/assets/icon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 
 export default function LoginFormulario() {
   const [verContraseña, setVerContraseña] = useState(false);
@@ -17,9 +56,8 @@ export default function LoginFormulario() {
     setCargando(true);
 
     const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const email = form.email.value;
+    const password = form.password.value;
 
     const result = await signIn("credentials", {
       redirect: false,
@@ -29,13 +67,27 @@ export default function LoginFormulario() {
 
     if (result?.error) {
       setError("Datos Incorrectos.");
-    } else if (result?.ok) {
-      router.replace("/");
+      setCargando(false);
+      return;
+    }
+
+    const session = await getSession();
+
+    const rol = session?.user?.role;
+
+    // ⬇️ Redirección según el rol
+    if (rol === "Admin") {
+      router.replace("/admin/");
+    } else if (rol === "Resident") {
+      router.replace("/resident/");
+    } else if (rol === "Security") {
+      router.replace("/securiti");
+    } else {
+      router.replace("/"); // fallback
     }
 
     setCargando(false);
   }
-
   return (
     <div
       className="w-full max-w-sm rounded-2xl px-8 py-10 flex flex-col items-center
@@ -46,7 +98,6 @@ export default function LoginFormulario() {
       </h2>
 
       <form onSubmit={handleSubmit} className="mt-6 w-full">
-        {/* Email */}
         <label className="text-sm font-semibold text-gray-700 mb-1">
           Email
         </label>
@@ -65,7 +116,6 @@ export default function LoginFormulario() {
           />
         </div>
 
-        {/* Contraseña */}
         <label className="text-sm font-semibold text-gray-700 mb-1">
           Contraseña
         </label>

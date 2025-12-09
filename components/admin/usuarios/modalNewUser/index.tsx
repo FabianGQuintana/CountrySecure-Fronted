@@ -25,7 +25,7 @@ export default function ModalRegisterUser({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // 🔄 Reset
+
   const resetForm = () => {
     setName("");
     setLastName("");

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 export default function MenuAdmin() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -254,11 +255,15 @@ export default function MenuAdmin() {
 
         {/* Pie: cerrar sesión */}
         <div className="mt-6">
-          <button className="w-full py-2 px-4 rounded-lg bg-linear-to-r from-red-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:scale-105 transition-all">
-            Cerrar sesión
+          <button
+            className="text-black  py-2 px-4 rounded-lg hover:bg-gray-700 cursor-pointer w-full text-left"
+            onClick={() => signOut()}
+          >
+            Cerrar Sesión
           </button>
         </div>
       </div>
+
       {/* Overlay móvil */}
       {isMobileMenuOpen && (
         <div

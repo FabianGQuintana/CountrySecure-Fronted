@@ -16,7 +16,7 @@ export default async function AdminLayout({
   }
 
   // Si no es Admin -> acceso denegado
-  if (user.role !== "Resident") {
+  if (user.role !== "Security") {
     redirect("/");
   }
 
