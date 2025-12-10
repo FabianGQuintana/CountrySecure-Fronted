@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import {
   Menu,
@@ -9,20 +10,21 @@ import {
   Home,
   Settings,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 
 export default function MenuAdmin() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { data: session } = useSession();
+
+  const { data: session, status } = useSession();
 
   const toggleSubMenu = (menuName: string) => {
     setOpenSubMenu((prev) => (prev === menuName ? null : menuName));
   };
 
+  // Cerrar menú al hacer clic fuera o al cambiar tamaño
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -47,6 +49,30 @@ export default function MenuAdmin() {
     };
   }, []);
 
+  // Mostrar loading mientras se carga la sesión
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500 animate-pulse">Cargando sesión...</p>
+      </div>
+    );
+  }
+
+  // Si no hay sesión, mostrar mensaje
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen p-4 text-center">
+        <p className="text-xl font-semibold mb-4">No has iniciado sesión</p>
+        <Link
+          href="/auth/login"
+          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition"
+        >
+          Iniciar Sesión
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Botón menú móvil */}
@@ -55,7 +81,7 @@ export default function MenuAdmin() {
         className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white shadow-lg hover:bg-gray-700 transition-colors"
         aria-label="Toggle menu"
       >
-        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}{" "}
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       {/* Sidebar */}
@@ -68,9 +94,10 @@ export default function MenuAdmin() {
         }`}
       >
         <div>
-          <h1 className="text-2xl text-gray-800 font-bold mb-6 flex justify-center">
-            Panel Admin
-          </h1>
+          <h1 className="text-2xl text-gray-800 font-bold mb-2 text-center"></h1>
+          <span className="block text-center text-lg font-medium bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-6">
+            {session.user.name || "Usuario"} {session.user.lastname || ""}
+          </span>
 
           {/* Menú Items */}
           <div className="space-y-4">
@@ -89,7 +116,7 @@ export default function MenuAdmin() {
                     size={20}
                     className={
                       openSubMenu === "usuarios"
-                        ? "text-white drop-shadow-md"
+                        ? "text-white"
                         : "text-gray-600"
                     }
                   />
@@ -148,7 +175,7 @@ export default function MenuAdmin() {
                     size={20}
                     className={
                       openSubMenu === "amenities"
-                        ? "text-white drop-shadow-md"
+                        ? "text-white"
                         : "text-gray-600"
                     }
                   />
@@ -172,7 +199,7 @@ export default function MenuAdmin() {
                 <ul className="mt-2 space-y-1 pl-6">
                   <li>
                     <Link
-                      href="/admin/amenities/"
+                      href="/admin/amenities"
                       className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -207,7 +234,7 @@ export default function MenuAdmin() {
                     size={20}
                     className={
                       openSubMenu === "servicios"
-                        ? "text-white drop-shadow-md"
+                        ? "text-white"
                         : "text-gray-600"
                     }
                   />
@@ -256,7 +283,7 @@ export default function MenuAdmin() {
         {/* Pie: cerrar sesión */}
         <div className="mt-6">
           <button
-            className="text-black  py-2 px-4 rounded-lg hover:bg-gray-700 cursor-pointer w-full text-left"
+            className="text-black py-2 px-4 rounded-lg hover:bg-gray-700 cursor-pointer w-full text-center"
             onClick={() => signOut()}
           >
             Cerrar Sesión

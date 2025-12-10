@@ -144,7 +144,7 @@ export default function Page() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-8">
         <div className="max-w-6xl mx-auto">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 rounded-lg mb-6"></div>
@@ -162,7 +162,7 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       {/* Notificaciones */}
       <AnimatePresence>
         {showSuccess && (
@@ -172,7 +172,7 @@ export default function Page() {
             exit={{ opacity: 0, y: -50 }}
             className="fixed top-4 right-4 z-50 max-w-md"
           >
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-400 text-white p-4 rounded-2xl shadow-2xl">
+            <div className="bg-linear-to-r from-emerald-500 to-teal-400 text-white p-4 rounded-2xl shadow-2xl">
               <div className="flex items-center">
                 <FiCheck className="w-6 h-6 mr-3" />
                 <div>
@@ -202,7 +202,7 @@ export default function Page() {
 
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
                 Editar Usuario
               </h1>
               <p className="text-gray-500 flex items-center">
@@ -216,8 +216,8 @@ export default function Page() {
               <div
                 className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-sm ${
                   estadoUsuario
-                    ? "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border border-emerald-200"
-                    : "bg-gradient-to-r from-rose-100 to-red-100 text-rose-800 border border-rose-200"
+                    ? "bg-linear-to-r from-emerald-100 to-teal-100 text-emerald-800 border border-emerald-200"
+                    : "bg-linear-to-r from-rose-100 to-red-100 text-rose-800 border border-rose-200"
                 }`}
               >
                 {estadoUsuario ? (
@@ -246,7 +246,7 @@ export default function Page() {
           >
             {/* Tarjeta de información principal */}
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+              <div className="bg-linear-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                   <FiUser className="mr-3 text-gray-500" />
                   Información Personal
@@ -256,7 +256,7 @@ export default function Page() {
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl">
+                    <div className="bg-linear-to-r from-blue-50 to-cyan-50 p-4 rounded-xl">
                       <div className="flex items-center mb-2">
                         <div className="p-2 bg-blue-100 rounded-lg mr-3">
                           <FiUser className="w-5 h-5 text-blue-600" />
@@ -272,7 +272,7 @@ export default function Page() {
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl">
+                    <div className="bg-linear-to-r from-purple-50 to-pink-50 p-4 rounded-xl">
                       <div className="flex items-center mb-2">
                         <div className="p-2 bg-purple-100 rounded-lg mr-3">
                           <FiUser className="w-5 h-5 text-purple-600" />
@@ -290,7 +290,7 @@ export default function Page() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-xl">
+                    <div className="bg-linear-to-r from-amber-50 to-orange-50 p-4 rounded-xl">
                       <div className="flex items-center mb-2">
                         <div className="p-2 bg-amber-100 rounded-lg mr-3">
                           <FiMail className="w-5 h-5 text-amber-600" />
@@ -306,7 +306,7 @@ export default function Page() {
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-xl">
+                    <div className="bg-linear-to-r from-emerald-50 to-teal-50 p-4 rounded-xl">
                       <div className="flex items-center mb-2">
                         <div className="p-2 bg-emerald-100 rounded-lg mr-3">
                           <FiCalendar className="w-5 h-5 text-emerald-600" />
@@ -336,7 +336,7 @@ export default function Page() {
               onSubmit={handleSubmit}
               className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
             >
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+              <div className="bg-linear-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                   <FiEdit2 className="mr-3 text-gray-500" />
                   Configuración del Rol
@@ -346,7 +346,7 @@ export default function Page() {
               <div className="p-6">
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <label className=" text-sm font-medium text-gray-700 mb-2 flex items-center">
                       <FiKey className="mr-2" />
                       Rol del Usuario
                     </label>
@@ -355,7 +355,7 @@ export default function Page() {
                         name="role"
                         value={formData.role}
                         onChange={handleChange}
-                        className="w-full p-4 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                        className="w-full p-4 bg-linear-to-r from-gray-50 to-gray-100 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none cursor-pointer"
                         required
                       >
                         <option value="" disabled className="text-gray-400">
@@ -467,7 +467,7 @@ export default function Page() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="submit"
-                      className="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+                      className="w-full py-4 bg-linear-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all duration-300 flex items-center justify-center"
                     >
                       <FiSave className="mr-3" />
                       Guardar Cambios de Rol
@@ -487,7 +487,7 @@ export default function Page() {
           >
             {/* Tarjeta de estado */}
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+              <div className="bg-linear-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                   <HiOutlineStatusOnline className="mr-3 text-gray-500" />
                   Estado de la Cuenta
@@ -500,8 +500,8 @@ export default function Page() {
                     <div
                       className={`w-24 h-24 rounded-full flex items-center justify-center ${
                         estadoUsuario
-                          ? "bg-gradient-to-r from-emerald-100 to-teal-100"
-                          : "bg-gradient-to-r from-rose-100 to-red-100"
+                          ? "bg-linear-to-r from-emerald-100 to-teal-100"
+                          : "bg-linear-to-r from-rose-100 to-red-100"
                       }`}
                     >
                       {estadoUsuario ? (
@@ -513,8 +513,8 @@ export default function Page() {
                     <div
                       className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center ${
                         estadoUsuario
-                          ? "bg-gradient-to-r from-emerald-500 to-teal-400"
-                          : "bg-gradient-to-r from-rose-500 to-red-400"
+                          ? "bg-linear-to-r from-emerald-500 to-teal-400"
+                          : "bg-linear-to-r from-rose-500 to-red-400"
                       }`}
                     >
                       {estadoUsuario ? (
@@ -546,8 +546,8 @@ export default function Page() {
                   disabled={isChangingStatus}
                   className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center ${
                     estadoUsuario
-                      ? "bg-gradient-to-r from-rose-500 to-red-400 text-white hover:shadow-xl hover:from-rose-600 hover:to-red-500"
-                      : "bg-gradient-to-r from-emerald-500 to-teal-400 text-white hover:shadow-xl hover:from-emerald-600 hover:to-teal-500"
+                      ? "bg-linear-to-r from-rose-500 to-red-400 text-white hover:shadow-xl hover:from-rose-600 hover:to-red-500"
+                      : "bg-linear-to-r from-emerald-500 to-teal-400 text-white hover:shadow-xl hover:from-emerald-600 hover:to-teal-500"
                   }`}
                 >
                   {isChangingStatus ? (
@@ -568,7 +568,7 @@ export default function Page() {
                   )}
                 </motion.button>
 
-                <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl">
+                <div className="mt-6 p-4 bg-linear-to-r from-gray-50 to-gray-100 rounded-xl">
                   <div className="flex items-start">
                     <HiOutlineExclamationCircle className="w-5 h-5 text-amber-500 mr-3 mt-0.5" />
                     <div>
@@ -594,9 +594,9 @@ export default function Page() {
               exit={{ opacity: 0, y: -20 }}
               className="mt-6"
             >
-              <div className="bg-gradient-to-r from-rose-50 to-red-50 border border-rose-200 rounded-2xl p-6">
+              <div className="bg-linear-to-r from-rose-50 to-red-50 border border-rose-200 rounded-2xl p-6">
                 <div className="flex items-start">
-                  <div className="p-3 bg-gradient-to-r from-rose-100 to-red-100 rounded-xl mr-4">
+                  <div className="p-3 bg-linear-to-r from-rose-100 to-red-100 rounded-xl mr-4">
                     <FiAlertCircle className="w-6 h-6 text-rose-600" />
                   </div>
                   <div>
