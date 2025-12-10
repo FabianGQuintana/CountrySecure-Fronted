@@ -23,3 +23,22 @@ export interface IusuarioRegisterForm {
   onClose: () => void;
   onSuccess?: () => void;
 }
+
+export interface IamenitiesRegister {
+  id: string;
+  amenityName: string;
+  description: string;
+  schedules: string;
+  capacity: number;
+  status: string;
+}
+export interface Iamenities {
+  AmenityName: string;
+  Description: string;
+  Schedules: string;
+  Capacity: number;
+}
+export interface IAmenitiesRegisterForm {
+  onClose: () => void;
+  onSuccess?: () => void;
+}

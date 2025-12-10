@@ -2,7 +2,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 
 // Para usar en componentes del servidor
-export async function getCurrentUser() {
+export async function auth() {
   const session = await getServerSession(authOptions);
   return session?.user;
 }

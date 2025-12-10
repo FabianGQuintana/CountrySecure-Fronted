@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/auth";
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 
@@ -8,7 +8,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   // Obtener usuario actual
-  const user = await getCurrentUser();
+  const user = await auth();
 
   // Si no está autenticado -> login
   if (!user) {

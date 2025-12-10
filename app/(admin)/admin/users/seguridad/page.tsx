@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { TablaUsuarios } from "@/components/admin/usuarios";
 import { FiAlertCircle } from "react-icons/fi";
 
@@ -5,16 +6,19 @@ export default async function Page() {
   let usuarios: any[] | null = null; //el backend me devuelve un array de usuarios, por eso la variable usuarios es un []
 
   try {
+    const session = await auth();
     // const response = await fetch(`${process.env.API_HOST}/api/users`, {
     const response = await fetch(
       `${process.env.API_HOST}/api/users?role=Security`,
       {
         method: "GET", // cuando es un get no es necesario aclarar
-        next: { revalidate: 0 }, // evita el cache
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+        cache: "no-store",
       }
     );
-
-    if (!response.ok) throw new Error("Error al obtener usuarios");
 
     usuarios = await response.json();
   } catch (error) {

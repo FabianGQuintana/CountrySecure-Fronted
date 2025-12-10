@@ -1,10 +1,10 @@
 "use server";
 
 import { IusuarioRegister } from "@/types";
-import { getCurrentUser } from "@/auth";
+import { auth } from "@/auth";
 
 export async function newUsers(data: IusuarioRegister) {
-  const session = await getCurrentUser();
+  const session = await auth();
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_HOST}/api/auth/register`,
@@ -12,23 +12,11 @@ export async function newUsers(data: IusuarioRegister) {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${session?.token}`,
+          Authorization: `Bearer ${session?.accessToken}`,
         },
         body: JSON.stringify(data),
       }
     );
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || " error al registrar usuario");
-    }
-    if (response.status === 401) {
-      throw new Error("No estás autenticado. Volvé a iniciar sesión.");
-    }
-
-    // 403 → no autorizado (sin permiso)
-    if (response.status === 403) {
-      throw new Error("No tenés permisos para realizar esta acción.");
-    }
 
     return await response.json();
   } catch (error) {
@@ -37,7 +25,8 @@ export async function newUsers(data: IusuarioRegister) {
 }
 
 export async function AltaBaja(id: string) {
-  // const session = await auth () cuando tenga el logn lo activo
+  const session = await auth();
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_HOST}/api/users/${id}/toggle-active`,
@@ -46,11 +35,12 @@ export async function AltaBaja(id: string) {
         cache: "no-store",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.accessToken}`,
         },
       }
     );
     if (!response.ok) throw new Error("error alta o baja de usuario");
+
     return await response.json();
   } catch (error) {
     throw error;
@@ -58,7 +48,7 @@ export async function AltaBaja(id: string) {
 }
 
 export async function updateUser(data: Partial<IusuarioRegister>, id: string) {
-  // const session = await auth () cuando tenga el logn lo activo
+  const session = await auth();
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_HOST}/api/users/${id}`,
@@ -66,7 +56,7 @@ export async function updateUser(data: Partial<IusuarioRegister>, id: string) {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
-          // Authorization: `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.accessToken}`,
         },
         cache: "no-store",
         body: JSON.stringify(data),

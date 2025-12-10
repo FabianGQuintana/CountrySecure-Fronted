@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { AltaBaja, updateUser } from "@/actions/usuariosActions";
+import { useSession } from "next-auth/react";
 
 import { Iusuario } from "@/types";
 import {
@@ -21,17 +22,20 @@ export default function Page() {
   const [usuario, setUsuario] = useState<Iusuario | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // const { data: session } = useSession();
-
-  // Cargar datos del usuario
+  const { data: session } = useSession();
   useEffect(() => {
+    if (!session) return;
+
     const cargarDatos = async () => {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_HOST}/api/Users/${id}`,
           {
             method: "GET",
-            next: { revalidate: 0 },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.user.accessToken}`,
+            },
           }
         );
 
@@ -41,14 +45,13 @@ export default function Page() {
         setUsuario(data);
       } catch (err) {
         setError("Error al cargar datos del usuario");
-        console.error("ERROR cargarDatos:", err);
       } finally {
         setCargando(false);
       }
     };
 
     cargarDatos();
-  }, [id]);
+  }, [id, session]);
 
   // Estado del formulario
   const [formData, setFormData] = useState({

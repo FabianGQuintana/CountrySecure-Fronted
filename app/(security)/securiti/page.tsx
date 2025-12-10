@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-
+import { signOut } from "next-auth/react";
 export default function SecurityPage() {
   const { data: session, status } = useSession();
 
@@ -114,14 +114,10 @@ export default function SecurityPage() {
         {/* Botón de cerrar sesión */}
         <div className="mt-6 text-center">
           <button
-            onClick={() => {
-              // Necesitarás importar signOut de next-auth/react
-              // import { signOut } from "next-auth/react";
-              // signOut({ callbackUrl: "/" });
-            }}
-            className="text-red-600 hover:text-red-800 underline"
+            className="text-black  py-2 px-4 rounded-lg hover:bg-gray-700 cursor-pointer w-full text-left"
+            onClick={() => signOut()}
           >
-            Cerrar sesión
+            Cerrar Sesión
           </button>
         </div>
       </div>

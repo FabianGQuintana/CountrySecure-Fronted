@@ -185,7 +185,7 @@ export default function MenuAdmin() {
                       className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Solicitar turno
+                      Solicitudes
                     </Link>
                   </li>
                 </ul>

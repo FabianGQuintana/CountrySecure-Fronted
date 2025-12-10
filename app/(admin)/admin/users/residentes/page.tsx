@@ -1,16 +1,20 @@
 export const dynamic = "force-dynamic";
+import { auth } from "@/auth";
 import { TablaUsuarios } from "@/components/admin/usuarios";
 import { FiAlertCircle } from "react-icons/fi";
 
 export default async function Page() {
   let usuarios: any[] | null = null; //el backend me devuelve un array de usuarios, por eso la variable usuarios es un []
-
+  const session = await auth();
   try {
-    // const response = await fetch(`${process.env.API_HOST}/api/users`, {
     const response = await fetch(
       `${process.env.API_HOST}/api/users?role=Resident`,
       {
         method: "GET", // cuando es un get no es necesario aclarar
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
         cache: "no-store",
       }
     );

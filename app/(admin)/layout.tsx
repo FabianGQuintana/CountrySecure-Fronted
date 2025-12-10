@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/auth";
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 import MenuAdmin from "@/components/admin/navbar";
@@ -8,20 +8,15 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Obtener usuario actual
-  const user = await getCurrentUser();
-
-  // Si no está autenticado -> login
+  const user = await auth();
   if (!user) {
     redirect("/login");
   }
 
-  // Si no es Admin -> acceso denegado
   if (user.role !== "Admin") {
     redirect("/");
   }
 
-  // Si pasa las verificaciones (es Admin) -> mostrar layout
   return (
     <SessionProviderWrapper>
       <div className="min-h-screen flex flex-col">

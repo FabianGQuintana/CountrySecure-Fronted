@@ -7,12 +7,10 @@ import Community from "@/components/General/comunity";
 export default function Home() {
   return (
     <main>
-      <Menu />
       <Hero />
       <Security />
       <Amenities />
       <Community />
-      <Footer />
     </main>
   );
 }
