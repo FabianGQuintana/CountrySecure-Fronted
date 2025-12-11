@@ -9,33 +9,30 @@ import ResidentSidebar from "@/components/residentes/sideBar/ResidentSidebar";
 export default function ResidentDashboard() {
   const { data: session, status } = useSession();
 
-  // Loading mientras se valida sesión
   if (status === "loading") {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Verificando...</p>
+      <div className="flex justify-center items-center h-screen bg-blue-50">
+        <p className="text-xl text-gray-500 animate-pulse">Verificando...</p>
       </div>
     );
   }
 
-  // Solo rol Residente
   if (!session || session.user.role !== "Resident") {
     return (
-      <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
-          <div className="text-6xl mb-4">🚫</div>
-          <h1 className="text-2xl font-bold text-red-600 mb-4">
+      <div className="flex flex-col justify-center items-center h-screen bg-linear-to-br from-blue-50 via-white to-green-50">
+        <div className="bg-white p-10 rounded-3xl shadow-lg text-center max-w-lg border border-gray-200">
+          <div className="text-6xl mb-6">🚫</div>
+          <h1 className="text-3xl font-bold text-red-500 mb-4">
             Acceso Denegado
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-500 mb-8 text-lg">
             {!session
-              ? "Debes iniciar sesión para acceder a esta página."
+              ? "Debes iniciar sesión para acceder."
               : "No tienes permisos para acceder a esta sección."}
           </p>
-
           <a
             href={!session ? "/auth/login" : "/"}
-            className="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
+            className="inline-block bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-600 transition-all shadow"
           >
             {!session ? "Iniciar Sesión" : "Volver al Inicio"}
           </a>
@@ -44,75 +41,83 @@ export default function ResidentDashboard() {
     );
   }
 
-  // KPIs del residente
   const kpis = [
     {
       title: "Mis reservas activas",
       value: "3",
       icon: <FiCalendar size={28} />,
-      gradient: "bg-gradient-to-tr from-indigo-500 to-purple-600",
+      color: "from-blue-400 to-cyan-300",
+      delay: 0.1,
     },
     {
       title: "Permisos solicitados",
       value: "12",
       icon: <FiKey size={28} />,
-      gradient: "bg-gradient-to-tr from-green-400 to-teal-500",
+      color: "from-green-400 to-teal-300",
+      delay: 0.2,
     },
     {
       title: "Amenities disponibles",
       value: "8",
       icon: <FiHome size={28} />,
-      gradient: "bg-gradient-to-tr from-yellow-400 to-orange-500",
+      color: "from-yellow-400 to-orange-300",
+      delay: 0.3,
     },
     {
       title: "Última actividad",
       value: "Hoy",
       icon: <FiUser size={28} />,
-      gradient: "bg-gradient-to-tr from-pink-500 to-red-500",
+      color: "from-purple-400 to-pink-300",
+      delay: 0.4,
     },
   ];
 
-  // Secciones del residente
   const sections = [
     {
       title: "Mi Perfil",
       desc: "Ver y modificar tus datos personales.",
-      btn: "Ir al Perfil",
       href: "/resident/profile",
-      icon: <FiUser size={36} />,
+      icon: <FiUser size={32} />,
+      delay: 0.1,
     },
     {
       title: "Amenities",
-      desc: "Reservá salas, gimnasios y demás espacios comunes.",
-      btn: "Ver Amenities",
+      desc: "Reservá salas, gimnasios y espacios comunes.",
       href: "/resident/amenities",
-      icon: <FiHome size={36} />,
+      icon: <FiHome size={32} />,
+      delay: 0.2,
     },
     {
       title: "Permisos de Ingreso",
-      desc: "Registrá visitas y gestioná permisos para invitados.",
-      btn: "Solicitar Permiso",
+      desc: "Registrá visitas y gestioná permisos.",
       href: "/resident/permits",
-      icon: <FiKey size={36} />,
+      icon: <FiKey size={32} />,
+      delay: 0.3,
     },
   ];
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-linear-to-br from-blue-50 via-white to-green-50">
 
       <ResidentSidebar />
 
-      {/* CONTENEDOR PRINCIPAL (solo uno) */}
-      <div className="ml-64 w-full min-h-screen p-10 bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+      {/* CONTENEDOR PRINCIPAL */}
+      <div className="ml-64 w-full p-10 text-gray-900">
 
-        {/* Título */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white">
-            Bienvenido, {session.user?.name || "Residente"}
-          </h1>
-          <p className="text-slate-400 mt-2 text-lg">
-            Accedé rápido a tus funciones principales.
-          </p>
+        {/* HEADER */}
+        <div className="mb-12 flex flex-col">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-4xl font-bold"
+          >
+            Hola,{" "}
+            <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              {session.user?.name || "Residente"}
+            </span>
+          </motion.h1>
+          <p className="text-gray-500 text-lg mt-2">Panel de Residente</p>
         </div>
 
         {/* KPIs */}
@@ -120,56 +125,75 @@ export default function ResidentDashboard() {
           {kpis.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.15 }}
-              whileHover={{ scale: 1.05 }}
+              transition={{ delay: item.delay }}
+              whileHover={{ y: -5 }}
+              className="relative group"
             >
-              <Card
-                className={`${item.gradient} text-white shadow-2xl rounded-3xl border-none overflow-hidden`}
-              >
+              {/* Glow suave */}
+              <div
+                className={`absolute -inset-0.5 bg-linear-to-br ${item.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
+              ></div>
+
+              <Card className="relative bg-white border border-gray-200 rounded-2xl shadow-sm">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm opacity-80">{item.title}</p>
-                      <h2 className="text-3xl font-bold mt-1">{item.value}</h2>
-                    </div>
-                    <div className="bg-white/20 p-3 rounded-full">
+                  <div className="flex justify-between items-start mb-4">
+                    <div
+                      className={`p-3 rounded-xl bg-linear-to-br ${item.color} bg-opacity-20`}
+                    >
                       {item.icon}
                     </div>
+                    <div className="text-gray-400 text-sm font-medium">
+                      {item.value}
+                    </div>
                   </div>
+                  <h3 className="text-gray-500 text-sm font-medium">
+                    {item.title}
+                  </h3>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
 
-        {/* Secciones */}
+        {/* QUICK ACTIONS */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {sections.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.04, translateY: -4 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: item.delay }}
+              whileHover={{ scale: 1.03, y: -5 }}
+              className="relative group cursor-pointer"
+              onClick={() => (window.location.href = item.href)}
             >
-              <Card className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 shadow-2xl rounded-3xl hover:shadow-purple-500/40 transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-purple-400">{item.icon}</div>
-                    <h2 className="text-2xl font-bold">{item.title}</h2>
+              <div className="absolute -inset-0.5 bg-linear-to-br from-gray-200 to-transparent rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
+
+              <Card className="relative bg-white border border-gray-200 rounded-2xl shadow p-6 h-full">
+                <CardContent className="h-full flex flex-col">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 rounded-xl bg-blue-100 text-blue-600 shadow-lg">
+                      {item.icon}
+                    </div>
+                    <motion.div
+                      whileHover={{ rotate: 90 }}
+                      className="text-gray-400 group-hover:text-cyan-400 transition"
+                    >
+                      →
+                    </motion.div>
                   </div>
 
-                  <p className="text-slate-300 mb-6">{item.desc}</p>
+                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                  <p className="text-gray-500 text-sm grow">{item.desc}</p>
 
-                  <motion.a
-                    whileHover={{ scale: 1.05 }}
-                    href={item.href}
-                    className="w-full block text-center py-2 rounded-xl bg-linear-to-r from-purple-500 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-purple-500/60 transition-all"
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    className="mt-6 text-sm font-medium text-cyan-500 flex items-center"
                   >
-                    {item.btn}
-                  </motion.a>
+                    Acceder <span className="ml-2">↗</span>
+                  </motion.div>
                 </CardContent>
               </Card>
             </motion.div>
