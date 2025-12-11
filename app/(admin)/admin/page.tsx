@@ -37,7 +37,7 @@ export default function AdminDashboard() {
 
   if (status === "loading") {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      <div className="flex justify-center items-center h-screen bg-linear-to-br from-blue-50 via-white to-green-50">
         <p className="text-xl text-gray-500 animate-pulse">
           Verificando sesión...
         </p>
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
 
   if (!session || session.user.role !== "Admin") {
     return (
-      <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      <div className="flex flex-col justify-center items-center h-screen bg-linear-to-br from-blue-50 via-white to-green-50">
         <div className="bg-white p-10 rounded-3xl shadow-lg text-center max-w-lg border border-gray-200">
           <div className="relative w-32 h-32 mx-auto mb-6">
             <div className="absolute inset-0 bg-red-200 rounded-full blur-xl opacity-30"></div>
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
       desc: "Administrar permisos y usuarios",
       icon: <FiUsers size={32} />,
       onClick: () => router.push("/admin/users/residentes"),
-      color: "bg-gradient-to-br from-blue-400 to-cyan-300",
+      color: "bg-linear-to-br from-blue-400 to-cyan-300",
       delay: 0.1,
     },
     {
@@ -159,7 +159,7 @@ export default function AdminDashboard() {
       desc: "Ver y administrar reservas",
       icon: <FiCalendar size={32} />,
       onClick: () => router.push("/admin/amenities"),
-      color: "bg-gradient-to-br from-green-400 to-teal-300",
+      color: "bg-linear-to-br from-green-400 to-teal-300",
       delay: 0.2,
     },
     {
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
       desc: "Configurar servicios disponibles",
       icon: <FiTool size={32} />,
       onClick: () => router.push("/admin/orders"),
-      color: "bg-gradient-to-br from-yellow-400 to-orange-300",
+      color: "bg-linear-to-br from-yellow-400 to-orange-300",
       delay: 0.3,
     },
     {
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
       desc: "Ajustes del sistema",
       icon: <FiSettings size={32} />,
       onClick: () => router.push("/admin/settings"),
-      color: "bg-gradient-to-br from-purple-400 to-pink-300",
+      color: "bg-linear-to-br from-purple-400 to-pink-300",
       delay: 0.4,
     },
     {
@@ -183,7 +183,7 @@ export default function AdminDashboard() {
       desc: "Control de acceso",
       icon: <FiShield size={32} />,
       onClick: () => router.push("/admin/users/seguridad"),
-      color: "bg-gradient-to-br from-violet-400 to-indigo-300",
+      color: "bg-linear-to-br from-violet-400 to-indigo-300",
       delay: 0.5,
     },
     {
@@ -191,13 +191,13 @@ export default function AdminDashboard() {
       desc: "Gestión de recursos y activos",
       icon: <FiPackage size={32} />,
       onClick: () => router.push("/admin/inventory"),
-      color: "bg-gradient-to-br from-red-400 to-rose-300",
+      color: "bg-linear-to-br from-red-400 to-rose-300",
       delay: 0.6,
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 text-gray-900 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-green-50 text-gray-900 p-4 md:p-8">
       {/* Header */}
       <div className="mb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
@@ -209,7 +209,7 @@ export default function AdminDashboard() {
               className="text-4xl md:text-5xl font-bold mb-2"
             >
               Hola,{" "}
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                 {getUserFullName()}
               </span>
             </motion.h1>
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
           >
             <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow">
               <div className="text-center">
-                <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                <div className="text-3xl font-bold bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                   {formatTime(time)}
                 </div>
                 <div className="text-gray-500 text-sm mt-1">
@@ -238,7 +238,7 @@ export default function AdminDashboard() {
       {/* KPIs */}
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center">
-          <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             Métricas Principales
           </span>
           <div className="ml-3 h-1 flex-1 bg-gray-300 rounded-full"></div>
@@ -254,13 +254,13 @@ export default function AdminDashboard() {
               className="relative group"
             >
               <div
-                className={`absolute -inset-0.5 bg-gradient-to-br ${item.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
+                className={`absolute -inset-0.5 bg-linear-to-br ${item.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
               ></div>
               <Card className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden backdrop-blur-sm">
                 <CardContent className="p-5">
                   <div className="flex justify-between items-start mb-4">
                     <div
-                      className={`p-3 rounded-xl bg-gradient-to-br ${item.color} bg-opacity-20`}
+                      className={`p-3 rounded-xl bg-linear-to-br ${item.color} bg-opacity-20`}
                     >
                       {item.icon}
                     </div>
@@ -292,7 +292,7 @@ export default function AdminDashboard() {
       {/* Quick Actions */}
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center">
-          <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             Acciones Rápidas
           </span>
           <div className="ml-3 h-1 flex-1 bg-gray-300 rounded-full"></div>
@@ -309,7 +309,7 @@ export default function AdminDashboard() {
               className="relative group cursor-pointer"
               onClick={item.onClick}
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-gray-200 to-transparent rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
+              <div className="absolute -inset-0.5 bg-linear-to-br from-gray-200 to-transparent rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
               <Card className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden backdrop-blur-sm h-full">
                 <CardContent className="p-6 h-full flex flex-col">
                   <div className="flex justify-between items-start mb-4">

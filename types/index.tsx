@@ -1,3 +1,5 @@
+import { inter } from "@/app/fonts";
+
 export interface Iusuario {
   id: string;
   name: string;
@@ -41,4 +43,30 @@ export interface Iamenities {
 export interface IAmenitiesRegisterForm {
   onClose: () => void;
   onSuccess?: () => void;
+}
+
+export interface IOrderRegister {
+  description: string;
+  supplierName: string;
+  orderType: OrderStatus;
+  requestIds?: string[];
+  entryPermissionIds?: string[];
+}
+export interface IOrder {
+  id: string;
+  description: string;
+  supplierName: string;
+  orderType: OrderStatus;
+  requestIds?: string[];
+  entryPermissionIds?: string[];
+  status: string;
+}
+export enum OrderStatus {
+  Jardineria = 1,
+  Plomeria = 2,
+  Electricidad = 3,
+  Limpieza = 4,
+  MantenimientoGeneral = 5,
+  Piscina = 6,
+  Seguridad = 7,
 }

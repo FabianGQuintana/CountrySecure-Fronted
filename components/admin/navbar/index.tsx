@@ -258,11 +258,11 @@ export default function MenuAdmin() {
                 <ul className="mt-2 space-y-1 pl-6">
                   <li>
                     <Link
-                      href="/admin/usuarios"
+                      href="/admin/orders"
                       className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Mis solicitudes
+                      Proveedores
                     </Link>
                   </li>
                   <li>
@@ -271,7 +271,7 @@ export default function MenuAdmin() {
                       className="block text-gray-700 hover:text-gray-900 py-1 px-3 rounded-lg hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Solicitar Servicio
+                      Solicitudes
                     </Link>
                   </li>
                 </ul>
