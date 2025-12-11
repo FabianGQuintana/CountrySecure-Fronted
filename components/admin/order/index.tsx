@@ -1,193 +1,3 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { FiRefreshCcw, FiSearch } from "react-icons/fi";
-// import { useSession } from "next-auth/react";
-// import { Estados } from "@/components/estados";
-// import { IOrder, OrderStatus } from "@/types";
-// export default function TablaOrders() {
-//   const router = useRouter();
-
-//   // Estados
-//   const [orders, setOrders] = useState<IOrder[]>([]);
-//   const [filteredOrders, setFilteredOrders] = useState<IOrder[]>([]);
-//   const [search, setSearch] = useState("");
-//   const [loading, setLoading] = useState(true);
-//   const { data: session } = useSession();
-//   const OrderTypeLabels: Record<string, string> = {
-//     Jardineria: "Jardinería",
-//     Plomeria: "Plomería",
-//     Electricidad: "Electricidad",
-//     Limpieza: "Limpieza",
-//     MantenimientoGeneral: "Mantenimiento General",
-//     Piscina: "Piscina",
-//     Seguridad: "Seguridad",
-//   };
-
-//   // Paginación
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const itemsPerPage = 7;
-
-//   const fetchOrders = async () => {
-//     try {
-//       setLoading(true);
-
-//       const response = await fetch(
-//         `${process.env.NEXT_PUBLIC_API_HOST}/api/order`,
-//         {
-//           method: "GET",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${session?.user.accessToken}`,
-//           },
-//           cache: "no-store",
-//         }
-//       );
-//       const data = await response.json();
-
-//       setOrders(data);
-//       setFilteredOrders(data);
-//     } catch (error) {
-//       console.error("Error cargando órdenes:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // Buscar por descripción o proveedor
-//   const handleSearch = (value: string) => {
-//     setSearch(value);
-
-//     const filtered = orders.filter(
-//       (o) =>
-//         o.description.toLowerCase().includes(value.toLowerCase()) ||
-//         o.supplierName.toLowerCase().includes(value.toLowerCase())
-//     );
-
-//     setFilteredOrders(filtered);
-//     setCurrentPage(1);
-//   };
-
-//   // Cargar datos al inicio
-//   useEffect(() => {
-//     fetchOrders();
-//   }, []);
-
-//   // Paginación
-//   const indexLast = currentPage * itemsPerPage;
-//   const indexFirst = indexLast - itemsPerPage;
-//   const currentItems = filteredOrders.slice(indexFirst, indexLast);
-
-//   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
-
-//   const goToEdit = (id: string) => {
-//     router.push(`/admin/orders/${id}`);
-//   };
-//   const getOrderTypeName = (type: any) => {
-//     if (!type) return "Desconocido";
-
-//     // si viene como string
-//     if (typeof type === "string") {
-//       return OrderTypeLabels[type] ?? "Desconocido";
-//     }
-
-//     // Por si la api devuelve numeros
-//     const numeric = Number(type);
-//     return OrderTypeLabels[OrderStatus[numeric]] ?? "Desconocido";
-//   };
-//   return (
-//     <div className="p-5">
-//       <h1 className="text-2xl font-bold mb-4">Servicios/Proveedores</h1>
-
-//       {/* Buscador y Refresh */}
-//       <div className="flex items-center gap-3 mb-4">
-//         <div className="flex items-center gap-2 border rounded px-3 py-2 w-80">
-//           <FiSearch />
-//           <input
-//             type="text"
-//             className="outline-none w-full"
-//             placeholder="Buscar por descripción o proveedor..."
-//             value={search}
-//             onChange={(e) => handleSearch(e.target.value)}
-//           />
-//         </div>
-
-//         <button
-//           onClick={fetchOrders}
-//           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-//         >
-//           <FiRefreshCcw /> Recargar
-//         </button>
-//       </div>
-
-//       {/* Tabla */}
-//       <div className="border rounded-lg overflow-hidden shadow">
-//         {loading ? (
-//           <p className="p-4 text-center">Cargando órdenes...</p>
-//         ) : filteredOrders.length === 0 ? (
-//           <p className="p-4 text-center">No se encontraron órdenes.</p>
-//         ) : (
-//           <table className="w-full text-left">
-//             <thead className="bg-gray-100 border-b">
-//               <tr>
-//                 <th className="p-3">Descripción</th>
-//                 <th className="p-3">Proveedor</th>
-//                 <th className="p-3">Tipo</th>
-//                 <th className="p-3">Estado</th>
-//                 <th className="p-3 text-center">Acciones</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {currentItems.map((order) => (
-//                 <tr key={order.id} className="border-b hover:bg-gray-50">
-//                   <td className="p-3">{order.description}</td>
-//                   <td className="p-3">{order.supplierName}</td>
-//                   <td className="p-3">{getOrderTypeName(order.orderType)}</td>
-//                   <Estados estado={order.status} />
-//                   <td className="p-3 text-center">
-//                     <button
-//                       className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
-//                       onClick={() => goToEdit(order.id)}
-//                     >
-//                       Más
-//                     </button>
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         )}
-//       </div>
-
-//       {/* Paginación */}
-//       {totalPages > 1 && (
-//         <div className="flex justify-center mt-5 gap-3">
-//           <button
-//             disabled={currentPage === 1}
-//             onClick={() => setCurrentPage((p) => p - 1)}
-//             className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-40"
-//           >
-//             Anterior
-//           </button>
-
-//           <span className="px-3 py-1">
-//             Página {currentPage} de {totalPages}
-//           </span>
-
-//           <button
-//             disabled={currentPage === totalPages}
-//             onClick={() => setCurrentPage((p) => p + 1)}
-//             className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-40"
-//           >
-//             Siguiente
-//           </button>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -341,7 +151,7 @@ export default function TablaOrders() {
   const stats = getOrderStats();
 
   return (
-    <div className="min-h-screen  p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -350,7 +160,7 @@ export default function TablaOrders() {
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-2">
               Gestión de Servicios
             </h1>
             <p className="text-gray-500 flex items-center">
@@ -365,7 +175,7 @@ export default function TablaOrders() {
               whileTap={{ scale: 0.95 }}
               onClick={fetchOrders}
               disabled={isRefreshing}
-              className="flex items-center px-4 py-2 bg-linear-to-r from-gray-200 to-gray-300 text-gray-700 rounded-xl hover:from-gray-300 hover:to-gray-400 transition-all duration-300 shadow-sm"
+              className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-100/80 to-violet-100/80 text-purple-700 rounded-xl hover:from-purple-200 hover:to-violet-200 transition-all duration-300 shadow-sm border border-purple-200/50"
             >
               <FiRefreshCcw
                 className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`}
@@ -381,11 +191,11 @@ export default function TablaOrders() {
           <div className="md:col-span-2">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiSearch className="text-gray-400" />
+                <FiSearch className="text-purple-400" />
               </div>
               <input
                 type="text"
-                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-3 bg-white/90 backdrop-blur-sm border border-purple-200/50 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
                 placeholder="Buscar por descripción o proveedor..."
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
@@ -401,8 +211,8 @@ export default function TablaOrders() {
               onClick={() => handleStatusFilter("all")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "all"
-                  ? "bg-linear-to-r from-gray-800 to-gray-700 text-white shadow-lg"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
+                  : "bg-white/90 backdrop-blur-sm text-purple-600 hover:bg-purple-50/50 border border-purple-200/50"
               }`}
             >
               <FiFilter className="mr-2" />
@@ -414,8 +224,8 @@ export default function TablaOrders() {
               onClick={() => handleStatusFilter("active")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "active"
-                  ? "bg-linear-to-r from-emerald-500 to-teal-400 text-white shadow-lg"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white shadow-lg"
+                  : "bg-white/90 backdrop-blur-sm text-emerald-600 hover:bg-emerald-50/50 border border-emerald-200/50"
               }`}
             >
               <HiOutlineStatusOnline className="mr-2" />
@@ -427,8 +237,8 @@ export default function TablaOrders() {
               onClick={() => handleStatusFilter("inactive")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "inactive"
-                  ? "bg-linear-to-r from-amber-500 to-orange-400 text-white shadow-lg"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 text-white shadow-lg"
+                  : "bg-white/90 backdrop-blur-sm text-amber-600 hover:bg-amber-50/50 border border-amber-200/50"
               }`}
             >
               <HiOutlineStatusOffline className="mr-2" />
@@ -444,18 +254,18 @@ export default function TablaOrders() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-b-fuchsia-700">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-purple-100/50">
           {/* Tabla */}
           <div className="overflow-x-auto">
             {loading ? (
               <div className="p-12 text-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-                <p className="text-gray-500">Cargando servicios...</p>
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mb-4"></div>
+                <p className="text-purple-500">Cargando servicios...</p>
               </div>
             ) : filteredOrders.length === 0 ? (
               <div className="p-12 text-center">
-                <div className="mb-4 p-4 bg-linear-to-br from-gray-100 to-gray-200 rounded-2xl inline-block">
-                  <FiAlertCircle className="w-16 h-16 text-gray-400" />
+                <div className="mb-4 p-4 bg-gradient-to-br from-purple-100/50 to-violet-100/50 rounded-2xl inline-block">
+                  <FiAlertCircle className="w-16 h-16 text-purple-400" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
                   No se encontraron servicios
@@ -474,7 +284,7 @@ export default function TablaOrders() {
                       setStatusFilter("all");
                       applyFilters(orders, "", "all");
                     }}
-                    className="px-5 py-2.5 bg-linear-to-r from-gray-600 to-gray-500 text-white rounded-xl hover:shadow-lg transition-shadow"
+                    className="px-5 py-2.5 bg-gradient-to-r from-purple-500 via-violet-500 to-pink-400 text-white rounded-xl hover:shadow-lg transition-shadow"
                   >
                     Limpiar filtros
                   </motion.button>
@@ -482,38 +292,38 @@ export default function TablaOrders() {
               </div>
             ) : (
               <table className="w-full">
-                <thead className="bg-linear-to-r from-gray-50 to-gray-100">
+                <thead className="bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider">
                       <div className="flex items-center">
                         <HiOutlineDocumentText className="mr-2" />
                         Descripción del Servicio
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider">
                       <div className="flex items-center">
                         <FiUser className="mr-2" />
                         Proveedor
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider">
                       <div className="flex items-center">
                         <FiTool className="mr-2" />
                         Categoría
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider">
                       <div className="flex items-center">
                         <HiOutlineStatusOnline className="mr-2" />
                         Estado
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-purple-700 uppercase tracking-wider">
                       Acciones
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-100">
+                <tbody className="bg-white/50 divide-y divide-purple-100/30">
                   <AnimatePresence>
                     {currentItems.map((order) => (
                       <motion.tr
@@ -521,12 +331,12 @@ export default function TablaOrders() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="hover:bg-linear-to-r hover:from-blue-50/30 hover:to-cyan-50/30 transition-all duration-300"
+                        className="hover:bg-gradient-to-r hover:from-purple-50/30 hover:via-violet-50/30 hover:to-pink-50/30 transition-all duration-300"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-start">
-                            <div className="bg-linear-to-br from-blue-50 to-blue-100 p-3 rounded-lg mr-4">
-                              <HiOutlineDocumentText className="w-5 h-5 text-blue-600" />
+                            <div className="bg-gradient-to-br from-purple-50 to-violet-100 p-3 rounded-lg mr-4">
+                              <HiOutlineDocumentText className="w-5 h-5 text-purple-600" />
                             </div>
                             <div>
                               <div className="text-sm font-medium text-gray-900 mb-1">
@@ -537,8 +347,8 @@ export default function TablaOrders() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center">
-                            <div className="p-2 bg-linear-to-br from-gray-100 to-gray-200 rounded-lg mr-3">
-                              <FiTruck className="w-4 h-4 text-gray-600" />
+                            <div className="p-2 bg-gradient-to-br from-purple-100/50 to-violet-100/50 rounded-lg mr-3">
+                              <FiTruck className="w-4 h-4 text-purple-600" />
                             </div>
                             <div>
                               <div className="text-sm font-medium text-gray-900">
@@ -551,7 +361,7 @@ export default function TablaOrders() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-linear-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-100">
+                          <div className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-700 border border-purple-100/50">
                             {getOrderTypeName(order.orderType)}
                           </div>
                         </td>
@@ -563,7 +373,7 @@ export default function TablaOrders() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => goToEdit(order.id)}
-                            className="inline-flex items-center px-4 py-2 bg-linear-to-r from-emerald-500 to-teal-400 text-white rounded-xl hover:shadow-lg transition-shadow text-sm font-medium"
+                            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white rounded-xl hover:shadow-lg transition-shadow text-sm font-medium"
                           >
                             <FiEye className="mr-2" />
                             Ver Detalles
@@ -579,10 +389,10 @@ export default function TablaOrders() {
 
           {/* Paginación */}
           {totalPages > 1 && filteredOrders.length > 0 && (
-            <div className="bg-linear-to-r from-gray-50 to-gray-100 px-6 py-4 border-t border-gray-200">
+            <div className="bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 px-6 py-4 border-t border-purple-200/50">
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div className="mb-4 md:mb-0">
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-purple-700">
                     Mostrando{" "}
                     <span className="font-semibold">{indexFirst + 1}</span> a{" "}
                     <span className="font-semibold">
@@ -604,8 +414,8 @@ export default function TablaOrders() {
                     onClick={() => setCurrentPage((p) => p - 1)}
                     className={`p-2.5 rounded-lg ${
                       currentPage === 1
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-700 hover:bg-white hover:shadow-md border border-gray-200"
+                        ? "text-purple-300 cursor-not-allowed"
+                        : "text-purple-700 hover:bg-white hover:shadow-md border border-purple-200/50"
                     }`}
                   >
                     <svg
@@ -643,8 +453,8 @@ export default function TablaOrders() {
                         onClick={() => setCurrentPage(pageNum)}
                         className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium ${
                           currentPage === pageNum
-                            ? "bg-linear-to-r from-blue-600 to-cyan-500 text-white shadow-lg"
-                            : "text-gray-700 hover:bg-white hover:shadow-md border border-gray-200"
+                            ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
+                            : "text-purple-700 hover:bg-white hover:shadow-md border border-purple-200/50"
                         }`}
                       >
                         {pageNum}
@@ -659,8 +469,8 @@ export default function TablaOrders() {
                     onClick={() => setCurrentPage((p) => p + 1)}
                     className={`p-2.5 rounded-lg ${
                       currentPage === totalPages
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-700 hover:bg-white hover:shadow-md border border-gray-200"
+                        ? "text-purple-300 cursor-not-allowed"
+                        : "text-purple-700 hover:bg-white hover:shadow-md border border-purple-200/50"
                     }`}
                   >
                     <svg

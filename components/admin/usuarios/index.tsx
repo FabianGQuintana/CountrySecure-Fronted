@@ -210,12 +210,12 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
   const renderAvatar = (nombre: string, email: string) => (
     <div className="flex items-center space-x-3">
       <div className="relative">
-        <div className="shrink-0 h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-md">
+        <div className="shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-violet-400 flex items-center justify-center shadow-md">
           <span className="text-white font-semibold text-sm">
             {nombre?.charAt(0).toUpperCase()}
           </span>
         </div>
-        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-linear-to-br from-emerald-500 to-teal-400 rounded-full border-2 border-white"></div>
+        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-br from-fuchsia-500 to-pink-400 rounded-full border-2 border-white"></div>
       </div>
       <div>
         <div className="text-sm font-semibold text-gray-800">{nombre}</div>
@@ -225,7 +225,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
   );
 
   return (
-    <div className="w-full min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="w-full min-h-screen bg-gradient-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-6">
       {/* Header */}
       <div className="mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
@@ -233,7 +233,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
             <motion.h1
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl md:text-4xl font-bold bg-linear-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2"
+              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-2"
             >
               Gestión de Usuarios
             </motion.h1>
@@ -251,7 +251,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
               whileTap={{ scale: 0.95 }}
               onClick={refreshUsers}
               disabled={isRefreshing}
-              className="flex items-center px-4 py-2 bg-linear-to-r from-gray-200 to-gray-300 text-gray-700 rounded-xl hover:from-gray-300 hover:to-gray-400 transition-all duration-300 shadow-sm"
+              className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-100/80 to-violet-100/80 text-purple-700 rounded-xl hover:from-purple-200 hover:to-violet-200 transition-all duration-300 shadow-sm border border-purple-200/50"
             >
               <FiRefreshCw
                 className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`}
@@ -264,7 +264,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setModalOpen(true)}
-              className="flex items-center px-5 py-2.5 bg-linear-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:from-blue-700 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="flex items-center px-5 py-2.5 bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white rounded-xl hover:from-purple-700 hover:via-violet-700 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               <HiOutlineUserAdd className="mr-2" />
               Nuevo Usuario
@@ -297,8 +297,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
               onClick={() => setFiltroActivo("all")}
               className={`flex-1 flex items-center justify-center px-4 py-2 rounded-xl transition-all ${
                 filtroActivo === "all"
-                  ? "bg-linear-to-r from-gray-800 to-gray-700 text-white shadow-lg"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
+                  : "bg-white text-gray-600 hover:bg-purple-50/50 border border-purple-200/50"
               }`}
             >
               <FiFilter className="mr-2" />
@@ -310,8 +310,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
               onClick={() => setFiltroActivo("active")}
               className={`flex-1 flex items-center justify-center px-4 py-2 rounded-xl transition-all ${
                 filtroActivo === "active"
-                  ? "bg-linear-to-r from-emerald-500 to-teal-400 text-white shadow-lg"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white shadow-lg"
+                  : "bg-white text-gray-600 hover:bg-emerald-50/50 border border-emerald-200/50"
               }`}
             >
               <HiOutlineStatusOnline className="mr-2" />
@@ -323,8 +323,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
               onClick={() => setFiltroActivo("inactive")}
               className={`flex-1 flex items-center justify-center px-4 py-2 rounded-xl transition-all ${
                 filtroActivo === "inactive"
-                  ? "bg-linear-to-r from-rose-500 to-red-400 text-white shadow-lg"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-gradient-to-r from-rose-500 via-pink-500 to-red-400 text-white shadow-lg"
+                  : "bg-white text-gray-600 hover:bg-rose-50/50 border border-rose-200/50"
               }`}
             >
               <HiOutlineStatusOffline className="mr-2" />
@@ -348,20 +348,20 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
       </div>
 
       {/* Contenido principal - Tabla */}
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+      <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-purple-100/50">
         {/* Header de la tabla con selección */}
         {seleccionados.length > 0 && (
-          <div className="bg-linear-to-r from-blue-50 to-cyan-50 px-6 py-4 border-b border-blue-100">
+          <div className="bg-gradient-to-r from-purple-50/90 via-violet-50/90 to-pink-50/90 px-6 py-4 border-b border-purple-200/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg mr-3">
-                  <FiUser className="w-5 h-5 text-blue-600" />
+                <div className="p-2 bg-gradient-to-r from-purple-100 to-violet-100 rounded-lg mr-3">
+                  <FiUser className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-blue-800">
+                  <h3 className="font-semibold text-purple-800">
                     {seleccionados.length} usuarios seleccionados
                   </h3>
-                  <p className="text-sm text-blue-600">
+                  <p className="text-sm text-purple-600">
                     Acciones en lote disponibles
                   </p>
                 </div>
@@ -377,7 +377,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                     );
                     setSeleccionados([]);
                   }}
-                  className="flex items-center px-4 py-2 bg-linear-to-r from-emerald-500 to-teal-400 text-white rounded-lg hover:shadow-lg transition-shadow"
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white rounded-lg hover:shadow-lg transition-shadow"
                 >
                   <FiCheckCircle className="mr-2" />
                   Activar
@@ -392,7 +392,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                     );
                     setSeleccionados([]);
                   }}
-                  className="flex items-center px-4 py-2 bg-linear-to-r from-rose-500 to-red-400 text-white rounded-lg hover:shadow-lg transition-shadow"
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-rose-500 via-pink-500 to-red-400 text-white rounded-lg hover:shadow-lg transition-shadow"
                 >
                   <FiXCircle className="mr-2" />
                   Desactivar
@@ -401,7 +401,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSeleccionados([])}
-                  className="flex items-center px-4 py-2 bg-linear-to-r from-gray-500 to-gray-400 text-white rounded-lg hover:shadow-lg transition-shadow"
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-400 via-violet-400 to-pink-400 text-white rounded-lg hover:shadow-lg transition-shadow"
                 >
                   Limpiar
                 </motion.button>
@@ -411,8 +411,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
         )}
 
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-linear-to-r from-gray-50 to-gray-100">
+          <table className="min-w-full divide-y divide-purple-100/30">
+            <thead className="bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80">
               <tr>
                 <th scope="col" className="px-6 py-4 text-left">
                   <div className="flex items-center">
@@ -423,13 +423,13 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                         usuariosPagina.length > 0
                       }
                       onChange={toggleTodosSeleccionados}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      className="h-4 w-4 text-purple-600 rounded border-purple-300 focus:ring-purple-500"
                     />
                   </div>
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors rounded-lg"
+                  className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider cursor-pointer hover:bg-purple-100/50 transition-colors rounded-lg"
                   onClick={() => ordenarPorColumna("name")}
                 >
                   <div className="flex items-center">
@@ -437,16 +437,16 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                     <div className="ml-2">
                       {columnaOrden === "name" &&
                         (ordenAscendente ? (
-                          <FiChevronUp className="w-4 h-4 text-blue-500" />
+                          <FiChevronUp className="w-4 h-4 text-purple-500" />
                         ) : (
-                          <FiChevronDown className="w-4 h-4 text-blue-500" />
+                          <FiChevronDown className="w-4 h-4 text-purple-500" />
                         ))}
                     </div>
                   </div>
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors rounded-lg"
+                  className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider cursor-pointer hover:bg-purple-100/50 transition-colors rounded-lg"
                   onClick={() => ordenarPorColumna("lastname")}
                 >
                   <div className="flex items-center">
@@ -454,16 +454,16 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                     <div className="ml-2">
                       {columnaOrden === "lastname" &&
                         (ordenAscendente ? (
-                          <FiChevronUp className="w-4 h-4 text-blue-500" />
+                          <FiChevronUp className="w-4 h-4 text-purple-500" />
                         ) : (
-                          <FiChevronDown className="w-4 h-4 text-blue-500" />
+                          <FiChevronDown className="w-4 h-4 text-purple-500" />
                         ))}
                     </div>
                   </div>
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors rounded-lg"
+                  className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider cursor-pointer hover:bg-purple-100/50 transition-colors rounded-lg"
                   onClick={() => ordenarPorColumna("email")}
                 >
                   <div className="flex items-center">
@@ -471,16 +471,16 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                     <div className="ml-2">
                       {columnaOrden === "email" &&
                         (ordenAscendente ? (
-                          <FiChevronUp className="w-4 h-4 text-blue-500" />
+                          <FiChevronUp className="w-4 h-4 text-purple-500" />
                         ) : (
-                          <FiChevronDown className="w-4 h-4 text-blue-500" />
+                          <FiChevronDown className="w-4 h-4 text-purple-500" />
                         ))}
                     </div>
                   </div>
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors rounded-lg"
+                  className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider cursor-pointer hover:bg-purple-100/50 transition-colors rounded-lg"
                   onClick={() => ordenarPorColumna("role")}
                 >
                   <div className="flex items-center">
@@ -488,22 +488,22 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                     <div className="ml-2">
                       {columnaOrden === "role" &&
                         (ordenAscendente ? (
-                          <FiChevronUp className="w-4 h-4 text-blue-500" />
+                          <FiChevronUp className="w-4 h-4 text-purple-500" />
                         ) : (
-                          <FiChevronDown className="w-4 h-4 text-blue-500" />
+                          <FiChevronDown className="w-4 h-4 text-purple-500" />
                         ))}
                     </div>
                   </div>
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors rounded-lg"
+                  className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider cursor-pointer hover:bg-purple-100/50 transition-colors rounded-lg"
                 >
                   Estado
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                  className="px-6 py-4 text-right text-xs font-semibold text-purple-700 uppercase tracking-wider"
                 >
                   Acciones
                 </th>
@@ -511,7 +511,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
             </thead>
 
             {/* CUERPO DE LA TABLA */}
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-white/50 divide-y divide-purple-100/30">
               <AnimatePresence>
                 {usuariosPagina.length > 0 ? (
                   usuariosPagina.map((usuario) => (
@@ -520,14 +520,14 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      className="hover:bg-linear-to-r hover:from-blue-50/30 hover:to-cyan-50/30 transition-all duration-300"
+                      className="hover:bg-gradient-to-r hover:from-purple-50/30 hover:via-violet-50/30 hover:to-pink-50/30 transition-all duration-300"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <input
                           type="checkbox"
                           checked={seleccionados.includes(usuario.id)}
                           onChange={() => toggleSeleccion(usuario.id)}
-                          className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          className="h-4 w-4 text-purple-600 rounded border-purple-300 focus:ring-purple-500"
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -558,10 +558,10 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                             href={`/admin/users/${usuario.id}/`}
                             className="relative group"
                           >
-                            <div className="p-2 bg-linear-to-r from-blue-50 to-blue-100 rounded-lg hover:from-blue-100 hover:to-blue-200 transition-all duration-300">
-                              <FiEye className="w-4 h-4 text-blue-600" />
+                            <div className="p-2 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg hover:from-purple-100 hover:to-violet-100 transition-all duration-300">
+                              <FiEye className="w-4 h-4 text-purple-600" />
                             </div>
-                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-violet-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                               Ver detalles
                             </div>
                           </Link>
@@ -573,9 +573,9 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                                   menuAbierto === usuario.id ? null : usuario.id
                                 )
                               }
-                              className="p-2 bg-linear-to-r from-gray-50 to-gray-100 rounded-lg hover:from-gray-100 hover:to-gray-200 transition-all duration-300"
+                              className="p-2 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg hover:from-purple-100 hover:to-violet-100 transition-all duration-300"
                             >
-                              <FiMoreVertical className="w-4 h-4 text-gray-600" />
+                              <FiMoreVertical className="w-4 h-4 text-purple-600" />
                             </button>
 
                             {/* Menú desplegable */}
@@ -583,7 +583,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                               <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 z-10 overflow-hidden"
+                                className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-purple-100/50 z-10 overflow-hidden"
                               >
                                 <div className="py-1">
                                   <button
@@ -591,9 +591,9 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                                       // Lógica para editar
                                       setMenuAbierto(null);
                                     }}
-                                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors"
+                                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50 transition-colors"
                                   >
-                                    <FiEdit className="mr-3 text-blue-500" />
+                                    <FiEdit className="mr-3 text-purple-500" />
                                     Editar usuario
                                   </button>
                                   <button
@@ -603,7 +603,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                                         !usuario.active
                                       )
                                     }
-                                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 transition-colors"
+                                    className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-colors"
                                   >
                                     {usuario.active ? (
                                       <>
@@ -617,13 +617,13 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                                       </>
                                     )}
                                   </button>
-                                  <div className="border-t border-gray-100 my-1"></div>
+                                  <div className="border-t border-purple-100/30 my-1"></div>
                                   <button
                                     onClick={() => {
                                       // Lógica para eliminar
                                       setMenuAbierto(null);
                                     }}
-                                    className="flex items-center w-full px-4 py-3 text-sm text-rose-600 hover:bg-rose-50 transition-colors"
+                                    className="flex items-center w-full px-4 py-3 text-sm text-rose-600 hover:bg-gradient-to-r hover:from-rose-50 hover:to-red-50 transition-colors"
                                   >
                                     <FiTrash2 className="mr-3" />
                                     Eliminar usuario
@@ -640,8 +640,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                   <tr>
                     <td colSpan={7} className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center justify-center">
-                        <div className="mb-4 p-6 bg-linear-to-br from-gray-100 to-gray-200 rounded-2xl">
-                          <FiUser className="w-16 h-16 text-gray-400" />
+                        <div className="mb-4 p-6 bg-gradient-to-br from-purple-100/50 to-violet-100/50 rounded-2xl">
+                          <FiUser className="w-16 h-16 text-purple-400" />
                         </div>
                         <h3 className="text-xl font-semibold text-gray-700 mb-2">
                           No se encontraron usuarios
@@ -659,7 +659,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                               setFiltro("");
                               setFiltroActivo("all");
                             }}
-                            className="px-5 py-2.5 bg-linear-to-r from-gray-600 to-gray-500 text-white rounded-xl hover:shadow-lg transition-shadow"
+                            className="px-5 py-2.5 bg-gradient-to-r from-purple-500 via-violet-500 to-pink-400 text-white rounded-xl hover:shadow-lg transition-shadow"
                           >
                             Limpiar filtros
                           </motion.button>
@@ -667,7 +667,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setModalOpen(true)}
-                            className="px-5 py-2.5 bg-linear-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:shadow-lg transition-shadow"
+                            className="px-5 py-2.5 bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white rounded-xl hover:shadow-lg transition-shadow"
                           >
                             <FiUserPlus className="inline mr-2" />
                             Agregar usuario
@@ -684,10 +684,10 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
 
         {/* Pie de tabla con paginación */}
         {usuariosFiltrados.length > 0 && (
-          <div className="bg-linear-to-r from-gray-50 to-gray-100 px-6 py-4 border-t border-gray-200">
+          <div className="bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 px-6 py-4 border-t border-purple-200/50">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="mb-4 md:mb-0">
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-purple-700">
                   Mostrando{" "}
                   <span className="font-semibold">
                     {indicePrimerUsuario + 1}
@@ -712,8 +712,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                   disabled={paginaActual === 1}
                   className={`p-2 rounded-lg ${
                     paginaActual === 1
-                      ? "text-gray-300 cursor-not-allowed"
-                      : "text-gray-700 hover:bg-white hover:shadow-md"
+                      ? "text-purple-300 cursor-not-allowed"
+                      : "text-purple-700 hover:bg-white hover:shadow-md"
                   }`}
                 >
                   <FiChevronUp className="transform rotate-90 w-5 h-5" />
@@ -727,8 +727,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                     onClick={() => cambiarPagina(pageNum)}
                     className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-medium ${
                       paginaActual === pageNum
-                        ? "bg-linear-to-r from-blue-600 to-cyan-500 text-white shadow-lg"
-                        : "text-gray-700 hover:bg-white hover:shadow-md"
+                        ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
+                        : "text-purple-700 hover:bg-white hover:shadow-md"
                     }`}
                   >
                     {pageNum}
@@ -742,8 +742,8 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                   disabled={paginaActual === totalPaginas}
                   className={`p-2 rounded-lg ${
                     paginaActual === totalPaginas
-                      ? "text-gray-300 cursor-not-allowed"
-                      : "text-gray-700 hover:bg-white hover:shadow-md"
+                      ? "text-purple-300 cursor-not-allowed"
+                      : "text-purple-700 hover:bg-white hover:shadow-md"
                   }`}
                 >
                   <FiChevronUp className="transform -rotate-90 w-5 h-5" />
@@ -756,23 +756,23 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
 
       {/* Estadísticas rápidas */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-linear-to-br from-blue-50 to-cyan-50 p-5 rounded-2xl border border-blue-100">
+        <div className="bg-gradient-to-br from-purple-50/90 via-violet-50/90 to-pink-50/90 p-5 rounded-2xl border border-purple-200/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-blue-600 font-medium">
+              <p className="text-sm text-purple-600 font-medium">
                 Total Usuarios
               </p>
               <p className="text-2xl font-bold text-gray-800">
                 {usuarios.length}
               </p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <HiOutlineUserGroup className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-gradient-to-r from-purple-100 to-violet-100 rounded-xl">
+              <HiOutlineUserGroup className="w-6 h-6 text-purple-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-linear-to-br from-emerald-50 to-teal-50 p-5 rounded-2xl border border-emerald-100">
+        <div className="bg-gradient-to-br from-emerald-50/90 via-teal-50/90 to-cyan-50/90 p-5 rounded-2xl border border-emerald-200/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-emerald-600 font-medium">Activos</p>
@@ -780,13 +780,13 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                 {usuarios.filter((u) => u.active).length}
               </p>
             </div>
-            <div className="p-3 bg-emerald-100 rounded-xl">
+            <div className="p-3 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-xl">
               <HiOutlineStatusOnline className="w-6 h-6 text-emerald-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-linear-to-br from-amber-50 to-orange-50 p-5 rounded-2xl border border-amber-100">
+        <div className="bg-gradient-to-br from-amber-50/90 via-orange-50/90 to-yellow-50/90 p-5 rounded-2xl border border-amber-200/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-amber-600 font-medium">
@@ -796,13 +796,13 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                 {usuarios.filter((u) => u.role === "Admin").length}
               </p>
             </div>
-            <div className="p-3 bg-amber-100 rounded-xl">
+            <div className="p-3 bg-gradient-to-r from-amber-100 to-orange-100 rounded-xl">
               <FiUser className="w-6 h-6 text-amber-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-linear-to-br from-rose-50 to-red-50 p-5 rounded-2xl border border-rose-100">
+        <div className="bg-gradient-to-br from-rose-50/90 via-pink-50/90 to-red-50/90 p-5 rounded-2xl border border-rose-200/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-rose-600 font-medium">Inactivos</p>
@@ -810,7 +810,7 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
                 {usuarios.filter((u) => !u.active).length}
               </p>
             </div>
-            <div className="p-3 bg-rose-100 rounded-xl">
+            <div className="p-3 bg-gradient-to-r from-rose-100 to-pink-100 rounded-xl">
               <HiOutlineStatusOffline className="w-6 h-6 text-rose-600" />
             </div>
           </div>
