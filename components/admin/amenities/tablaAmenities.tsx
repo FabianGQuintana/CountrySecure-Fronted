@@ -59,7 +59,6 @@ export function TablaAmenities({
     }
   }, [session]);
 
-  // Ejecutar refresAmenities cuando la sesión esté lista
   useEffect(() => {
     if (status === "authenticated") {
       refresAmenities();
