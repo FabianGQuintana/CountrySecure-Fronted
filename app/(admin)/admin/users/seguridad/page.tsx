@@ -36,7 +36,8 @@ export default async function Page() {
 
   return (
     <div className="flex-1 p-6">
-      <TablaUsuarios params={usuarios} />
+      {/* <TablaUsuarios params={usuarios} /> */}
+      <TablaUsuarios role="Security" params={usuarios} />
     </div>
   );
 }
