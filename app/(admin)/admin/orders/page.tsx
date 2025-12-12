@@ -7,7 +7,7 @@ export default async function Order() {
   const session = await auth();
 
   try {
-    const response = await fetch(`${process.env.API_HOST}/api/order`, {
+    const response = await fetch(`${process.env.API_HOST}/api/order/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
