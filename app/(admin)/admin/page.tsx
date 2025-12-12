@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FiUsers, FiHome, FiTool, FiTrendingUp } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";

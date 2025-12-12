@@ -1,12 +1,14 @@
-"use client";
+"use client"
 
-import { FiUser, FiHome, FiKey, FiCalendar, FiLogOut } from "react-icons/fi";
-import { signOut } from "next-auth/react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import LogoutButton from "../buttons/LogoutButton";
+import { FiUser, FiHome, FiKey, FiCalendar } from "react-icons/fi"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { usePathname } from "next/navigation"
+import LogoutButton from "../buttons/LogoutButton"
 
 export default function ResidentSidebar() {
+  const pathname = usePathname()
+
   const menuItems = [
     {
       label: "Mi Perfil",
@@ -28,39 +30,93 @@ export default function ResidentSidebar() {
       href: "/resident/reservations",
       icon: <FiCalendar size={20} />,
     },
-  ];
+  ]
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r border-slate-800 shadow-xl flex flex-col justify-between text-white p-6">
-      {/* LOGO / TÍTULO */}
-      <div>
-        <h2 className="text-2xl font-bold mb-10 tracking-wide">
-          Panel Residente
-        </h2>
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-slate-800/50 shadow-2xl flex flex-col justify-between text-white">
+      {/* Header con gradiente sutil */}
+      <div className="p-6 border-b border-slate-800/50 bg-gradient-to-br from-purple-500/5 to-transparent">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
+            <FiHome size={20} className="text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+              Panel
+            </h2>
+            <p className="text-xs text-slate-400 font-medium">Residente</p>
+          </div>
+        </div>
+      </div>
 
-        {/* MENÚ */}
-        <nav className="flex flex-col gap-4">
-          {menuItems.map((item, index) => (
+      {/* Navigation con estados activos mejorados */}
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        {menuItems.map((item, index) => {
+          const isActive = pathname === item.href
+
+          return (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -15 }}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: index * 0.08, duration: 0.3 }}
             >
               <Link
                 href={item.href}
-                className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-slate-800 transition-all"
+                className={`
+                  group relative flex items-center gap-3 px-4 py-3 rounded-xl 
+                  transition-all duration-300 overflow-hidden
+                  ${isActive
+                    ? "bg-gradient-to-r from-purple-500/20 to-purple-600/10 border border-purple-500/30 shadow-lg shadow-purple-500/10"
+                    : "hover:bg-slate-800/50 border border-transparent hover:border-slate-700/50"
+                  }
+                `}
               >
-                <span className="text-purple-400">{item.icon}</span>
-                <span className="font-medium">{item.label}</span>
+                {/* Indicador activo izquierdo */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-purple-400 to-purple-600 rounded-r-full"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+
+                {/* Icono con efecto hover */}
+                <span
+                  className={`
+                    flex items-center justify-center w-9 h-9 rounded-lg
+                    transition-all duration-300
+                    ${isActive
+                      ? "text-purple-400 bg-purple-500/10"
+                      : "text-slate-400 group-hover:text-purple-400 group-hover:bg-slate-800"
+                    }
+                  `}
+                >
+                  {item.icon}
+                </span>
+
+                {/* Label con tipografía mejorada */}
+                <span
+                  className={`
+                    font-medium text-sm tracking-wide transition-colors duration-300
+                    ${isActive ? "text-white" : "text-slate-300 group-hover:text-white"}
+                  `}
+                >
+                  {item.label}
+                </span>
+
+                {/* Efecto de brillo en hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 -translate-x-full group-hover:translate-x-full" />
               </Link>
             </motion.div>
-          ))}
-        </nav>
-      </div>
+          )
+        })}
+      </nav>
 
-      {/* Logout */}
-      <LogoutButton />
+      {/* Footer mejorado */}
+      <div className="p-4 border-t border-slate-800/50 bg-gradient-to-t from-slate-950/50 to-transparent">
+        <LogoutButton />
+      </div>
     </aside>
-  );
+  )
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FiUser, FiHome, FiKey, FiCalendar } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -11,8 +11,8 @@ export default function ResidentDashboard() {
 
   if (status === "loading") {
     return (
-      <div className="flex justify-center items-center h-screen bg-blue-50">
-        <p className="text-xl text-gray-500 animate-pulse">Verificando...</p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-linear-to-br from-blue-50 via-white to-green-50">
+        <div className="w-14 h-14 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

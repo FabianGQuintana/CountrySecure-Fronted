@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Waves, Dumbbell, Trees, Baby, Shield, Car } from "lucide-react";
 import poolImage from "@/public/images/pool.png";
 import gymImage from "@/public/images/gym.png";
