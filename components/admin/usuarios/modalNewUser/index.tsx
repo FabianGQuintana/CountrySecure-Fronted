@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { newUsers } from "@/actions/usuariosActions";
-import { FiX, FiChevronDown } from "react-icons/fi";
+import { FiX, FiChevronDown, FiEye, FiEyeOff } from "react-icons/fi";
 import { IusuarioRegisterForm } from "@/types";
 
 export default function ModalRegisterUser({
@@ -11,6 +11,7 @@ export default function ModalRegisterUser({
   // VALIDADORES
   const regexLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
   const regexNumeros = /^[0-9]+$/;
+  const regexPassword = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
   // ESTADOS
   const [name, setName] = useState("");
@@ -19,12 +20,13 @@ export default function ModalRegisterUser({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Resident"); // ✔ Rol por defecto
+  const [role, setRole] = useState("Resident");
   const [roleOpen, setRoleOpen] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
 
   const resetForm = () => {
     setName("");
@@ -59,13 +61,20 @@ export default function ModalRegisterUser({
     e.preventDefault();
 
     // VALIDACIÓN FINAL
-    if (!name || !lastname || !dni || !phone || !email || !password || !role) {
+    if (!name || !lastname || !dni || !phone || !email || !password) {
       setErrorMsg("Por favor completa todos los campos");
       return;
     }
 
     if (dni.length !== 8) {
       setErrorMsg("El DNI debe tener exactamente 8 números");
+      return;
+    }
+
+    if (!regexPassword.test(password)) {
+      setErrorMsg(
+        "La contraseña debe tener al menos 8 caracteres, 1 número y 1 mayúscula"
+      );
       return;
     }
 
@@ -201,19 +210,30 @@ export default function ModalRegisterUser({
             />
           </div>
 
-          {/* Password */}
+          {/* Password con toggle */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Contraseña
             </label>
-            <input
-              type="password"
-              value={password}
-              required
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 p-2 rounded-lg"
-              placeholder="*******"
-            />
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 p-2 rounded-lg pr-10"
+                placeholder="*******"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
+              >
+                {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </button>
+            </div>
           </div>
 
           {/* ROLE SELECT */}
@@ -243,7 +263,7 @@ export default function ModalRegisterUser({
                       setRole(r);
                       setRoleOpen(false);
                     }}
-                    className="p-2 cursor-pointer hover:bg-blue-500"
+                    className="p-2 cursor-pointer hover:bg-blue-500 hover:text-white"
                   >
                     {r}
                   </div>
