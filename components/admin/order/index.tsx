@@ -4,19 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  FiRefreshCcw,
   FiSearch,
   FiEye,
   FiFilter,
   FiTool,
   FiTruck,
   FiAlertCircle,
-  FiCheckCircle,
-  FiClock,
-  FiList,
-  FiCalendar,
+  FiRefreshCcw,
   FiUser,
 } from "react-icons/fi";
+import { HiOutlineUserAdd } from "react-icons/hi";
 import {
   HiOutlineDocumentText,
   HiOutlineStatusOnline,
@@ -25,6 +22,7 @@ import {
 import { useSession } from "next-auth/react";
 import { Estados } from "@/components/estados";
 import { IOrder } from "@/types";
+import ModalNewOrder from "./modalNewOrder";
 
 export default function TablaOrders() {
   const router = useRouter();
@@ -38,16 +36,17 @@ export default function TablaOrders() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [modalOpen, setModalOpen] = useState(false);
   const itemsPerPage = 8;
 
   const OrderTypeLabels: Record<string, string> = {
-    Jardineria: "Jardinería",
-    Plomeria: "Plomería",
-    Electricidad: "Electricidad",
-    Limpieza: "Limpieza",
-    MantenimientoGeneral: "Mantenimiento General",
-    Piscina: "Piscina",
-    Seguridad: "Seguridad",
+    Gardening: "Jardinería",
+    Plumping: "Plomería",
+    Electrical: "Electricidad",
+    Cleaning: "Limpieza",
+    GeneralMaintenance: "Mantenimiento General",
+    Pool: "Piscina",
+    Security: "Seguridad",
   };
 
   const fetchOrders = async () => {
@@ -85,9 +84,7 @@ export default function TablaOrders() {
 
     // Filtro por estado
     if (status !== "all") {
-      filtered = filtered.filter((order) =>
-        status === "Active" ? order.status : !order.status
-      );
+      filtered = filtered.filter((order) => order.status === status);
     }
 
     // Filtro por búsqueda
@@ -137,19 +134,6 @@ export default function TablaOrders() {
     return OrderTypeLabels[numeric.toString()] ?? "Desconocido";
   };
 
-  // Obtener estadísticas de órdenes
-  const getOrderStats = () => {
-    const activeOrders = orders.filter((o) => o.status).length;
-    const pendingOrders = orders.filter((o) => !o.status).length;
-    const uniqueTypes = Array.from(
-      new Set(orders.map((o) => o.orderType))
-    ).length;
-
-    return { activeOrders, pendingOrders, uniqueTypes };
-  };
-
-  const stats = getOrderStats();
-
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8">
       {/* Header */}
@@ -168,7 +152,6 @@ export default function TablaOrders() {
               Control centralizado de solicitudes de servicio
             </p>
           </div>
-
           <div className="flex items-center space-x-3 mt-4 md:mt-0">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -181,6 +164,17 @@ export default function TablaOrders() {
                 className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`}
               />
               {isRefreshing ? "Actualizando..." : "Actualizar"}
+            </motion.button>
+
+            {/* Botón Nuevo Usuario */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setModalOpen(true)}
+              className="flex items-center px-5 py-2.5 bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 text-white rounded-xl hover:from-purple-700 hover:via-violet-700 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              <HiOutlineUserAdd className="mr-2" />
+              Nuevo Servicio
             </motion.button>
           </div>
         </div>
@@ -221,7 +215,7 @@ export default function TablaOrders() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => handleStatusFilter("active")}
+              onClick={() => handleStatusFilter("Active")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "active"
                   ? "bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white shadow-lg"
@@ -234,7 +228,7 @@ export default function TablaOrders() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => handleStatusFilter("inactive")}
+              onClick={() => handleStatusFilter("Inactive")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "inactive"
                   ? "bg-linear-to-r from-amber-500 via-orange-500 to-yellow-400 text-white shadow-lg"
@@ -493,6 +487,17 @@ export default function TablaOrders() {
           )}
         </div>
       </motion.div>
+
+      {/* Modal */}
+      {modalOpen && (
+        <ModalNewOrder
+          onClose={() => setModalOpen(false)}
+          onSuccess={() => {
+            fetchOrders();
+            setModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }
