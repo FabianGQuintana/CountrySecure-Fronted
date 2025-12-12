@@ -27,15 +27,25 @@ import {
 import ModalRegisterUser from "./modalNewUser";
 import { Estados } from "@/components/estados";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUsers } from "@/hook/userRoles";
 
-export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
-  const [usuarios, setUsuarios] = useState<Iusuario[]>(params || []);
+export function TablaUsuarios({
+  role,
+  params = [],
+}: {
+  role: string;
+  params?: Iusuario[];
+}) {
+  const { usuarios, setUsuarios, refreshUsers, isRefreshing } = useUsers(
+    role,
+    params
+  );
+
   const [ordenAscendente, setOrdenAscendente] = useState(true);
   const [filtro, setFiltro] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const [columnaOrden, setColumnaOrden] = useState<keyof Iusuario>("email");
   const [modalOpen, setModalOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [filtroActivo, setFiltroActivo] = useState<
     "all" | "active" | "inactive"
   >("all");
@@ -43,33 +53,6 @@ export function TablaUsuarios({ params = [] }: { params?: Iusuario[] }) {
   const [seleccionados, setSeleccionados] = useState<string[]>([]);
   const usuariosPorPagina = 15;
 
-  const refreshUsers = async () => {
-    setIsRefreshing(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/users?role=Resident`,
-        {
-          method: "GET",
-          headers: {
-            "Cache-Control": "no-cache",
-            Pragma: "no-cache",
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Error al refrescar usuarios");
-      const data = await response.json();
-      setUsuarios(data);
-      return data;
-    } catch (error) {
-      console.error("Error en refreshUsers:", error);
-      return [];
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-
-  // Cargar usuarios inicialmente
   useEffect(() => {
     refreshUsers();
   }, []);
