@@ -717,7 +717,7 @@ export function TablaAmenities({
   if (!session || session.user.role !== "Admin")
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
-        <div className="w-16 h-16 bg-gradient-to-r from-red-100 to-rose-100 rounded-full flex items-center justify-center">
+        <div className="w-16 h-16 bg-linear-to-r from-red-100 to-rose-100 rounded-full flex items-center justify-center">
           <FiChevronUp className="w-8 h-8 text-red-600 transform rotate-90" />
         </div>
         <h3 className="text-xl font-semibold text-gray-700">
@@ -728,14 +728,14 @@ export function TablaAmenities({
     );
 
   return (
-    <div className="w-full h-max bg-gradient-to-br from-purple-50/80 via-white/90 to-pink-50/80 min-h-screen p-4 sm:p-6">
+    <div className="w-full h-max bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 min-h-screen p-4 sm:p-6">
       {/* Encabezado */}
       <div className="mb-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-2 h-8 bg-gradient-to-b from-purple-600 via-violet-600 to-pink-500 rounded-full"></div>
-              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">
                 Gestión de Amenities
               </h2>
             </div>
@@ -756,7 +756,7 @@ export function TablaAmenities({
                 onClick={() => setVistaTarjetas(true)}
                 className={`px-4 py-2 rounded-md transition-all duration-200 ${
                   vistaTarjetas
-                    ? "bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-600 border border-purple-200/50"
+                    ? "bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-600 border border-purple-200/50"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
@@ -766,7 +766,7 @@ export function TablaAmenities({
                 onClick={() => setVistaTarjetas(false)}
                 className={`px-4 py-2 rounded-md transition-all duration-200 ${
                   !vistaTarjetas
-                    ? "bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-600 border border-purple-200/50"
+                    ? "bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-600 border border-purple-200/50"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
@@ -795,7 +795,7 @@ export function TablaAmenities({
 
             {/* Botón Nuevo */}
             <button
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white rounded-xl hover:from-purple-700 hover:via-violet-700 hover:to-pink-600 cursor-pointer transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-medium group"
+              className="px-6 py-3 bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 text-white rounded-xl hover:from-purple-700 hover:via-violet-700 hover:to-pink-600 cursor-pointer transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-medium group"
               onClick={() => setModalOpen(true)}
             >
               <FiPlus className="w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-300" />
@@ -828,14 +828,14 @@ export function TablaAmenities({
                   className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-purple-100/50 group hover:-translate-y-1"
                 >
                   {/* Cabecera de la tarjeta con gradiente */}
-                  <div className="h-2 bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500"></div>
+                  <div className="h-2 bg-linear-to-r from-purple-500 via-violet-500 to-pink-500"></div>
 
                   <div className="p-6">
                     {/* Título y estado */}
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-100/80 via-violet-100/80 to-pink-100/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <div className="h-12 w-12 rounded-xl bg-linear-to-br from-purple-100/80 via-violet-100/80 to-pink-100/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                             <span className="text-purple-700 font-bold text-xl">
                               {amenity.amenityName?.[0]?.toUpperCase() || "A"}
                             </span>
@@ -862,7 +862,7 @@ export function TablaAmenities({
 
                     {/* Información detallada */}
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50/50 via-violet-50/50 to-pink-50/50 rounded-lg border border-purple-200/30">
+                      <div className="flex items-center justify-between p-3 bg-linear-to-r from-purple-50/50 via-violet-50/50 to-pink-50/50 rounded-lg border border-purple-200/30">
                         <div className="flex items-center gap-2">
                           <FiCalendar className="w-4 h-4 text-purple-600" />
                           <span className="text-sm text-gray-600">
@@ -874,7 +874,7 @@ export function TablaAmenities({
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50/50 via-violet-50/50 to-pink-50/50 rounded-lg border border-purple-200/30">
+                      <div className="flex items-center justify-between p-3 bg-linear-to-r from-purple-50/50 via-violet-50/50 to-pink-50/50 rounded-lg border border-purple-200/30">
                         <div className="flex items-center gap-2">
                           <FiUsers className="w-4 h-4 text-violet-600" />
                           <span className="text-sm text-gray-600">
@@ -907,7 +907,7 @@ export function TablaAmenities({
             ) : (
               <div className="col-span-full">
                 <div className="flex flex-col items-center justify-center py-16 px-4">
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-100/50 via-violet-100/50 to-pink-100/50 rounded-full flex items-center justify-center mb-6">
+                  <div className="w-24 h-24 bg-linear-to-br from-purple-100/50 via-violet-100/50 to-pink-100/50 rounded-full flex items-center justify-center mb-6">
                     <FiSearch className="w-12 h-12 text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-700 mb-2">
@@ -927,7 +927,7 @@ export function TablaAmenities({
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-purple-100/50 mb-8">
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80">
+              <thead className="bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80">
                 <tr>
                   {[
                     "amenityName",
@@ -980,11 +980,11 @@ export function TablaAmenities({
                   amenitiesPagina.map((amenity) => (
                     <tr
                       key={amenity.id}
-                      className="hover:bg-gradient-to-r hover:from-purple-50/30 hover:via-violet-50/30 hover:to-pink-50/30 transition-all duration-200 group"
+                      className="hover:bg-linear-to-r hover:from-purple-50/30 hover:via-violet-50/30 hover:to-pink-50/30 transition-all duration-200 group"
                     >
                       <td className="px-6 py-5 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="shrink-0 h-10 w-10 rounded-lg bg-gradient-to-br from-purple-100/80 via-violet-100/80 to-pink-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                          <div className="shrink-0 h-10 w-10 rounded-lg bg-linear-to-br from-purple-100/80 via-violet-100/80 to-pink-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
                             <span className="text-purple-700 font-bold text-lg">
                               {amenity.amenityName?.[0]?.toUpperCase() || "A"}
                             </span>
@@ -1000,7 +1000,7 @@ export function TablaAmenities({
                         </div>
                       </td>
                       <td className="px-6 py-5 whitespace-nowrap">
-                        <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-50/80 via-orange-50/80 to-yellow-50/80 border border-amber-200/50">
+                        <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-linear-to-r from-amber-50/80 via-orange-50/80 to-yellow-50/80 border border-amber-200/50">
                           <span className="text-sm font-medium text-amber-800">
                             {amenity.schedules || "-"}
                           </span>
@@ -1029,7 +1029,7 @@ export function TablaAmenities({
                   <tr>
                     <td colSpan={5} className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center justify-center space-y-4">
-                        <div className="w-20 h-20 bg-gradient-to-br from-purple-100/50 via-violet-100/50 to-pink-100/50 rounded-full flex items-center justify-center">
+                        <div className="w-20 h-20 bg-linear-to-br from-purple-100/50 via-violet-100/50 to-pink-100/50 rounded-full flex items-center justify-center">
                           <FiSearch className="w-10 h-10 text-purple-400" />
                         </div>
                         <div>
@@ -1085,7 +1085,7 @@ export function TablaAmenities({
                   onClick={() => cambiarPagina(pageNum)}
                   className={`min-w-10 h-10 rounded-lg transition-all duration-200 font-medium ${
                     paginaActual === pageNum
-                      ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-md"
+                      ? "bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-md"
                       : "text-purple-700 hover:bg-purple-50/50 border border-transparent hover:border-purple-300/50"
                   }`}
                 >
@@ -1108,7 +1108,7 @@ export function TablaAmenities({
             <div className="mt-4">
               <div className="h-2 bg-purple-200/50 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 rounded-full transition-all duration-300"
+                  className="h-full bg-linear-to-r from-purple-500 via-violet-500 to-pink-500 rounded-full transition-all duration-300"
                   style={{ width: `${(paginaActual / totalPaginas) * 100}%` }}
                 />
               </div>

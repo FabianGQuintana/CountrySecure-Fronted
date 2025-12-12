@@ -54,7 +54,7 @@
 // //   // Mostrar loading mientras se carga la sesión
 // //   if (status === "loading") {
 // //     return (
-// //       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
+// //       <div className="flex items-center justify-center h-screen bg-linear-to-br from-purple-50 to-indigo-50">
 // //         <div className="text-center">
 // //           <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
 // //           <p className="text-purple-600 font-medium">Cargando sesión...</p>
@@ -66,9 +66,9 @@
 // //   // Si no hay sesión, mostrar mensaje
 // //   if (!session) {
 // //     return (
-// //       <div className="flex flex-col items-center justify-center h-screen p-4 text-center bg-gradient-to-br from-purple-50 to-indigo-50">
+// //       <div className="flex flex-col items-center justify-center h-screen p-4 text-center bg-linear-to-br from-purple-50 to-indigo-50">
 // //         <div className="bg-white p-8 rounded-2xl shadow-lg border border-purple-100 max-w-md">
-// //           <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
+// //           <div className="w-16 h-16 bg-linear-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
 // //             <Shield className="text-white" size={28} />
 // //           </div>
 // //           <p className="text-xl font-semibold text-gray-800 mb-4">
@@ -79,7 +79,7 @@
 // //           </p>
 // //           <Link
 // //             href="/auth/login"
-// //             className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
+// //             className="bg-linear-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
 // //           >
 // //             Iniciar Sesión
 // //           </Link>
@@ -93,7 +93,7 @@
 // //       {/* Botón menú móvil */}
 // //       <button
 // //         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-// //         className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
+// //         className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
 // //         aria-label="Toggle menu"
 // //       >
 // //         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -112,7 +112,7 @@
 // //           {/* Encabezado simple y elegante */}
 // //           <div className="mb-8">
 // //             {/* <div className="flex items-center gap-3 mb-3">
-// //               <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
+// //               <div className="w-10 h-10 bg-linear-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
 // //                 <Shield className="text-white" size={20} />
 // //               </div>
 // //               <div>
@@ -139,8 +139,8 @@
 // //                 onClick={() => toggleSubMenu("usuarios")}
 // //                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
 // //                   openSubMenu === "usuarios"
-// //                     ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md"
-// //                     : "hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 text-gray-700 hover:text-purple-700 border border-transparent hover:border-purple-100"
+// //                     ? "bg-linear-to-r from-purple-500 to-indigo-500 text-white shadow-md"
+// //                     : "hover:bg-linear-to-r hover:from-purple-50 hover:to-indigo-50 text-gray-700 hover:text-purple-700 border border-transparent hover:border-purple-100"
 // //                 }`}
 // //               >
 // //                 <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@
 // //                   <li>
 // //                     <Link
 // //                       href="/admin/users/residentes"
-// //                       className="flex items-center gap-2 text-gray-50 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
+// //                       className="flex items-center gap-2 text-gray-50 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
 // //                       onClick={() => setIsMobileMenuOpen(false)}
 // //                     >
 // //                       <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
@@ -183,7 +183,7 @@
 // //                   <li>
 // //                     <Link
 // //                       href="/admin/users/seguridad"
-// //                       className="flex items-center gap-2 text-gray-50 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
+// //                       className="flex items-center gap-2 text-gray-50 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
 // //                       onClick={() => setIsMobileMenuOpen(false)}
 // //                     >
 // //                       <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
@@ -200,8 +200,8 @@
 // //                 onClick={() => toggleSubMenu("amenities")}
 // //                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
 // //                   openSubMenu === "amenities"
-// //                     ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-md"
-// //                     : "hover:bg-gradient-to-r hover:from-fuchsia-50 hover:to-purple-50 text-gray-700 hover:text-fuchsia-700 border border-transparent hover:border-fuchsia-100"
+// //                     ? "bg-linear-to-r from-fuchsia-500 to-purple-500 text-white shadow-md"
+// //                     : "hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 text-gray-700 hover:text-fuchsia-700 border border-transparent hover:border-fuchsia-100"
 // //                 }`}
 // //               >
 // //                 <div className="flex items-center gap-3">
@@ -234,7 +234,7 @@
 // //                   <li>
 // //                     <Link
 // //                       href="/admin/amenities"
-// //                       className="flex items-center gap-2 text-gray-600 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
+// //                       className="flex items-center gap-2 text-gray-600 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
 // //                       onClick={() => setIsMobileMenuOpen(false)}
 // //                     >
 // //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -244,7 +244,7 @@
 // //                   <li>
 // //                     <Link
 // //                       href="/admin/usuarios"
-// //                       className="flex items-center gap-2 text-gray-600 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
+// //                       className="flex items-center gap-2 text-gray-600 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
 // //                       onClick={() => setIsMobileMenuOpen(false)}
 // //                     >
 // //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -261,8 +261,8 @@
 // //                 onClick={() => toggleSubMenu("servicios")}
 // //                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
 // //                   openSubMenu === "servicios"
-// //                     ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-md"
-// //                     : "hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 text-gray-700 hover:text-violet-700 border border-transparent hover:border-violet-100"
+// //                     ? "bg-linear-to-r from-violet-500 to-purple-600 text-white shadow-md"
+// //                     : "hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 text-gray-700 hover:text-violet-700 border border-transparent hover:border-violet-100"
 // //                 }`}
 // //               >
 // //                 <div className="flex items-center gap-3">
@@ -295,7 +295,7 @@
 // //                   <li>
 // //                     <Link
 // //                       href="/admin/orders"
-// //                       className="flex items-center gap-2 text-gray-600 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
+// //                       className="flex items-center gap-2 text-gray-600 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
 // //                       onClick={() => setIsMobileMenuOpen(false)}
 // //                     >
 // //                       <div className="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
@@ -305,7 +305,7 @@
 // //                   <li>
 // //                     <Link
 // //                       href="/admin/usuarios"
-// //                       className="flex items-center gap-2 text-gray-600 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
+// //                       className="flex items-center gap-2 text-gray-600 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
 // //                       onClick={() => setIsMobileMenuOpen(false)}
 // //                     >
 // //                       <div className="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
@@ -321,7 +321,7 @@
 // //         {/* Pie: cerrar sesión */}
 // //         <div className="mt-6 border-t border-gray-100 pt-4">
 // //           <button
-// //             className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-gray-50 to-white text-gray-700 hover:text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-50 transition-all duration-300 border border-gray-100 hover:border-red-100 shadow-sm hover:shadow-md font-medium"
+// //             className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-linear-to-r from-gray-50 to-white text-gray-700 hover:text-red-600 hover:bg-linear-to-r hover:from-red-50 hover:to-red-50 transition-all duration-300 border border-gray-100 hover:border-red-100 shadow-sm hover:shadow-md font-medium"
 // //             onClick={() => signOut()}
 // //           >
 // //             <LogOut size={18} />
@@ -414,7 +414,7 @@
 //   // Mostrar loading mientras se carga la sesión
 //   if (status === "loading") {
 //     return (
-//       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
+//       <div className="flex items-center justify-center h-screen bg-linear-to-br from-purple-50 to-indigo-50">
 //         <div className="text-center">
 //           <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
 //           <p className="text-purple-600 font-medium">Cargando sesión...</p>
@@ -426,9 +426,9 @@
 //   // Si no hay sesión, mostrar mensaje
 //   if (!session) {
 //     return (
-//       <div className="flex flex-col items-center justify-center h-screen p-4 text-center bg-gradient-to-br from-purple-50 to-indigo-50">
+//       <div className="flex flex-col items-center justify-center h-screen p-4 text-center bg-linear-to-br from-purple-50 to-indigo-50">
 //         <div className="bg-white p-8 rounded-2xl shadow-lg border border-purple-100 max-w-md">
-//           <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
+//           <div className="w-16 h-16 bg-linear-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
 //             <Shield className="text-white" size={28} />
 //           </div>
 //           <p className="text-xl font-semibold text-gray-800 mb-4">
@@ -439,7 +439,7 @@
 //           </p>
 //           <Link
 //             href="/auth/login"
-//             className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
+//             className="bg-linear-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
 //           >
 //             Iniciar Sesión
 //           </Link>
@@ -453,7 +453,7 @@
 //       {/* Botón menú móvil */}
 //       <button
 //         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-//         className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
+//         className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
 //         aria-label="Toggle menu"
 //       >
 //         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -490,8 +490,8 @@
 //                 onClick={() => toggleSubMenu("usuarios")}
 //                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
 //                   openSubMenu === "usuarios"
-//                     ? "bg-gradient-to-r from-fuchsia-600 to-purple-600 text-gray-50 shadow-md"
-//                     : "hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 text-gray-50 hover:text-white border border-transparent hover:border-fuchsia-500"
+//                     ? "bg-linear-to-r from-fuchsia-600 to-purple-600 text-gray-50 shadow-md"
+//                     : "hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 text-gray-50 hover:text-white border border-transparent hover:border-fuchsia-500"
 //                 }`}
 //               >
 //                 <div className="flex items-center gap-3">
@@ -516,7 +516,7 @@
 //                   <li>
 //                     <Link
 //                       href="/admin/users/residentes"
-//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
+//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
 //                       onClick={() => setIsMobileMenuOpen(false)}
 //                     >
 //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -526,7 +526,7 @@
 //                   <li>
 //                     <Link
 //                       href="/admin/users/seguridad"
-//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
+//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
 //                       onClick={() => setIsMobileMenuOpen(false)}
 //                     >
 //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -543,8 +543,8 @@
 //                 onClick={() => toggleSubMenu("amenities")}
 //                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
 //                   openSubMenu === "amenities"
-//                     ? "bg-gradient-to-r from-fuchsia-600 to-purple-600 text-gray-50 shadow-md"
-//                     : "hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 text-gray-50 hover:text-white border border-transparent hover:border-fuchsia-500"
+//                     ? "bg-linear-to-r from-fuchsia-600 to-purple-600 text-gray-50 shadow-md"
+//                     : "hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 text-gray-50 hover:text-white border border-transparent hover:border-fuchsia-500"
 //                 }`}
 //               >
 //                 <div className="flex items-center gap-3">
@@ -569,7 +569,7 @@
 //                   <li>
 //                     <Link
 //                       href="/admin/amenities"
-//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
+//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
 //                       onClick={() => setIsMobileMenuOpen(false)}
 //                     >
 //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -579,7 +579,7 @@
 //                   <li>
 //                     <Link
 //                       href="/admin/usuarios"
-//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
+//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
 //                       onClick={() => setIsMobileMenuOpen(false)}
 //                     >
 //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -596,8 +596,8 @@
 //                 onClick={() => toggleSubMenu("servicios")}
 //                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
 //                   openSubMenu === "servicios"
-//                     ? "bg-gradient-to-r from-fuchsia-600 to-purple-600 text-gray-50 shadow-md"
-//                     : "hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 text-gray-50 hover:text-white border border-transparent hover:border-fuchsia-500"
+//                     ? "bg-linear-to-r from-fuchsia-600 to-purple-600 text-gray-50 shadow-md"
+//                     : "hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 text-gray-50 hover:text-white border border-transparent hover:border-fuchsia-500"
 //                 }`}
 //               >
 //                 <div className="flex items-center gap-3">
@@ -622,7 +622,7 @@
 //                   <li>
 //                     <Link
 //                       href="/admin/orders"
-//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
+//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
 //                       onClick={() => setIsMobileMenuOpen(false)}
 //                     >
 //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -632,7 +632,7 @@
 //                   <li>
 //                     <Link
 //                       href="/admin/usuarios"
-//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
+//                       className="flex items-center gap-2 text-gray-50 hover:text-white py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-900 hover:to-purple-900 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-400"
 //                       onClick={() => setIsMobileMenuOpen(false)}
 //                     >
 //                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -648,7 +648,7 @@
 //         {/* Pie: cerrar sesión */}
 //         <div className="mt-6 border-t border-gray-700 pt-4">
 //           <button
-//             className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 text-gray-50 hover:text-white hover:bg-gradient-to-r hover:from-red-900 hover:to-red-800 transition-all duration-300 border border-gray-600 hover:border-red-500 shadow-sm hover:shadow-md font-medium"
+//             className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-linear-to-r from-gray-800 to-gray-700 text-gray-50 hover:text-white hover:bg-linear-to-r hover:from-red-900 hover:to-red-800 transition-all duration-300 border border-gray-600 hover:border-red-500 shadow-sm hover:shadow-md font-medium"
 //             onClick={() => signOut()}
 //           >
 //             <LogOut size={18} />
@@ -741,7 +741,7 @@ export default function MenuAdmin() {
   // Mostrar loading mientras se carga la sesión
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
+      <div className="flex items-center justify-center h-screen bg-linear-to-br from-purple-50 to-indigo-50">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-purple-600 font-medium">Cargando sesión...</p>
@@ -753,9 +753,9 @@ export default function MenuAdmin() {
   // Si no hay sesión, mostrar mensaje
   if (!session) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen p-4 text-center bg-gradient-to-br from-purple-50 to-indigo-50">
+      <div className="flex flex-col items-center justify-center h-screen p-4 text-center bg-linear-to-br from-purple-50 to-indigo-50">
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-purple-100 max-w-md">
-          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-linear-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <Shield className="text-white" size={28} />
           </div>
           <p className="text-xl font-semibold text-gray-800 mb-4">
@@ -766,7 +766,7 @@ export default function MenuAdmin() {
           </p>
           <Link
             href="/auth/login"
-            className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
+            className="bg-linear-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
           >
             Iniciar Sesión
           </Link>
@@ -780,7 +780,7 @@ export default function MenuAdmin() {
       {/* Botón menú móvil */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
         aria-label="Toggle menu"
       >
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -816,8 +816,8 @@ export default function MenuAdmin() {
                 onClick={() => toggleSubMenu("usuarios")}
                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
                   openSubMenu === "usuarios"
-                    ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md"
-                    : "hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 text-gray-700 hover:text-purple-700 border border-transparent hover:border-purple-100"
+                    ? "bg-linear-to-r from-purple-500 to-indigo-500 text-white shadow-md"
+                    : "hover:bg-linear-to-r hover:from-purple-50 hover:to-indigo-50 text-gray-700 hover:text-purple-700 border border-transparent hover:border-purple-100"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -850,7 +850,7 @@ export default function MenuAdmin() {
                   <li>
                     <Link
                       href="/admin/users/residentes"
-                      className="flex items-center gap-2 text-gray-700 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
@@ -860,7 +860,7 @@ export default function MenuAdmin() {
                   <li>
                     <Link
                       href="/admin/users/seguridad"
-                      className="flex items-center gap-2 text-gray-700 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
@@ -877,8 +877,8 @@ export default function MenuAdmin() {
                 onClick={() => toggleSubMenu("amenities")}
                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
                   openSubMenu === "amenities"
-                    ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-md"
-                    : "hover:bg-gradient-to-r hover:from-fuchsia-50 hover:to-purple-50 text-gray-700 hover:text-fuchsia-700 border border-transparent hover:border-fuchsia-100"
+                    ? "bg-linear-to-r from-fuchsia-500 to-purple-500 text-white shadow-md"
+                    : "hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 text-gray-700 hover:text-fuchsia-700 border border-transparent hover:border-fuchsia-100"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -911,7 +911,7 @@ export default function MenuAdmin() {
                   <li>
                     <Link
                       href="/admin/amenities"
-                      className="flex items-center gap-2 text-gray-700 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -921,7 +921,7 @@ export default function MenuAdmin() {
                   <li>
                     <Link
                       href="/admin/usuarios"
-                      className="flex items-center gap-2 text-gray-700 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
@@ -938,8 +938,8 @@ export default function MenuAdmin() {
                 onClick={() => toggleSubMenu("servicios")}
                 className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
                   openSubMenu === "servicios"
-                    ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-md"
-                    : "hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 text-gray-700 hover:text-violet-700 border border-transparent hover:border-violet-100"
+                    ? "bg-linear-to-r from-violet-500 to-purple-600 text-white shadow-md"
+                    : "hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 text-gray-700 hover:text-violet-700 border border-transparent hover:border-violet-100"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -972,7 +972,7 @@ export default function MenuAdmin() {
                   <li>
                     <Link
                       href="/admin/orders"
-                      className="flex items-center gap-2 text-gray-700 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <div className="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
@@ -982,7 +982,7 @@ export default function MenuAdmin() {
                   <li>
                     <Link
                       href="/admin/usuarios"
-                      className="flex items-center gap-2 text-gray-700 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <div className="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
@@ -998,7 +998,7 @@ export default function MenuAdmin() {
         {/* Pie: cerrar sesión */}
         <div className="mt-6 border-t border-gray-200 pt-4">
           <button
-            className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-gray-50 to-white text-gray-700 hover:text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-50 transition-all duration-300 border border-gray-100 hover:border-red-100 shadow-sm hover:shadow-md font-medium"
+            className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-linear-to-r from-gray-50 to-white text-gray-700 hover:text-red-600 hover:bg-linear-to-r hover:from-red-50 hover:to-red-50 transition-all duration-300 border border-gray-100 hover:border-red-100 shadow-sm hover:shadow-md font-medium"
             onClick={() => signOut()}
           >
             <LogOut size={18} />

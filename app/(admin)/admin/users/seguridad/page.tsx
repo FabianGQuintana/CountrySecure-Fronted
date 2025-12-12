@@ -7,11 +7,10 @@ export default async function Page() {
 
   try {
     const session = await auth();
-    // const response = await fetch(`${process.env.API_HOST}/api/users`, {
     const response = await fetch(
       `${process.env.API_HOST}/api/users?role=Security`,
       {
-        method: "GET", // cuando es un get no es necesario aclarar
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.accessToken}`,

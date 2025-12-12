@@ -86,7 +86,7 @@ export default function TablaOrders() {
     // Filtro por estado
     if (status !== "all") {
       filtered = filtered.filter((order) =>
-        status === "active" ? order.status : !order.status
+        status === "Active" ? order.status : !order.status
       );
     }
 
@@ -151,7 +151,7 @@ export default function TablaOrders() {
   const stats = getOrderStats();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -160,7 +160,7 @@ export default function TablaOrders() {
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-2">
               Gestión de Servicios
             </h1>
             <p className="text-gray-500 flex items-center">
@@ -175,7 +175,7 @@ export default function TablaOrders() {
               whileTap={{ scale: 0.95 }}
               onClick={fetchOrders}
               disabled={isRefreshing}
-              className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-100/80 to-violet-100/80 text-purple-700 rounded-xl hover:from-purple-200 hover:to-violet-200 transition-all duration-300 shadow-sm border border-purple-200/50"
+              className="flex items-center px-4 py-2 bg-linear-to-r from-purple-100/80 to-violet-100/80 text-purple-700 rounded-xl hover:from-purple-200 hover:to-violet-200 transition-all duration-300 shadow-sm border border-purple-200/50"
             >
               <FiRefreshCcw
                 className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`}
@@ -211,7 +211,7 @@ export default function TablaOrders() {
               onClick={() => handleStatusFilter("all")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "all"
-                  ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
+                  ? "bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
                   : "bg-white/90 backdrop-blur-sm text-purple-600 hover:bg-purple-50/50 border border-purple-200/50"
               }`}
             >
@@ -224,7 +224,7 @@ export default function TablaOrders() {
               onClick={() => handleStatusFilter("active")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "active"
-                  ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white shadow-lg"
+                  ? "bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white shadow-lg"
                   : "bg-white/90 backdrop-blur-sm text-emerald-600 hover:bg-emerald-50/50 border border-emerald-200/50"
               }`}
             >
@@ -237,7 +237,7 @@ export default function TablaOrders() {
               onClick={() => handleStatusFilter("inactive")}
               className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl transition-all ${
                 statusFilter === "inactive"
-                  ? "bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 text-white shadow-lg"
+                  ? "bg-linear-to-r from-amber-500 via-orange-500 to-yellow-400 text-white shadow-lg"
                   : "bg-white/90 backdrop-blur-sm text-amber-600 hover:bg-amber-50/50 border border-amber-200/50"
               }`}
             >
@@ -264,7 +264,7 @@ export default function TablaOrders() {
               </div>
             ) : filteredOrders.length === 0 ? (
               <div className="p-12 text-center">
-                <div className="mb-4 p-4 bg-gradient-to-br from-purple-100/50 to-violet-100/50 rounded-2xl inline-block">
+                <div className="mb-4 p-4 bg-linear-to-br from-purple-100/50 to-violet-100/50 rounded-2xl inline-block">
                   <FiAlertCircle className="w-16 h-16 text-purple-400" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
@@ -284,7 +284,7 @@ export default function TablaOrders() {
                       setStatusFilter("all");
                       applyFilters(orders, "", "all");
                     }}
-                    className="px-5 py-2.5 bg-gradient-to-r from-purple-500 via-violet-500 to-pink-400 text-white rounded-xl hover:shadow-lg transition-shadow"
+                    className="px-5 py-2.5 bg-linear-to-r from-purple-500 via-violet-500 to-pink-400 text-white rounded-xl hover:shadow-lg transition-shadow"
                   >
                     Limpiar filtros
                   </motion.button>
@@ -292,7 +292,7 @@ export default function TablaOrders() {
               </div>
             ) : (
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80">
+                <thead className="bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-purple-700 uppercase tracking-wider">
                       <div className="flex items-center">
@@ -331,11 +331,11 @@ export default function TablaOrders() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="hover:bg-gradient-to-r hover:from-purple-50/30 hover:via-violet-50/30 hover:to-pink-50/30 transition-all duration-300"
+                        className="hover:bg-linear-to-r hover:from-purple-50/30 hover:via-violet-50/30 hover:to-pink-50/30 transition-all duration-300"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-start">
-                            <div className="bg-gradient-to-br from-purple-50 to-violet-100 p-3 rounded-lg mr-4">
+                            <div className="bg-linear-to-br from-purple-50 to-violet-100 p-3 rounded-lg mr-4">
                               <HiOutlineDocumentText className="w-5 h-5 text-purple-600" />
                             </div>
                             <div>
@@ -347,7 +347,7 @@ export default function TablaOrders() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center">
-                            <div className="p-2 bg-gradient-to-br from-purple-100/50 to-violet-100/50 rounded-lg mr-3">
+                            <div className="p-2 bg-linear-to-br from-purple-100/50 to-violet-100/50 rounded-lg mr-3">
                               <FiTruck className="w-4 h-4 text-purple-600" />
                             </div>
                             <div>
@@ -361,7 +361,7 @@ export default function TablaOrders() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-700 border border-purple-100/50">
+                          <div className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-700 border border-purple-100/50">
                             {getOrderTypeName(order.orderType)}
                           </div>
                         </td>
@@ -373,7 +373,7 @@ export default function TablaOrders() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => goToEdit(order.id)}
-                            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white rounded-xl hover:shadow-lg transition-shadow text-sm font-medium"
+                            className="inline-flex items-center px-4 py-2 bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white rounded-xl hover:shadow-lg transition-shadow text-sm font-medium"
                           >
                             <FiEye className="mr-2" />
                             Ver Detalles
@@ -389,7 +389,7 @@ export default function TablaOrders() {
 
           {/* Paginación */}
           {totalPages > 1 && filteredOrders.length > 0 && (
-            <div className="bg-gradient-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 px-6 py-4 border-t border-purple-200/50">
+            <div className="bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 px-6 py-4 border-t border-purple-200/50">
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div className="mb-4 md:mb-0">
                   <p className="text-sm text-purple-700">
@@ -453,7 +453,7 @@ export default function TablaOrders() {
                         onClick={() => setCurrentPage(pageNum)}
                         className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium ${
                           currentPage === pageNum
-                            ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
+                            ? "bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 text-white shadow-lg"
                             : "text-purple-700 hover:bg-white hover:shadow-md border border-purple-200/50"
                         }`}
                       >
