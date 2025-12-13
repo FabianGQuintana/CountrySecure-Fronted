@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Menu as MenuIcon, X, HomeIcon } from "lucide-react";
+import Logo from "@/public/images/LogoCortado.png";
+import Image from "next/image";
 
 export default function Menu() {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,23 +39,25 @@ export default function Menu() {
   }, []);
 
   return (
-    <nav className="w-full sticky top-0 z-50 bg-sky-50 shadow-sm">
+    <nav className="w-full sticky top-0 z-50 bg-black shadow-sm">
       <div className="flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <HomeIcon className="w-6 h-6 text-fuchsia-400" />
-          <span className="text-xl font-bold text-fuchsia-400 hover:text-fuchsia-800 transition-colors">
-            CountryClub
-          </span>
-        </Link>
+        <Image src={Logo} alt="logo" className="w-15 h-12 object-contain"  // 👈 tamaño fijo 
+        />
+
+        <span className="text-xl font-bold text-fuchsia-400 hover:text-fuchsia-800 transition-colors">
+          CountryClub
+        </span>
+      </Link>
 
         {/* Menú Desktop */}
-        <ul className="hidden md:flex gap-6 text-sm absolute left-1/2 transform -translate-x-1/2">
+        <ul className="hidden md:flex text-gray-100 gap-6 text-sm absolute left-1/2 transform -translate-x-1/2">
           {barraMenu.map(({ nombre, ruta }) => (
             <li key={nombre}>
               <Link
                 href={ruta}
-                className="text-black hover:text-orange-600 transition-all duration-300 transform hover:scale-105"
+                className="text-gray hover:text-orange-600 transition-all duration-300 transform hover:scale-105"
               >
                 {nombre}
               </Link>
@@ -64,14 +68,15 @@ export default function Menu() {
         {/* Botón Ingresar (Desktop) */}
         <Link
           href="/login"
-          className="hidden md:block  text-black px-4 py-2 rounded-lg hover:bg-blue-100 transition"
+          className="hidden md:block text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition"
         >
           Ingresar
         </Link>
 
+
         {/* Botón hamburguesa */}
         <button
-          className="md:hidden text-black z-50"
+          className="md:hidden text-white z-50"
           onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
