@@ -9,6 +9,7 @@ import {
   Users,
   Home,
   Settings,
+  Star,
   LogOut,
   Shield,
 } from "lucide-react";
@@ -195,7 +196,7 @@ export default function MenuAdmin() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Home
+                  <Star
                     size={20}
                     className={
                       openSubMenu === "amenities"
@@ -300,6 +301,68 @@ export default function MenuAdmin() {
                     >
                       <div className="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
                       Solicitudes
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </div>
+            {/* Propiedad */}
+            <div>
+              <button
+                onClick={() => toggleSubMenu("propiedad")}
+                className={`w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
+                  openSubMenu === "propiedad"
+                    ? "bg-linear-to-r from-violet-500 to-purple-600 text-white shadow-md"
+                    : "hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 text-gray-700 hover:text-violet-700 border border-transparent hover:border-violet-100"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Home
+                    size={20}
+                    className={
+                      openSubMenu === "propiedad"
+                        ? "text-white"
+                        : "text-violet-600"
+                    }
+                  />
+                  <span
+                    className={
+                      openSubMenu === "propiedad"
+                        ? "text-white font-medium"
+                        : "text-gray-800 font-medium"
+                    }
+                  >
+                    Propiedad
+                  </span>
+                </div>
+                {openSubMenu === "propiedad" ? (
+                  <ChevronUp size={18} className="text-white" />
+                ) : (
+                  <ChevronDown size={18} className="text-violet-500" />
+                )}
+              </button>
+
+              {openSubMenu === "propiedad" && (
+                <ul className="mt-2 space-y-1 pl-4 animate-fadeIn">
+                  <li>
+                    <Link
+                      href="/admin/propiedades"
+                      className="flex items-center gap-2 text-gray-700 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
+                      Propiedades
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      href="/admin/lotes"
+                      className="flex items-center gap-2 text-gray-700 hover:text-violet-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-violet-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-violet-500"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="w-1.5 h-1.5 bg-violet-400 rounded-full"></div>
+                      Lotes
                     </Link>
                   </li>
                 </ul>

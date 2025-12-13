@@ -1,5 +1,3 @@
-import { inter } from "@/app/fonts";
-
 export interface Iusuario {
   id: string;
   name: string;
