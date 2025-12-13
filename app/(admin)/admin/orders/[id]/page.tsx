@@ -160,7 +160,7 @@ export default function OrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white/90 to-pink-50/80 p-8 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-purple-50 via-white/90 to-pink-50/80 p-8 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 mx-auto"></div>
           <p className="mt-4 text-purple-600 font-medium">Cargando orden...</p>
@@ -172,7 +172,7 @@ export default function OrderDetailPage() {
   if (!order) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white/90 to-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white/90 to-gray-100 p-4 md:p-8">
       {/* Notificación de éxito */}
       <AnimatePresence>
         {showSuccess && (
@@ -182,7 +182,7 @@ export default function OrderDetailPage() {
             exit={{ opacity: 0, y: -50 }}
             className="fixed top-4 right-4 z-50 max-w-md"
           >
-            <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white p-4 rounded-2xl shadow-2xl">
+            <div className="bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white p-4 rounded-2xl shadow-2xl">
               <div className="flex items-center">
                 <div className="p-2 bg-white/20 rounded-lg mr-3">
                   <FiCheck className="w-5 h-5" />
@@ -214,7 +214,7 @@ export default function OrderDetailPage() {
             Volver a órdenes
           </button>
 
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-2xl mb-6">
+          <div className="bg-linear-to-r from-purple-600 to-blue-600 text-white p-6 rounded-2xl mb-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold mb-1">
@@ -229,8 +229,8 @@ export default function OrderDetailPage() {
                 <div
                   className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-sm ${
                     estadoOrder
-                      ? "bg-gradient-to-r from-emerald-100 via-teal-100 to-cyan-100 text-emerald-800 border border-emerald-200/50"
-                      : "bg-gradient-to-r from-rose-100 via-pink-100 to-red-100 text-rose-800 border border-rose-200/50"
+                      ? "bg-linear-to-r from-emerald-100 via-teal-100 to-cyan-100 text-emerald-800 border border-emerald-200/50"
+                      : "bg-linear-to-r from-rose-100 via-pink-100 to-red-100 text-rose-800 border border-rose-200/50"
                   }`}
                 >
                   {estadoOrder ? "Activo" : "Inactivo"}
@@ -256,7 +256,7 @@ export default function OrderDetailPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Proveedor */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center">
+                    <label className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center">
                       <FiUser className="mr-2" />
                       PROVEEDOR
                     </label>
@@ -320,7 +320,7 @@ export default function OrderDetailPage() {
                       <p className="text-xs text-gray-500">
                         Especifica los requerimientos del servicio
                       </p>
-                      <div className="px-3 py-1 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-lg">
+                      <div className="px-3 py-1 bg-linear-to-r from-purple-500/20 to-violet-500/20 rounded-lg">
                         <span className="text-xs text-purple-600 font-medium">
                           {formData.description.length}/500
                         </span>
@@ -343,7 +343,7 @@ export default function OrderDetailPage() {
                     <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
                       PRIORIDAD
                     </label>
-                    <div className="p-4 bg-gradient-to-r from-purple-50 via-violet-50 to-pink-50 border border-purple-300/50 rounded-lg">
+                    <div className="p-4 bg-linear-to-r from-purple-50 via-violet-50 to-pink-50 border border-purple-300/50 rounded-lg">
                       <span className="text-gray-800 font-medium">Media</span>
                       <p className="text-sm text-gray-500 mt-2">
                         Revisión cada 48 horas
@@ -356,7 +356,7 @@ export default function OrderDetailPage() {
                     <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
                       SEGUIMIENTO
                     </label>
-                    <div className="p-4 bg-gradient-to-r from-purple-50 via-violet-50 to-pink-50 border border-purple-300/50 rounded-lg">
+                    <div className="p-4 bg-linear-to-r from-purple-50 via-violet-50 to-pink-50 border border-purple-300/50 rounded-lg">
                       <span className="text-gray-800 font-medium">
                         Control de cumplimiento
                       </span>
@@ -408,7 +408,7 @@ export default function OrderDetailPage() {
                 onClick={() => router.back()}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg hover:from-gray-200 hover:to-gray-300 transition-all duration-300 border border-gray-300 font-medium shadow-sm"
+                className="px-8 py-3 bg-linear-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg hover:from-gray-200 hover:to-gray-300 transition-all duration-300 border border-gray-300 font-medium shadow-sm"
               >
                 Cancelar
               </motion.button>
@@ -420,8 +420,8 @@ export default function OrderDetailPage() {
                 whileTap={{ scale: estadoOrder ? 0.98 : 1 }}
                 className={`px-8 py-3 rounded-lg transition-all duration-300 shadow-lg flex items-center justify-center gap-2 font-medium ${
                   estadoOrder
-                    ? "bg-gradient-to-r from-purple-600 via-violet-600 to-pink-500 text-white hover:from-purple-700 hover:via-violet-700 hover:to-pink-600 hover:shadow-xl"
-                    : "bg-gradient-to-r from-gray-300 to-gray-400 text-gray-500 cursor-not-allowed"
+                    ? "bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 text-white hover:from-purple-700 hover:via-violet-700 hover:to-pink-600 hover:shadow-xl"
+                    : "bg-linear-to-r from-gray-300 to-gray-400 text-gray-500 cursor-not-allowed"
                 }`}
               >
                 {loading ? (
@@ -466,7 +466,7 @@ export default function OrderDetailPage() {
                         <button
                           type="button"
                           onClick={toggleEstadoOrder}
-                          className="w-full px-4 py-3 bg-gradient-to-r from-rose-500 via-pink-500 to-red-400 text-white font-medium rounded-lg transition-all hover:shadow-lg hover:scale-[1.02]"
+                          className="w-full px-4 py-3 bg-linear-to-r from-rose-500 via-pink-500 to-red-400 text-white font-medium rounded-lg transition-all hover:shadow-lg hover:scale-[1.02]"
                         >
                           Desactivar Servicio
                         </button>
@@ -483,7 +483,7 @@ export default function OrderDetailPage() {
                 </div>
               </div>
             ) : (
-              <div className="bg-gradient-to-r from-rose-50 via-pink-50/80 to-red-50/80 rounded-2xl shadow-xl border border-rose-200 overflow-hidden sticky top-6">
+              <div className="bg-linear-to-r from-rose-50 via-pink-50/80 to-red-50/80 rounded-2xl shadow-xl border border-rose-200 overflow-hidden sticky top-6">
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-rose-800 mb-4 flex items-center">
                     <FiX className="mr-2 text-rose-600" />
@@ -506,7 +506,7 @@ export default function OrderDetailPage() {
                         <button
                           type="button"
                           onClick={toggleEstadoOrder}
-                          className="w-full px-4 py-3 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white font-medium rounded-lg transition-all hover:shadow-lg hover:scale-[1.02]"
+                          className="w-full px-4 py-3 bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-400 text-white font-medium rounded-lg transition-all hover:shadow-lg hover:scale-[1.02]"
                         >
                           Activar Servicio
                         </button>
@@ -536,9 +536,9 @@ export default function OrderDetailPage() {
             exit={{ opacity: 0, y: -20 }}
             className="mt-6 max-w-6xl mx-auto"
           >
-            <div className="bg-gradient-to-r from-rose-50 via-pink-50 to-red-50 border border-rose-200 rounded-2xl p-6">
+            <div className="bg-linear-to-r from-rose-50 via-pink-50 to-red-50 border border-rose-200 rounded-2xl p-6">
               <div className="flex items-start">
-                <div className="p-3 bg-gradient-to-r from-rose-100 to-red-100 rounded-xl mr-4">
+                <div className="p-3 bg-linear-to-r from-rose-100 to-red-100 rounded-xl mr-4">
                   <FiAlertCircle className="w-6 h-6 text-rose-600" />
                 </div>
                 <div className="flex-1">
@@ -546,7 +546,7 @@ export default function OrderDetailPage() {
                   <p className="text-rose-700 mb-3">{error}</p>
                   <button
                     onClick={() => setError(null)}
-                    className="text-sm text-rose-600 hover:text-rose-800 font-medium bg-gradient-to-r from-rose-100 to-red-100 px-4 py-2 rounded-lg hover:shadow-sm transition-shadow"
+                    className="text-sm text-rose-600 hover:text-rose-800 font-medium bg-linear-to-r from-rose-100 to-red-100 px-4 py-2 rounded-lg hover:shadow-sm transition-shadow"
                   >
                     Descartar
                   </button>

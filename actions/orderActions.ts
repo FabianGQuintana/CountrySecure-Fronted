@@ -25,7 +25,7 @@ export async function AltaBaja(id: string) {
   const session = await auth();
   try {
     const response = await fetch(
-      `${process.env.API_HOST}/api/order/${id}/Softdelete`,
+      `${process.env.API_HOST}/api/order/${id}/softdelete`,
       {
         method: "PATCH",
         headers: {
