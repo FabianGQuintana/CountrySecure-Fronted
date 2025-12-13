@@ -74,3 +74,16 @@ export interface IOrderRegisterForm {
   onClose: () => void;
   onSuccess?: () => void;
 }
+
+export interface IloteRegister {
+  LotName: string;
+  blockName: string;
+  LotStatus: LotState;
+}
+
+export enum LotState {
+  Inactive = 0,
+  Available = 1,
+  Full = 2,
+  Maintenance = 3,
+}
