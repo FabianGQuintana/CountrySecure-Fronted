@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/UI/card";
 import { Shield, Camera, Lock, Eye, Clock, UserCheck } from "lucide-react";
 import camerasImage from "@/public/images/camera.png";
@@ -46,11 +47,11 @@ const Security = () => {
   return (
     <section
       id="seguridad"
-      className="py-20 bg-linear-to-br from-primary/5 via-background to-accent/5"
+      className="py-10 bg-linear-to-br from-primary/5 via-background to-accent/5 bg-[#DFC5F9] rounded-lg mx-2 mt-16"
     >
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-primary to-accent rounded-full mb-6 shadow-lg">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-primary to-accent rounded-full mb-6 shadow-lg border-1 border-black">
             <Shield className="h-10 w-10 text-primary-foreground" />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-primary to-accent bg-clip-text ">
@@ -65,13 +66,12 @@ const Security = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 animate-scale-in border-2 hover:border-primary/50">
             <div className="relative h-64 overflow-hidden">
-              <img
-                src={gateImage.src}
-                alt="Garita de seguridad"
+              <Image src={gateImage} alt="Garita de seguridad"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                fill
               />
               <div className="absolute inset-0 bg-linear-to-t from-card/95 via-card/50 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="absolute bottom-2 left-3 right-23 p-3 bg-white/50 rounded-lg">
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="p-2 bg-primary rounded-lg">
                     <Lock className="h-5 w-5 text-primary-foreground" />
@@ -87,18 +87,14 @@ const Security = () => {
             </div>
           </Card>
 
-          <Card
-            className="overflow-hidden group hover:shadow-xl transition-all duration-300 animate-scale-in border-2 hover:border-primary/50"
-            style={{ animationDelay: "0.1s" }}
-          >
+          <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 animate-scale-in border-2 hover:border-primary/50">
             <div className="relative h-64 overflow-hidden">
-              <img
-                src={camerasImage.src}
-                alt="Cámaras de seguridad"
+              <Image src={camerasImage} alt="Cámaras de seguridad" 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                fill
               />
               <div className="absolute inset-0 bg-linear-to-t from-card/95 via-card/50 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="absolute bottom-2 left-3 right-23 p-3 bg-white/50 rounded-lg ">
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="p-2 bg-primary rounded-lg">
                     <Camera className="h-5 w-5 text-primary-foreground" />
@@ -114,18 +110,16 @@ const Security = () => {
             </div>
           </Card>
 
-          <Card
-            className="overflow-hidden group hover:shadow-xl transition-all duration-300 animate-scale-in border-2 hover:border-primary/50"
-            style={{ animationDelay: "0.2s" }}
-          >
+          <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 animate-scale-in border-2 hover:border-primary/50">
             <div className="relative h-64 overflow-hidden">
-              <img
-                src={guardImage.src}
+              <Image
+                src={guardImage}
                 alt="Guardia de seguridad"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                fill
               />
               <div className="absolute inset-0 bg-linear-to-t from-card/95 via-card/50 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="absolute bottom-2 left-3 right-23 p-3 bg-white/50 rounded-lg">
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="p-2 bg-primary rounded-lg">
                     <UserCheck className="h-5 w-5 text-primary-foreground" />
@@ -168,9 +162,8 @@ const Security = () => {
             </Card>
           ))}
         </div>
-
         {/* Security Guarantee Box */}
-        <div className="mt-16 max-w-4xl mx-auto">
+        <div className="mt-16 max-w-4xl mx-auto pb-5">
           <Card className="bg-linear-to-r from-primary to-accent p-1 shadow-2xl animate-scale-in">
             <div className="bg-card rounded-lg p-8 md:p-12">
               <div className="text-center">
@@ -222,6 +215,7 @@ const Security = () => {
           </Card>
         </div>
       </div>
+      
     </section>
   );
 };
