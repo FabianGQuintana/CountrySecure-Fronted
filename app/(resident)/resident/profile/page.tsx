@@ -2,28 +2,41 @@
 
 import { motion } from "framer-motion"
 import { FiUser, FiMail, FiPhone, FiHome, FiSettings, FiArrowRight, FiShield, FiEdit } from "react-icons/fi"
-import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
+import { useEffect, useState } from "react"
+import { getCurrentUser } from "@/actions/usuariosActions"
 
 export default function ResidentProfile() {
-  const { data: session } = useSession()
 
-  // Simulación temporal de propiedades (hasta que tengas backend)
-  const properties = [
-    { street: "Av. Principal", number: 123, status: "Activa" },
-    { street: "Calle Los Robles", number: 87, status: "Activa" },
-  ]
+  const properties = [{ street: "Av. Principal", number: 123, status: "Activa" }, { street: "Calle Los Robles", number: 87, status: "Activa" },]
 
-  const user = {
-    name: session?.user?.name || "Juan",
-    lastname: session?.user?.lastname || "Pérez",
-    dni: "12345678",
-    phone: "+54 379 4556677",
-    email: session?.user?.email || "usuario@mail.com",
-  }
+  const [user, setUser] = useState<{
+    name: string
+    lastname: string
+    dni: number
+    phone: string
+    email: string
+  } | null>(null)
 
-  const initials = `${user.name[0] || ""}${user.lastname[0] || ""}`
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const data = await getCurrentUser()
+        setUser(data)
+      } catch (error) {
+        console.error("Error cargando usuario", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadUser()
+  }, [])
+
+  const initials = `${user?.name[0] || ""}${user?.lastname[0] || ""}`
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 p-4 sm:p-6 lg:p-10 lg:ml-64">
@@ -72,9 +85,9 @@ export default function ResidentProfile() {
                   {initials}
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-1">
-                  {user.name} {user.lastname}
+                  {user?.name} {user?.lastname}
                 </h2>
-                <p className="text-cyan-50 text-sm">DNI: {user.dni}</p>
+                <p className="text-cyan-50 text-sm">DNI: {user?.dni}</p>
               </div>
             </CardContent>
           </Card>
@@ -135,12 +148,12 @@ export default function ResidentProfile() {
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
                   <p className="text-sm font-semibold text-slate-500 mb-1">Nombre completo</p>
                   <p className="text-lg text-slate-800 font-medium">
-                    {user.name} {user.lastname}
+                    {user?.name} {user?.lastname}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
                   <p className="text-sm font-semibold text-slate-500 mb-1">DNI</p>
-                  <p className="text-lg text-slate-800 font-medium">{user.dni}</p>
+                  <p className="text-lg text-slate-800 font-medium">{user?.dni}</p>
                 </div>
               </div>
             </CardContent>
@@ -164,7 +177,7 @@ export default function ResidentProfile() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-500">Email</p>
-                    <p className="text-slate-800 font-medium">{user.email}</p>
+                    <p className="text-slate-800 font-medium">{user?.email}</p>
                   </div>
                 </div>
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex items-center gap-4">
@@ -173,7 +186,7 @@ export default function ResidentProfile() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-500">Teléfono</p>
-                    <p className="text-slate-800 font-medium">{user.phone}</p>
+                    <p className="text-slate-800 font-medium">{user?.phone}</p>
                   </div>
                 </div>
               </div>

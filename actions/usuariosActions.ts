@@ -72,30 +72,87 @@ export async function updateUser(data: Partial<IusuarioRegister>, id: string) {
 
 export async function changePassword(data: ChangePasswordDto) {
 
+  const session = await auth()
+
+  if (!session?.accessToken) {
+    throw new Error("No autenticado")
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_HOST}/api/auth/change-password`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      body: JSON.stringify(data),
+      cache: "no-store",
+    }
+  )
+
+  if (!res.ok) {
+    const error = await res.json()
+    throw new Error(error?.message || "Error al cambiar la contraseña")
+  }
+
+  return await res.json()
+}
+
+export async function getCurrentUser() {
+
   const session = await auth();
 
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_HOST}/api/auth/change-password`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-        body: JSON.stringify(data),
-      }
-    )
-
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error changing password");
-    }
-
-    return await response.json();
-
-  } catch (error) {
-    throw error;
+  if (!session?.accessToken) {
+    throw new Error("No authenticated session");
   }
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/users/me`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`,
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+  })
+
+  if (!response.ok) {
+    throw new Error("Error fetching current user");
+  }
+
+  return await response.json();
 }
+
+export async function updateCurrentUser(data: {
+  name: string
+  lastname: string
+  email: string
+  phone: string
+}) {
+  const session = await auth()
+
+  if (!session?.accessToken) {
+    throw new Error("No authenticated session")
+  }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_HOST}/api/users/me`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      cache: "no-store",
+      body: JSON.stringify(data),
+    }
+  )
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.message || "Error updating profile")
+  }
+
+  return await response.json()
+}
+

@@ -7,6 +7,7 @@ import { FiLock, FiArrowLeft, FiSave, FiShield, FiCheckCircle, FiAlertCircle } f
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { useState } from "react"
+import { changePassword } from "@/actions/usuariosActions"
 
 export default function ChangePasswordPage() {
   const [formData, setFormData] = useState({
@@ -15,13 +16,48 @@ export default function ChangePasswordPage() {
     confirmPassword: "",
   })
 
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Cambio de contraseña:", formData)
+    setError(null)
+    setSuccess(false)
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      setError("Las contraseñas no coinciden")
+      return
+    }
+
+    if (formData.newPassword.length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres")
+      return
+    }
+
+    try {
+      setIsSaving(true)
+
+      await changePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      })
+
+      setSuccess(true)
+      setFormData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      })
+    } catch (err: any) {
+      setError(err.message || "Error al cambiar la contraseña")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const passwordRequirements = [
@@ -114,11 +150,11 @@ export default function ChangePasswordPage() {
           </Card>
 
           {/* Badge de última actualización */}
-          <div className="px-4 py-3 bg-slate-100 rounded-xl border border-slate-200">
+          {/* <div className="px-4 py-3 bg-slate-100 rounded-xl border border-slate-200">
             <p className="text-sm text-slate-600">
               <span className="font-semibold">Última actualización:</span> 15 de enero, 2025
             </p>
-          </div>
+          </div> */}
         </motion.div>
 
         {/* COLUMNA DERECHA - Formulario */}
@@ -140,6 +176,18 @@ export default function ChangePasswordPage() {
                     Cambiar Contraseña
                   </h2>
                 </div>
+
+                {error && (
+                  <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                    {error}
+                  </div>
+                )}
+
+                {success && (
+                  <div className="p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm">
+                    Contraseña actualizada correctamente
+                  </div>
+                )}
 
                 {/* Contraseña actual */}
                 <div>
@@ -197,16 +245,19 @@ export default function ChangePasswordPage() {
 
                 {/* Botón de guardar */}
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: isSaving ? 1 : 1.02 }}
+                  whileTap={{ scale: isSaving ? 1 : 0.98 }}
                   type="submit"
-                  className="w-full mt-4 flex items-center justify-center gap-3
-                                    bg-gradient-to-r from-cyan-500 to-blue-600 text-white
-                                    py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl 
-                                    transition duration-300 hover:from-cyan-600 hover:to-blue-700"
+                  disabled={isSaving}
+                  className={`w-full mt-4 flex items-center justify-center gap-3
+    py-4 rounded-xl font-semibold shadow-lg transition duration-300
+    ${isSaving
+                      ? "bg-slate-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700"
+                    }`}
                 >
                   <FiSave size={20} />
-                  Actualizar contraseña
+                  {isSaving ? "Actualizando..." : "Actualizar contraseña"}
                 </motion.button>
               </CardContent>
             </Card>
@@ -224,9 +275,8 @@ export default function ChangePasswordPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.05 }}
-                      className={`flex items-center gap-2 text-sm p-3 rounded-lg transition ${
-                        req.met ? "bg-green-50 text-green-700" : "bg-slate-50 text-slate-600"
-                      }`}
+                      className={`flex items-center gap-2 text-sm p-3 rounded-lg transition ${req.met ? "bg-green-50 text-green-700" : "bg-slate-50 text-slate-600"
+                        }`}
                     >
                       <FiCheckCircle className={req.met ? "text-green-500" : "text-slate-300"} size={16} />
                       <span className="font-medium">{req.text}</span>

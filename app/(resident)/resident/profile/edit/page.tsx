@@ -2,26 +2,54 @@
 
 import type React from "react"
 
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { FiUser, FiMail, FiPhone, FiSave, FiArrowLeft, FiEdit, FiShield, FiCheckCircle } from "react-icons/fi"
+import { FiUser, FiMail, FiPhone, FiSave, FiArrowLeft, FiEdit, FiShield, FiCheckCircle, FiLock } from "react-icons/fi"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
-import { useState } from "react"
+import { getCurrentUser, updateCurrentUser, updateUser } from "@/actions/usuariosActions"
 
 export default function EditResidentProfile() {
-    const { data: session } = useSession()
 
     const [formData, setFormData] = useState({
-        name: session?.user?.name || "",
-        lastname: session?.user?.lastname || "",
-        // dni: session?.user?.dni || "",
-        phone: "+54 379 4556677",
-        email: session?.user?.email || "",
+        name: "",
+        lastname: "",
+        phone: "",
+        email: "",
     })
+
+    const [userId, setUserId] = useState<string | null>(null)
+    const [dni, setDni] = useState<number | null>(null)
+
+    const [loading, setLoading] = useState(true)
 
     const [isSaving, setIsSaving] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const user = await getCurrentUser()
+
+                setFormData({
+                    name: user.name,
+                    lastname: user.lastname,
+                    phone: user.phone,
+                    email: user.email,
+                })
+
+                setUserId(user.id)
+                setDni(user.dni)
+            } catch (error) {
+                console.error("Error cargando usuario", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadUser()
+    }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -31,17 +59,34 @@ export default function EditResidentProfile() {
         e.preventDefault()
         setIsSaving(true)
 
-        // Simula el guardado
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        if (!userId) {
+            alert("No se pudo identificar al usuario")
+            setIsSaving(false)
+            return
+        }
 
-        console.log("Datos actualizados:", formData)
-        setIsSaving(false)
-        setSaveSuccess(true)
+        try {
+            await updateUser(formData, userId)
 
-        setTimeout(() => setSaveSuccess(false), 3000)
+            setSaveSuccess(true)
+            setTimeout(() => setSaveSuccess(false), 3000)
+        } catch (error) {
+            console.error("Error al guardar cambios", error)
+            alert("Ocurrió un error al guardar los cambios")
+        } finally {
+            setIsSaving(false)
+        }
     }
 
     const initials = `${formData.name[0] || "U"}${formData.lastname[0] || "S"}`
+
+    if (loading) {
+        return (
+            <div className="fixed inset-0 flex items-center justify-center bg-white">
+                <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 p-4 sm:p-6 lg:p-10 lg:ml-64">
@@ -218,6 +263,39 @@ export default function EditResidentProfile() {
                                                 placeholder="Tu apellido"
                                             />
                                         </div>
+
+                                        <div>
+                                            <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                                                <FiShield size={16} className="text-slate-500" />
+                                                DNI
+                                            </label>
+
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    value={dni ?? ""}
+                                                    disabled
+                                                    className="
+                                                        w-full px-4 py-3 rounded-xl
+                                                        border-2 border-slate-200
+                                                        bg-slate-100 text-slate-500 font-medium
+                                                        cursor-not-allowed
+                                                        focus:outline-none
+                                                    "
+                                                />
+
+                                                <FiLock
+                                                    size={18}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
+                                                />
+                                            </div>
+
+                                            <p className="text-xs text-slate-400 mt-2 leading-snug">
+                                                El DNI no puede modificarse.
+                                                Si el dato es incorrecto, comunicate con el administrador.
+                                            </p>
+                                        </div>
+
                                     </div>
 
                                     {/* Email */}
