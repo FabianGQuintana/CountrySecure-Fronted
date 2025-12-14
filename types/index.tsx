@@ -62,11 +62,28 @@ export interface IOrder {
   status: string;
 }
 export enum OrderStatus {
-  Jardineria = 1,
-  Plomeria = 2,
-  Electricidad = 3,
-  Limpieza = 4,
-  MantenimientoGeneral = 5,
-  Piscina = 6,
-  Seguridad = 7,
+  Gardening = 1,
+  Plumbing = 2,
+  Electrical = 3,
+  Cleaning = 4,
+  GeneralMaintenance = 5,
+  Pool = 6,
+  Security = 7,
+}
+export interface IOrderRegisterForm {
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+
+export interface IloteRegister {
+  LotName: string;
+  blockName: string;
+  LotStatus: LotState;
+}
+
+export enum LotState {
+  Inactive = 0,
+  Available = 1,
+  Full = 2,
+  Maintenance = 3,
 }

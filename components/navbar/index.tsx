@@ -72,6 +72,7 @@ export default function Menu() {
           Ingresar
         </Link>
 
+
         {/* Botón hamburguesa */}
         <button
           className="md:hidden text-slate-700 hover:text-fuchsia-600 z-50 p-2 rounded-lg hover:bg-sky-100 transition-all duration-300"
