@@ -315,11 +315,6 @@ export default function Page() {
                           <p className="text-xs text-emerald-600 font-medium uppercase tracking-wider">
                             Miembro desde
                           </p>
-                          {/* <p className="text-lg font-semibold text-gray-800">
-                            {usuario?.createdAt
-                              ? new Date(usuario.createdAt).toLocaleDateString()
-                              : "No disponible"}
-                          </p> */}
                         </div>
                       </div>
                     </div>

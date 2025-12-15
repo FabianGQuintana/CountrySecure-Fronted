@@ -1,27 +1,31 @@
 "use server";
 
 import { auth } from "@/auth";
-import { IOrder, IOrderRegister } from "@/types";
+import { IOrderRegister } from "@/types";
 
 export async function newOrder(data: IOrderRegister) {
   const session = await auth();
   try {
-    const response = await fetch(`${process.env.API_HOST}/api/orders`, {
+    const response = await fetch(`${process.env.API_HOST}/api/order`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer${session?.accessToken}`,
+        Authorization: `Bearer ${session?.accessToken}`,
       },
       body: JSON.stringify(data),
     });
-  } catch (error) {}
+    if (!response.ok) throw new Error("error al crear nueva order");
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function AltaBaja(id: string) {
   const session = await auth();
   try {
     const response = await fetch(
-      `${process.env.API_HOST}/api/order/${id}/Softdelete`,
+      `${process.env.API_HOST}/api/order/${id}/softdelete`,
       {
         method: "PATCH",
         headers: {

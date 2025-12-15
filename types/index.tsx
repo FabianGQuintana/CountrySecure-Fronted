@@ -1,5 +1,3 @@
-import { inter } from "@/app/fonts";
-
 export interface Iusuario {
   id: string;
   name: string;
@@ -62,11 +60,44 @@ export interface IOrder {
   status: string;
 }
 export enum OrderStatus {
-  Jardineria = 1,
-  Plomeria = 2,
-  Electricidad = 3,
-  Limpieza = 4,
-  MantenimientoGeneral = 5,
-  Piscina = 6,
-  Seguridad = 7,
+  Gardening = 1,
+  Plumbing = 2,
+  Electrical = 3,
+  Cleaning = 4,
+  GeneralMaintenance = 5,
+  Pool = 6,
+  Security = 7,
+}
+export interface IOrderRegisterForm {
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+
+export interface IloteRegister {
+  lotName: string;
+  blockName: string;
+  lotState: LotState;
+}
+
+export enum LotState {
+  Inactive = 0,
+  Available = 1,
+  Full = 2,
+  Maintenance = 3,
+}
+
+export interface IloteRegisterForm {
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+export interface ILoteForm {
+  lotName: string;
+  blockName: string;
+  lotStatus: LotState;
+}
+
+export interface IPropiedadRegister {
+  Street: string;
+  PropertyNumber: number;
+  LotId: string;
 }
