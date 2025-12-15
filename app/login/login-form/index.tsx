@@ -43,7 +43,7 @@ export default function LoginFormulario() {
     } else if (rol === "Resident") {
       router.replace("/resident/dashboard");
     } else if (rol === "Security") {
-      router.replace("/securiti");
+      router.replace("/security");
     } else {
       router.replace("/"); // fallback
     }

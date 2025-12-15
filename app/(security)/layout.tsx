@@ -1,15 +1,28 @@
+
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
-import Link from "next/link";
+import MenuSecurity from "@/components/Security/MenuSecurity";
 
-
-export default async function SecurityLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // Obtener usuario actual
   const user = await auth();
 
-  if (!user) redirect("/login");
-  if (user.role !== "Security") redirect("/");
+  // Si no está autenticado -> login
+  if (!user) {
+    redirect("/login");
+  }
 
+  // Si no es Security -> acceso denegado
+  if (user.role !== "Security") {
+    redirect("/");
+  }
+
+  // Si pasa las verificaciones (es Security) -> mostrar layout
   return (
     <SessionProviderWrapper>
       <div className="min-h-screen flex">
@@ -22,7 +35,8 @@ export default async function SecurityLayout({ children }: { children: React.Rea
             <Link href="/security/visits" className="hover:text-blue-300">
               Visitas
             </Link>
-            <Link href="/securiti/services" className="hover:text-blue-300">
+
+            <Link href="/security/services" className="hover:text-blue-300">
               Servicios
             </Link>
 
