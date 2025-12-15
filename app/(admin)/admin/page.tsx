@@ -177,7 +177,7 @@ export default function AdminDashboard() {
       title: "Configuración",
       desc: "Ajustes del sistema",
       icon: <FiSettings size={32} />,
-      onClick: () => router.push("/admin/settings"),
+      // onClick: () => router.push("/admin/settings"),
       color:
         "bg-linear-to-br from-purple-500/90 via-violet-500/80 to-indigo-400/90",
       delay: 0.4,
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
       title: "Inventario",
       desc: "Gestión de recursos y activos",
       icon: <FiPackage size={32} />,
-      onClick: () => router.push("/admin/inventory"),
+      // onClick: () => router.push("/admin/inventory"),
       color:
         "bg-linear-to-br from-rose-500/90 via-pink-400/80 to-fuchsia-300/90",
       delay: 0.6,

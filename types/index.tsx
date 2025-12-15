@@ -95,3 +95,9 @@ export interface ILoteForm {
   blockName: string;
   lotStatus: LotState;
 }
+
+export interface IPropiedadRegister {
+  Street: string;
+  PropertyNumber: number;
+  LotId: string;
+}

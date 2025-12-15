@@ -22,22 +22,22 @@ interface TablaLotesProps {
 const LOT_STATE_CONFIG = {
   [LotState.Inactive]: {
     label: "Inactivo",
-    color: "bg-gray-100 text-gray-700",
+    color: "bg-linear-to-r from-gray-100 to-gray-200 text-gray-700",
     icon: XCircle,
   },
   [LotState.Available]: {
     label: "Disponible",
-    color: "bg-green-50 text-green-700",
+    color: "bg-linear-to-r from-purple-50 to-violet-100 text-purple-700",
     icon: CheckCircle,
   },
   [LotState.Full]: {
     label: "Lleno",
-    color: "bg-blue-50 text-blue-700",
+    color: "bg-linear-to-r from-violet-50 to-indigo-100 text-violet-700",
     icon: Users,
   },
   [LotState.Maintenance]: {
     label: "Mantenimiento",
-    color: "bg-amber-50 text-amber-700",
+    color: "bg-linear-to-r from-amber-50 to-orange-100 text-amber-700",
     icon: AlertCircle,
   },
 } as const;
@@ -82,7 +82,7 @@ const EstadoBadge = ({ estado }: { estado: LotState }) => {
 
   if (!stateConfig) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-700">
+      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-linear-to-r from-gray-100 to-gray-200 text-gray-700">
         <XCircle className="w-3 h-3" />
         Inactivo
       </span>
@@ -121,12 +121,12 @@ export default function TablaLotes({ lotes }: TablaLotesProps) {
   });
 
   return (
-    <div className="flex-1 p-4 md:p-6">
+    <div className="flex-1 p-4 md:p-6 bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80">
       {/* Header */}
       <div className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">
               Gestión de Lotes
             </h1>
             <p className="text-gray-600 mt-1">
@@ -136,7 +136,7 @@ export default function TablaLotes({ lotes }: TablaLotesProps) {
 
           <button
             onClick={() => setOpenModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="hover:cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 text-white rounded-lg hover:from-purple-700 hover:via-violet-700 hover:to-pink-600 transition-colors font-medium"
           >
             <Plus className="w-5 h-5" />
             Nuevo Lote
@@ -145,23 +145,25 @@ export default function TablaLotes({ lotes }: TablaLotesProps) {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
+          <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg border border-purple-200/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total</p>
+                <p className="text-sm text-purple-600">Total</p>
                 <p className="text-xl font-bold text-gray-900">
                   {processedLotes.length}
                 </p>
               </div>
-              <FileText className="w-6 h-6 text-blue-500" />
+              <div className="p-2 bg-linear-to-r from-purple-100 to-violet-100 rounded-lg">
+                <FileText className="w-5 h-5 text-purple-600" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
+          <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg border border-purple-200/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Disponibles</p>
-                <p className="text-xl font-bold text-green-600">
+                <p className="text-sm text-purple-600">Disponibles</p>
+                <p className="text-xl font-bold text-purple-600">
                   {
                     processedLotes.filter(
                       (l) => l.LotStatus === LotState.Available
@@ -169,29 +171,33 @@ export default function TablaLotes({ lotes }: TablaLotesProps) {
                   }
                 </p>
               </div>
-              <CheckCircle className="w-6 h-6 text-green-500" />
+              <div className="p-2 bg-linear-to-r from-purple-100 to-violet-100 rounded-lg">
+                <CheckCircle className="w-5 h-5 text-purple-600" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
+          <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg border border-purple-200/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Llenos</p>
-                <p className="text-xl font-bold text-blue-600">
+                <p className="text-sm text-violet-600">Llenos</p>
+                <p className="text-xl font-bold text-violet-600">
                   {
                     processedLotes.filter((l) => l.LotStatus === LotState.Full)
                       .length
                   }
                 </p>
               </div>
-              <Users className="w-6 h-6 text-blue-500" />
+              <div className="p-2 bg-linear-to-r from-violet-100 to-indigo-100 rounded-lg">
+                <Users className="w-5 h-5 text-violet-600" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
+          <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg border border-purple-200/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Mantenimiento</p>
+                <p className="text-sm text-amber-600">Mantenimiento</p>
                 <p className="text-xl font-bold text-amber-600">
                   {
                     processedLotes.filter(
@@ -200,52 +206,57 @@ export default function TablaLotes({ lotes }: TablaLotesProps) {
                   }
                 </p>
               </div>
-              <AlertCircle className="w-6 h-6 text-amber-500" />
+              <div className="p-2 bg-linear-to-r from-amber-100 to-orange-100 rounded-lg">
+                <AlertCircle className="w-5 h-5 text-amber-600" />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Búsqueda */}
-        <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+        <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg border border-purple-200/50 mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Buscar por nombre o manzana..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 border border-purple-200/50 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
         </div>
       </div>
 
       {/* Tabla compacta */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-sm rounded-lg border border-purple-200/50 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-linear-to-r from-purple-50 via-violet-50 to-pink-50">
               <tr>
-                <th className="p-4 text-left text-sm font-semibold text-gray-700">
+                <th className="p-4 text-left text-sm font-semibold text-purple-700">
                   Nombre
                 </th>
-                <th className="p-4 text-left text-sm font-semibold text-gray-700">
+                <th className="p-4 text-left text-sm font-semibold text-purple-700">
                   Manzana
                 </th>
-                <th className="p-4 text-left text-sm font-semibold text-gray-700">
+                <th className="p-4 text-left text-sm font-semibold text-purple-700">
                   Estado
                 </th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-purple-100">
               {filteredLotes.length > 0 ? (
                 filteredLotes.map((lote) => (
-                  <tr key={lote.lotId} className="hover:bg-gray-50">
+                  <tr
+                    key={lote.lotId}
+                    className="hover:bg-linear-to-r hover:from-purple-50/30 hover:to-violet-50/30"
+                  >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-blue-50 rounded">
-                          <Building className="w-4 h-4 text-blue-600" />
+                        <div className="p-1.5 bg-linear-to-r from-purple-100 to-violet-100 rounded">
+                          <Building className="w-4 h-4 text-purple-600" />
                         </div>
                         <div className="font-medium text-gray-900">
                           {lote.lotName}
@@ -264,7 +275,7 @@ export default function TablaLotes({ lotes }: TablaLotesProps) {
                 <tr>
                   <td colSpan={3} className="p-8 text-center">
                     <div className="flex flex-col items-center justify-center text-gray-400">
-                      <Search className="w-12 h-12 mb-3 text-gray-300" />
+                      <Search className="w-12 h-12 mb-3 text-purple-300" />
                       <p className="font-medium text-gray-600 mb-1">
                         No se encontraron lotes
                       </p>
@@ -283,7 +294,7 @@ export default function TablaLotes({ lotes }: TablaLotesProps) {
 
         {/* Footer simple */}
         {filteredLotes.length > 0 && (
-          <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+          <div className="px-4 py-3 border-t border-purple-200 bg-linear-to-r from-purple-50 via-violet-50 to-pink-50 text-sm text-purple-600">
             Mostrando {filteredLotes.length} de {processedLotes.length} lotes
           </div>
         )}
