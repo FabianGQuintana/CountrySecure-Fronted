@@ -95,3 +95,8 @@ export interface ILoteForm {
   blockName: string;
   lotStatus: LotState;
 }
+
+export enum PermissionType {
+  Visit = 1,
+  Maintenance = 2,
+}

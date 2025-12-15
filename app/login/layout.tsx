@@ -18,7 +18,7 @@ export default async function Layout({
       case "Security":
         redirect("/securiti/");
       case "Resident":
-        redirect("/resident/");
+        redirect("/resident/dashboard");
       default:
         redirect("/");
     }

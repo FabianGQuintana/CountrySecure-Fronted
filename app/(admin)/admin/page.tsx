@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   FiUsers,
   FiHome,
@@ -19,7 +19,8 @@ import { useEffect, useState } from "react";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
-  const router = useRouter();
+  const router 
+  = useRouter();
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
