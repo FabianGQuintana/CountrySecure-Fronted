@@ -1,3 +1,5 @@
+import { inter } from "@/app/fonts";
+
 export interface Iusuario {
   id: string;
   name: string;
@@ -96,6 +98,9 @@ export interface ILoteForm {
   lotStatus: LotState;
 }
 
+export enum PermissionType {
+  Visit = 1,
+  Maintenance = 2,
 export interface IPropiedadRegister {
   Street: string;
   PropertyNumber: number;
