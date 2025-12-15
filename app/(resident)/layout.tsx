@@ -1,32 +1,51 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+// import { auth } from "@/auth";
+// import { redirect } from "next/navigation";
+// import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+// import ResidentSidebar from "@/components/residentes/sideBar/ResidentSidebar";
 
-export default async function AdminLayout({
+// export default async function ResidentLayout({ children }: { children: React.ReactNode }) {
+//   const user = await auth();
+
+//   if (!user) redirect("/login");
+
+//   if (user.role !== "Resident") redirect("/");
+
+//   return (
+//     <SessionProviderWrapper>
+//       <div className="min-h-screen flex w-full">
+//         {/* Sidebar fijo */}
+//         <ResidentSidebar />
+
+//         {/* Contenido principal */}
+//         <main className="flex-1 p-6 bg-background">
+//           {children}
+//         </main>
+//       </div>
+//     </SessionProviderWrapper>
+//   );
+// }
+
+
+import { auth } from "@/auth"
+import { redirect } from "next/navigation"
+import SessionProviderWrapper from "@/components/SessionProviderWrapper"
+import ResidentShell from "@/components/residentes/ResidentShell"
+
+export default async function ResidentLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  // Obtener usuario actual
-  const user = await auth();
+  const user = await auth()
 
-  // Si no está autenticado -> login
-  if (!user) {
-    redirect("/login");
-  }
+  if (!user) redirect("/login")
+  if (user.role !== "Resident") redirect("/")
 
-  // Si no es Admin -> acceso denegado
-  if (user.role !== "Resident") {
-    redirect("/");
-  }
-
-  // Si pasa las verificaciones (es Admin) -> mostrar layout
   return (
     <SessionProviderWrapper>
-      <div className="min-h-screen flex flex-col">
-        {" "}
-        <main className="flex-1 lg:ml-64 ">{children}</main>{" "}
-      </div>
+      <ResidentShell>
+        {children}
+      </ResidentShell>
     </SessionProviderWrapper>
-  );
+  )
 }

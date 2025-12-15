@@ -29,3 +29,11 @@ export default async function AdminLayout({
     </SessionProviderWrapper>
   );
 }
+
+//colres par bg de admin
+// @media (prefers-color-scheme: dark) {
+//   :root {
+//     --background: #ffffff;
+//     --foreground: #969696;
+//   }
+// }

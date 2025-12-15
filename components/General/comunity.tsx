@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Calendar, MessageCircle } from "lucide-react";
 
 const benefits = [
@@ -28,11 +28,11 @@ const Community = () => {
   return (
     <section
       id="comunidad"
-      className="py-20 bg-linear-to-br from-background via-muted/20 to-background"
+      className="mt-20 bg-linear-to-br from-background via-muted/20 to-background bg-[#DFC5F9] mx-2 rounded-lg py-20"
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 ">
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-primary to-accent bg-clip-text text-black">
             Una Comunidad Excepcional
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -61,7 +61,7 @@ const Community = () => {
         </div>
 
         <div className="max-w-4xl mx-auto bg-linear-to-r from-primary to-accent p-1 rounded-2xl shadow-xl animate-scale-in">
-          <div className="bg-card rounded-xl p-8 md:p-12">
+          <div className="bg-card rounded-xl p-8 md:p-12 border-2 border-black">
             <div className="text-center">
               <h3 className="text-3xl font-bold mb-4">
                 ¿Listo para ser parte de nuestra comunidad?

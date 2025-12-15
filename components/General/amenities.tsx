@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Waves, Dumbbell, Trees, Baby, Shield, Car } from "lucide-react";
 import poolImage from "@/public/images/pool.png";
 import gymImage from "@/public/images/gym.png";
@@ -34,8 +34,8 @@ const amenities = [
 
 const Amenities = () => {
   return (
-    <section id="amenities" className="py-20 bg-muted/30">
-      <div className="container mx-auto px-4">
+    <section id="amenities" className="py-20 bg-muted/30 bg-[#DFC5F9] rounded-lg mx-2 margin-8 mt-36">
+      <div className="container mx-auto px-4 ">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-primary to-accent bg-clip-text">
             AMENITIES
@@ -55,14 +55,12 @@ const Amenities = () => {
             >
               {amenity.image ? (
                 <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={amenity.image.src}
-                    alt={amenity.title}
+                  <img src={amenity.image.src} alt={amenity.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-card/90 to-transparent" />
                   <div className="absolute bottom-4 left-4 p-3 bg-primary rounded-full">
-                    <amenity.icon className="h-6 w-6 text-primary-foreground" />
+                    <amenity.icon className="h-8 w-8 text-primary-foreground bg-white/50 rounded-full p-1" />
                   </div>
                 </div>
               ) : (

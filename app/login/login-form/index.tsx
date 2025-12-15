@@ -1,41 +1,3 @@
-// "use client";
-// import { IconAvatar, IconLock, IconEye, IconLoading } from "@/app/assets/icon";
-// import { useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { signIn } from "next-auth/react";
-
-// export default function LoginFormulario() {
-//   const [verContraseña, setVerContraseña] = useState(false);
-//   const [cargando, setCargando] = useState(false);
-//   const [error, setError] = useState("");
-
-//   const router = useRouter();
-
-//   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-//     e.preventDefault();
-//     setError("");
-//     setCargando(true);
-
-//     const form = e.target as HTMLFormElement;
-//     const formData = new FormData(form);
-//     const email = formData.get("email") as string;
-//     const password = formData.get("password") as string;
-
-//     const result = await signIn("credentials", {
-//       redirect: false,
-//       email,
-//       password,
-//     });
-
-//     if (result?.error) {
-//       setError("Datos Incorrectos.");
-//     } else if (result?.ok) {
-//       router.replace("/");
-//     }
-
-//     setCargando(false);
-//   }
-
 "use client";
 
 import { IconAvatar, IconLock, IconEye, IconLoading } from "@/app/assets/icon";
@@ -79,7 +41,7 @@ export default function LoginFormulario() {
     if (rol === "Admin") {
       router.replace("/admin/");
     } else if (rol === "Resident") {
-      router.replace("/resident/");
+      router.replace("/resident/dashboard");
     } else if (rol === "Security") {
       router.replace("/securiti");
     } else {
