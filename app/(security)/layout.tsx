@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+
 
 export default async function SecurityLayout({ children }: { children: React.ReactNode }) {
   const user = await auth();
@@ -22,8 +22,7 @@ export default async function SecurityLayout({ children }: { children: React.Rea
             <Link href="/security/visits" className="hover:text-blue-300">
               Visitas
             </Link>
-
-            <Link href="/security/services" className="hover:text-blue-300">
+            <Link href="/securiti/services" className="hover:text-blue-300">
               Servicios
             </Link>
 
