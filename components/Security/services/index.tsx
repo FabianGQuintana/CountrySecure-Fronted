@@ -181,7 +181,7 @@ export default function ServicesCardsPage() {
 
             {/* BOTÓN */}
             <Link
-              href={`/securiti/services/${s.id}/`}
+              href={`/security/services/${s.id}/`}
               className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
             >
               <Eye className="w-4 h-4" />

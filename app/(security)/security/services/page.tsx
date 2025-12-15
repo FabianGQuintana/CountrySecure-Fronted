@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 import { auth } from "@/auth";
-import ServicesCardsPage from "@/components/securiti/services";
+import ServicesCardsPage from "@/components/Security/services/index";
 import { FiAlertCircle } from "react-icons/fi";
 
 export default async function ServicesPage() {
