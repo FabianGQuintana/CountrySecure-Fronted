@@ -87,3 +87,9 @@ export enum LotState {
   Full = 2,
   Maintenance = 3,
 }
+
+
+export enum PermissionType {
+  Visit = 1,
+  Maintenance = 2,
+}

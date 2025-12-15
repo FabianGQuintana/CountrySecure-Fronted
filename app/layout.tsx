@@ -15,7 +15,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex min-h-screen w-full flex-col justify-between items-center`}
+        className={`${inter.className} min-h-screen w-full`}
       >
         <main className="w-full">{children}</main>
       </body>

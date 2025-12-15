@@ -97,12 +97,12 @@ export default function ResidentDashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-linear-to-br from-blue-50 via-white to-green-50">
+    <div className="flex bg-linear-to-br from-blue-50 via-white to-green-50">
 
-      <ResidentSidebar />
+      {/* <ResidentSidebar /> */}
 
       {/* CONTENEDOR PRINCIPAL */}
-      <div className="ml-64 w-full p-10 text-gray-900">
+      <div className="w-full p-10 text-gray-900">
 
         {/* HEADER */}
         <div className="mb-12 flex flex-col">

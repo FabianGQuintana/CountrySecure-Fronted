@@ -1,12 +1,16 @@
 "use client"
 
-import { FiUser, FiHome, FiKey, FiCalendar } from "react-icons/fi"
+import { FiUser, FiHome, FiKey, FiCalendar, FiX } from "react-icons/fi"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 import LogoutButton from "../buttons/LogoutButton"
 
-export default function ResidentSidebar() {
+type ResidentSidebarProps = {
+  onClose?: () => void
+}
+
+export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
   const pathname = usePathname()
 
   const menuItems = [
@@ -33,8 +37,17 @@ export default function ResidentSidebar() {
   ]
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-slate-800/50 shadow-2xl flex flex-col justify-between text-white">
-      {/* Header con gradiente sutil */}
+    <aside className="h-screen w-64 flex flex-col bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border-r border-slate-800/50 shadow-2xl text-white">
+
+      {/* Botón cerrar – SOLO MOBILE */}
+      <button
+        onClick={onClose}
+        className="md:hidden absolute top-4 right-4 z-50 p-2 rounded-lg hover:bg-slate-800/60"
+      >
+        <FiX size={20} />
+      </button>
+
+      {/* Header */}
       <div className="p-6 border-b border-slate-800/50 bg-gradient-to-br from-purple-500/5 to-transparent">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
@@ -49,7 +62,7 @@ export default function ResidentSidebar() {
         </div>
       </div>
 
-      {/* Navigation con estados activos mejorados */}
+      {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {menuItems.map((item, index) => {
           const isActive = pathname === item.href
@@ -63,6 +76,7 @@ export default function ResidentSidebar() {
             >
               <Link
                 href={item.href}
+                onClick={onClose}
                 className={`
                   group relative flex items-center gap-3 px-4 py-3 rounded-xl 
                   transition-all duration-300 overflow-hidden
@@ -72,7 +86,7 @@ export default function ResidentSidebar() {
                   }
                 `}
               >
-                {/* Indicador activo izquierdo */}
+                {/* Indicador activo */}
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
@@ -81,7 +95,7 @@ export default function ResidentSidebar() {
                   />
                 )}
 
-                {/* Icono con efecto hover */}
+                {/* Icono */}
                 <span
                   className={`
                     flex items-center justify-center w-9 h-9 rounded-lg
@@ -95,7 +109,7 @@ export default function ResidentSidebar() {
                   {item.icon}
                 </span>
 
-                {/* Label con tipografía mejorada */}
+                {/* Label */}
                 <span
                   className={`
                     font-medium text-sm tracking-wide transition-colors duration-300
@@ -105,7 +119,7 @@ export default function ResidentSidebar() {
                   {item.label}
                 </span>
 
-                {/* Efecto de brillo en hover */}
+                {/* Brillo hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 -translate-x-full group-hover:translate-x-full" />
               </Link>
             </motion.div>
@@ -113,8 +127,8 @@ export default function ResidentSidebar() {
         })}
       </nav>
 
-      {/* Footer mejorado */}
-      <div className="p-4 border-t border-slate-800/50 bg-gradient-to-t from-slate-950/50 to-transparent">
+      {/* Footer */}
+      <div className="p-4 border-t border-slate-800/50">
         <LogoutButton />
       </div>
     </aside>
