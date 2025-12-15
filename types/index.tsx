@@ -76,9 +76,9 @@ export interface IOrderRegisterForm {
 }
 
 export interface IloteRegister {
-  LotName: string;
+  lotName: string;
   blockName: string;
-  LotStatus: LotState;
+  lotState: LotState;
 }
 
 export enum LotState {
@@ -86,4 +86,19 @@ export enum LotState {
   Available = 1,
   Full = 2,
   Maintenance = 3,
+}
+
+export interface IloteRegisterForm {
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+export interface ILoteForm {
+  lotName: string;
+  blockName: string;
+  lotStatus: LotState;
+}
+
+export enum PermissionType {
+  Visit = 1,
+  Maintenance = 2,
 }

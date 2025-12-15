@@ -129,7 +129,7 @@ export default function ModalNewOrder({
             >
               <option value="">Selecciona un tipo...</option>
               {Object.entries(OrderStatus)
-                .filter(([k, v]) => typeof v === "number")
+                .filter(([v]) => typeof v === "number")
                 .map(([key, value]) => (
                   <option key={value} value={value}>
                     {key}
