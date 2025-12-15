@@ -476,13 +476,9 @@ import { AltaBaja, updateAmenities } from "@/actions/amenitiesActions";
 import { useSession } from "next-auth/react";
 
 import { IamenitiesRegister } from "@/types";
-import {
-  FiUser,
-  FiMail,
+import { 
   FiEdit2,
   FiSave,
-  FiX,
-  FiCheck,
   FiAlertCircle,
 } from "react-icons/fi";
 

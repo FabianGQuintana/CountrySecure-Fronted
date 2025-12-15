@@ -2,16 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { Eye, X, ChevronLeft, ChevronRight } from "lucide-react"
-import { OrderResponseDto } from "@/types/order"
+import { EntryPermissionResponseDto, orderStatusToText, permissionStatusToText } from "@/types/order"
+import Link from "next/link"
 
 export default function ServicesCardsPage() {
-  const [services, setServices] = useState<OrderResponseDto[]>([])
+  const [services, setServices] = useState<EntryPermissionResponseDto[]>([])
   const [search, setSearch] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
   const [loading, setLoading] = useState(true)
 
   const [selectedService, setSelectedService] =
-    useState<OrderResponseDto | null>(null)
+    useState<EntryPermissionResponseDto | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalLoading, setModalLoading] = useState(false)
 
@@ -24,7 +25,7 @@ export default function ServicesCardsPage() {
     const fetchServices = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_HOST}/api/order/paged`,
+          `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/type/Maintenance`,
           { cache: "no-store" }
         )
         const data = await res.json()
@@ -41,7 +42,7 @@ export default function ServicesCardsPage() {
 
   /* 🧠 Tipos únicos */
   const serviceTypes = useMemo(() => {
-    return Array.from(new Set(services.map((s) => String(s.orderType))))
+    return Array.from(new Set(services.map((s) => String(s.order.orderType))))
   }, [services])
 
   /* 🔍 Filtros */
@@ -49,11 +50,11 @@ export default function ServicesCardsPage() {
     setCurrentPage(1)
     return services.filter((s) => {
       const matchesSearch =
-        s.description.toLowerCase().includes(search.toLowerCase()) ||
-        s.supplierName.toLowerCase().includes(search.toLowerCase())
+        s.order.description?.toLowerCase().includes(search.toLowerCase()) ||
+        s.order.supplierName.toLowerCase().includes(search.toLowerCase())
 
       const matchesType =
-        typeFilter === "all" || String(s.orderType) === typeFilter
+        typeFilter === "all" || String(s.order.orderType) === typeFilter
 
       return matchesSearch && matchesType
     })
@@ -67,23 +68,7 @@ export default function ServicesCardsPage() {
     startIndex + pageSize
   )
 
-  /* 🧠 Abrir modal */
-  const openModal = async (id: string) => {
-    setModalOpen(true)
-    setModalLoading(true)
-
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/order/${id}`,
-        { cache: "no-store" }
-      )
-      const data = await res.json()
-      setSelectedService(data)
-    } finally {
-      setModalLoading(false)
-    }
-  }
-
+  
   if (loading) {
     return <p className="p-6">Cargando servicios...</p>
   }
@@ -137,42 +122,73 @@ export default function ServicesCardsPage() {
 
             {/* 👇 CLAVE PARA BOTÓN ABAJO */}
             <div className="p-5 flex flex-col h-full">
-              <div className="mb-3">
-                <h3 className="font-bold text-gray-900">
-                  {s.description}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {s.supplierName}
-                </p>
-              </div>
+            {/* SERVICIO */}
+            <div className="mb-2">
+              <h3 className="text-lg font-bold text-gray-900">
+                {s.order?.description}
+              </h3>
 
-              <p className="text-sm text-gray-600 mb-4">
-                Tipo: <b>{String(s.orderType)}</b>
+              <p className="text-sm text-gray-600">
+                Tipo:{" "}
+                <b>{String(s.order.orderType)}</b>
+              </p>
+            </div>
+
+            {/* VISITANTE (MÁS GRANDE) */}
+            <div className="mt-3">
+              <p className="text-sm text-gray-500">
+                Visitante
+              </p>
+              <p className="text-base font-semibold text-gray-800">
+                {s.visitor.nameVisit} {s.visitor.lastNameVisit}
               </p>
 
-              <span
-              className={`self-start inline-flex items-center mt-1 mb-2 px-3 py-0.5 text-sm font-semibold rounded-full border
+              
+            </div>
+
+            {/* RESIDENTE (MÁS CHICO) */}
+            <div className="mt-2">
+              <p className="text-sm text-gray-600">
+                Solicitado por{" "}
+                <b>
+                  {s.resident.name} {s.resident.lastname}
+                </b>
+              </p>
+            </div>
+
+            {/* FECHA VÁLIDA */}
+            <div className="mt-2 text-sm text-gray-500">
+              Válido desde{" "}
+              {new Date(s.validFrom).toLocaleDateString("es-AR")}
+            </div>
+
+            {/* STATUS */}
+            <span
+              className={`self-start mt-3 inline-flex px-3 py-1 text-sm font-semibold rounded-full border
                 ${
-                  s.status === "Active"
+                  String(s.status) === "Pending"
+                    ? "bg-yellow-100 text-yellow-700 border-yellow-200"
+                    : String(s.status) === "Completed"
                     ? "bg-green-100 text-green-700 border-green-200"
                     : "bg-red-100 text-red-700 border-red-200"
                 }
               `}
             >
-              {s.status}
+              {String(s.status)}
             </span>
 
 
 
-              {/* 👇 BOTÓN PEGADO ABAJO */}
-              <button
-                onClick={() => openModal(s.id)}
-                className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-              >
-                <Eye className="w-4 h-4" />
-                Ver detalle
-              </button>
-            </div>
+            {/* BOTÓN */}
+            <Link
+              href={`/securiti/services/${s.id}/`}
+              className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            >
+              <Eye className="w-4 h-4" />
+              Ver detalle
+            </Link>
+          </div>
+
           </div>
         ))}
       </div>
@@ -233,13 +249,13 @@ export default function ServicesCardsPage() {
               selectedService && (
                 <>
                   <h2 className="text-xl font-bold mb-2">
-                    {selectedService.description}
+                    {selectedService.order.description}
                   </h2>
                   <p className="text-gray-600">
-                    Proveedor: {selectedService.supplierName}
+                    Proveedor: {selectedService.order.supplierName}
                   </p>
                   <p className="mt-2">
-                    Tipo: <b>{String(selectedService.orderType)}</b>
+                    Tipo: <b>{String(selectedService.order.orderType)}</b>
                   </p>
                   <p className="mt-2">
                     Estado: <b>{selectedService.status}</b>
