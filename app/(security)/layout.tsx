@@ -1,6 +1,8 @@
+
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+import MenuSecurity from "@/components/Security/MenuSecurity";
 
 export default async function AdminLayout({
   children,
@@ -15,16 +17,17 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  // Si no es Admin -> acceso denegado
+  // Si no es Security -> acceso denegado
   if (user.role !== "Security") {
     redirect("/");
   }
 
-  // Si pasa las verificaciones (es Admin) -> mostrar layout
+  // Si pasa las verificaciones (es Security) -> mostrar layout
   return (
     <SessionProviderWrapper>
       <div className="min-h-screen flex flex-col">
         {" "}
+        <MenuSecurity/>{" "}
         <main className="flex-1 lg:ml-64 ">{children}</main>{" "}
       </div>
     </SessionProviderWrapper>

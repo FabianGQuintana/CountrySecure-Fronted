@@ -16,7 +16,7 @@ export default async function RootLayout({
       case "Admin":
         redirect("/admin/");
       case "Security":
-        redirect("/securiti/");
+        redirect("/security/");
       case "Resident":
         redirect("/resident/");
       default:
@@ -25,7 +25,7 @@ export default async function RootLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="bg-blue-800  min-h-screen flex flex-col">
       <Menu />
       <main className="flex-1">{children}</main>
       <Footer />
