@@ -32,7 +32,7 @@ export default async function Order() {
 
   return (
     <div className="flex-1 p-6">
-      <h1 className="text-2xl font-bold mb-4">Lotes</h1>
+      <h1 className="text-2xl font-bold mb-4">propiedades</h1>
 
       <table className="w-full border border-gray-300 rounded-lg">
         <thead className="bg-gray-100">
