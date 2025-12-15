@@ -47,8 +47,13 @@ export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
         <FiX size={20} />
       </button>
 
-      {/* Header */}
-      <div className="p-6 border-b border-slate-800/50 bg-gradient-to-br from-purple-500/5 to-transparent">
+      {/* Header → BOTÓN DASHBOARD */}
+      <Link
+        href="/resident/dashboard"
+        onClick={onClose}
+        className="p-6 border-b border-slate-800/50 bg-gradient-to-br from-purple-500/5 to-transparent
+                   hover:bg-slate-800/40 transition-colors cursor-pointer"
+      >
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
             <FiHome size={20} className="text-white" />
@@ -60,7 +65,7 @@ export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
             <p className="text-xs text-slate-400 font-medium">Residente</p>
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -86,7 +91,6 @@ export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
                   }
                 `}
               >
-                {/* Indicador activo */}
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
@@ -95,7 +99,6 @@ export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
                   />
                 )}
 
-                {/* Icono */}
                 <span
                   className={`
                     flex items-center justify-center w-9 h-9 rounded-lg
@@ -109,7 +112,6 @@ export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
                   {item.icon}
                 </span>
 
-                {/* Label */}
                 <span
                   className={`
                     font-medium text-sm tracking-wide transition-colors duration-300
@@ -119,7 +121,6 @@ export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
                   {item.label}
                 </span>
 
-                {/* Brillo hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 -translate-x-full group-hover:translate-x-full" />
               </Link>
             </motion.div>

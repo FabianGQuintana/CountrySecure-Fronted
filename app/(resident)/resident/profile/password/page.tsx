@@ -71,7 +71,7 @@ export default function ChangePasswordPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 p-4 sm:p-6 lg:p-10 lg:ml-64">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto mb-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}

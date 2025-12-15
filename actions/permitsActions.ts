@@ -1,12 +1,13 @@
 "use server";
 
 import { auth } from "@/auth";
+import { PermissionType } from "@/types";
 
 export async function createEntryPermission(data: {
     visitorName: string;
     visitorDni: string;
     visitorPhone?: string;
-    permissionType: string;
+    permissionType: PermissionType;
     validFrom: string;
     entryTime: string;
     departureTime?: string;
