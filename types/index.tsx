@@ -100,11 +100,10 @@ export interface ILoteForm {
 
 export enum PermissionType {
   Visit = 1,
-  Maintenance = 2,
+  Maintenance = 2
 }
-
-export interface IPropiedadRegister {
-  Street: string;
-  PropertyNumber: number;
-  LotId: string;
-}
+  export interface IPropiedadRegister {
+    Street: string;
+    PropertyNumber: number;
+    LotId: string;
+  }
