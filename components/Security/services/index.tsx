@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Eye, X, ChevronLeft, ChevronRight } from "lucide-react"
-import { EntryPermissionResponseDto, orderStatusToText, permissionStatusToText } from "@/types/order"
+import { Eye, History, ChevronLeft, ChevronRight } from "lucide-react"
+import { EntryPermissionResponseDto } from "@/types/order"
 import Link from "next/link"
 
 export default function ServicesCardsPage() {
@@ -68,39 +68,52 @@ export default function ServicesCardsPage() {
     startIndex + pageSize
   )
 
-  
   if (loading) {
-    return <p className="p-6">Cargando servicios...</p>
+    return <p className="p-6 text-gray-300">Cargando servicios...</p>
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto text-gray-200">
+
       {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Gestión de Servicios
-        </h1>
-        <p className="text-gray-500">
-          <span className="font-semibold text-blue-700">
-          {filteredServices.length}
-          </span> servicios encontrados
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Gestión de Servicios
+          </h1>
+          <p className="text-gray-300 text-lg">
+            <span className="font-semibold text-purple-400">
+              {filteredServices.length}
+            </span>{" "}
+            servicios encontrados
+          </p>
+        </div>
+
+        <Link
+          href="/security/logs?type=Maintenance&hideTypeFilter=true"
+          className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold"
+        >
+          <History size={18} />
+          Ver historial
+        </Link>
       </div>
 
+
+
       {/* FILTROS */}
-      <div className="bg-white rounded-lg p-4 shadow mb-8 flex flex-col md:flex-row gap-4">
+      <div className="bg-slate-800/70 border border-slate-700 rounded-xl p-4 shadow mb-8 flex flex-col md:flex-row gap-4">
         <input
           type="text"
           placeholder="Buscar por descripción o proveedor..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+          className="w-full md:flex-1 px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
 
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="w-full md:w-64 px-4 py-2 border rounded-lg bg-white focus:outline-none focus:ring focus:ring-indigo-300"
+          className="w-full md:w-64 px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
         >
           <option value="all">Todos los tipos</option>
           {serviceTypes.map((t) => (
@@ -112,157 +125,109 @@ export default function ServicesCardsPage() {
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {paginatedServices.map((s) => (
           <div
             key={s.id}
-            className="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden"
+            className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all"
           >
-            <div className="h-2 bg-linear-to-r from-blue-500 via-indigo-500 to-purple-500" />
+            <div className="h-2 bg-gradient-to-r from-purple-600 to-purple-800" />
 
-            {/* 👇 CLAVE PARA BOTÓN ABAJO */}
             <div className="p-5 flex flex-col h-full">
-            {/* SERVICIO */}
-            <div className="mb-2">
-              <h3 className="text-lg font-bold text-gray-900">
-                {s.order?.description}
-              </h3>
+              {/* SERVICIO */}
+              <div className="mb-2">
+                <h3 className="text-lg font-bold text-white">
+                  {s.order?.description}
+                </h3>
+                <p className="text-sm text-gray-400">
+                  Tipo: <b>{String(s.order.orderType)}</b>
+                </p>
+              </div>
 
-              <p className="text-sm text-gray-600">
-                Tipo:{" "}
-                <b>{String(s.order.orderType)}</b>
-              </p>
+              {/* VISITANTE */}
+              <div className="mt-3">
+                <p className="text-xs text-gray-500">Visitante</p>
+                <p className="text-base font-semibold text-gray-200">
+                  {s.visitor.nameVisit} {s.visitor.lastNameVisit}
+                </p>
+              </div>
+
+              {/* RESIDENTE */}
+              <div className="mt-2">
+                <p className="text-sm text-gray-400">
+                  Solicitado por{" "}
+                  <b>
+                    {s.resident.name} {s.resident.lastname}
+                  </b>
+                </p>
+              </div>
+
+              {/* FECHA */}
+              <div className="mt-2 text-sm text-gray-500">
+                Válido desde{" "}
+                {new Date(s.validFrom).toLocaleDateString("es-AR")}
+              </div>
+
+              {/* STATUS */}
+              <span
+                className={`self-start mt-3 px-3 py-1 text-xs font-bold rounded-lg border
+                  ${
+                    String(s.status) === "Pending"
+                      ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
+                      : String(s.status) === "Completed"
+                      ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50"
+                      : "bg-red-500/20 text-red-300 border-red-500/50"
+                  }
+                `}
+              >
+                {String(s.status)}
+              </span>
+
+              {/* BOTÓN */}
+              <Link
+                href={`/security/services/${s.id}/`}
+                className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-lg"
+              >
+                <Eye className="w-4 h-4" />
+                Ver detalle
+              </Link>
             </div>
-
-            {/* VISITANTE (MÁS GRANDE) */}
-            <div className="mt-3">
-              <p className="text-sm text-gray-500">
-                Visitante
-              </p>
-              <p className="text-base font-semibold text-gray-800">
-                {s.visitor.nameVisit} {s.visitor.lastNameVisit}
-              </p>
-
-              
-            </div>
-
-            {/* RESIDENTE (MÁS CHICO) */}
-            <div className="mt-2">
-              <p className="text-sm text-gray-600">
-                Solicitado por{" "}
-                <b>
-                  {s.resident.name} {s.resident.lastname}
-                </b>
-              </p>
-            </div>
-
-            {/* FECHA VÁLIDA */}
-            <div className="mt-2 text-sm text-gray-500">
-              Válido desde{" "}
-              {new Date(s.validFrom).toLocaleDateString("es-AR")}
-            </div>
-
-            {/* STATUS */}
-            <span
-              className={`self-start mt-3 inline-flex px-3 py-1 text-sm font-semibold rounded-full border
-                ${
-                  String(s.status) === "Pending"
-                    ? "bg-yellow-100 text-yellow-700 border-yellow-200"
-                    : String(s.status) === "Completed"
-                    ? "bg-green-100 text-green-700 border-green-200"
-                    : "bg-red-100 text-red-700 border-red-200"
-                }
-              `}
-            >
-              {String(s.status)}
-            </span>
-
-
-
-            {/* BOTÓN */}
-            <Link
-              href={`/security/services/${s.id}/`}
-              className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-            >
-              <Eye className="w-4 h-4" />
-              Ver detalle
-            </Link>
-          </div>
-
           </div>
         ))}
       </div>
-        {/* PAGINACIÓN */}
+
+      {/* PAGINACIÓN */}
       {totalPages > 1 && (
-      <div className="mt-8 bg-white rounded-xl p-5 border shadow-sm">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          
-          {/* INFO */}
-          <div className="text-gray-600 text-sm">
-            Página {currentPage} de {totalPages}
-          </div>
+        <div className="mt-8 bg-slate-800/70 border border-slate-700 rounded-xl p-5 shadow">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
 
-          {/* CONTROLES */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage((p) => p - 1)}
-              disabled={currentPage === 1}
-              className="flex items-center gap-1 px-3 py-1 rounded-lg border text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Anterior
-            </button>
+            <div className="text-gray-400 text-sm">
+              Página {currentPage} de {totalPages}
+            </div>
 
-            <button
-              onClick={() => setCurrentPage((p) => p + 1)}
-              disabled={currentPage === totalPages}
-              className="flex items-center gap-1 px-3 py-1 rounded-lg border text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Siguiente
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => p - 1)}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 hover:bg-slate-700 disabled:opacity-50"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Anterior
+              </button>
 
-          {/* INFO EXTRA */}
-          <div className="text-gray-500 text-sm">
-            {pageSize} servicios por página
-          </div>
-        </div>
-      </div>
-    )}
+              <button
+                onClick={() => setCurrentPage((p) => p + 1)}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 hover:bg-slate-700 disabled:opacity-50"
+              >
+                Siguiente
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
 
-
-      {/* MODAL */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl w-full max-w-lg p-6 relative">
-            <button
-              onClick={() => setModalOpen(false)}
-              className="absolute top-3 right-3"
-            >
-              <X />
-            </button>
-
-            {modalLoading ? (
-              <p>Cargando...</p>
-            ) : (
-              selectedService && (
-                <>
-                  <h2 className="text-xl font-bold mb-2">
-                    {selectedService.order.description}
-                  </h2>
-                  <p className="text-gray-600">
-                    Proveedor: {selectedService.order.supplierName}
-                  </p>
-                  <p className="mt-2">
-                    Tipo: <b>{String(selectedService.order.orderType)}</b>
-                  </p>
-                  <p className="mt-2">
-                    Estado: <b>{selectedService.status}</b>
-                  </p>
-                </>
-              )
-            )}
+            <div className="text-gray-500 text-sm">
+              {pageSize} servicios por página
+            </div>
           </div>
         </div>
       )}
