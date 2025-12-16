@@ -116,6 +116,28 @@ export default function MenuSecurity() {
                   Registro de Entradas
                 </span>
               </Link>
+
+              <Link
+                href="/security/services"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl
+                hover:bg-purple-600/20 hover:text-white transition"
+              >
+                <ClipboardList size={20} className="text-purple-400" />
+                <span className="text-sm font-medium">
+                  Services
+                </span>
+              </Link>
+
+              <Link
+                href="/security/securityCameras"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl
+                hover:bg-purple-600/20 hover:text-white transition"
+              >
+                <ClipboardList size={20} className="text-purple-400" />
+                <span className="text-sm font-medium">
+                  Camaras de Seguridad
+                </span>
+              </Link>
             </nav>
           </div>
 
