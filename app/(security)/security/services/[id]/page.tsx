@@ -39,7 +39,7 @@ export default function ServiceDetailPage() {
   if (!data) return notFound()
 
   return (
-    <div className="min-h-screen  px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-5 px-4 sm:px-6 lg:px-8">
       {/* HEADER + QR */}
     <section className="bg-white rounded-xl shadow-sm border p-6">
     <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">

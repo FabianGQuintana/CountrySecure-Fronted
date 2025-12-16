@@ -10,6 +10,7 @@ import {
   ClipboardList,
   LogOut,
   Shield,
+  Wrench ,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
@@ -136,6 +137,15 @@ export default function MenuSecurity() {
               <ClipboardList size={20} className="text-violet-600" />
               Registro de Entradas
             </Link>
+
+            <Link
+              href="/security/services"
+              className="flex items-center gap-3 py-3 px-4 rounded-xl text-gray-700 hover:text-purple-700 hover:bg-purple-50 transition"
+            >
+              <Wrench  size={20} className="text-purple-600" />
+              Servicios
+            </Link>
+
           </nav>
         </div>
 
