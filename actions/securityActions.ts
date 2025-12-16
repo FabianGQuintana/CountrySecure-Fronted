@@ -1,3 +1,5 @@
+ "use server";
+
 import { auth } from "@/auth";
 
 export async function checkout(id: string) {
@@ -5,7 +7,7 @@ export async function checkout(id: string) {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/${id}`,
+      `${process.env.API_HOST}/api/entrypermissions/${id}`,
       {
         method: "PATCH",
         cache: "no-store",
@@ -25,17 +27,20 @@ export async function checkout(id: string) {
 
 // Registrar entrada (check-in)
 export async function registerEntry({ 
-  permissionId, 
-  guardId 
+  permissionId
 }: { 
   permissionId: string; 
-  guardId: string 
+
 }) {
   const session = await auth();
-
+  const guardId = session?.id;
+    
+    if (!guardId) {
+        throw new Error("El guardia no está autenticado o su ID es desconocido.");
+    }
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/${permissionId}/checkin`,
+      `${process.env.API_HOST}/api/entrypermissions/${permissionId}/checkin`,
       {
         method: "PATCH",
         cache: "no-store",
@@ -63,17 +68,19 @@ export async function registerEntry({
 
 // Registrar salida (check-out)
 export async function registerDeparture({ 
-  permissionId, 
-  guardId 
+  permissionId
 }: { 
   permissionId: string; 
-  guardId: string 
 }) {
   const session = await auth();
-
+  const guardId = session?.id;
+    
+    if (!guardId) {
+        throw new Error("El guardia no está autenticado o su ID es desconocido.");
+    }
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/${permissionId}/checkout`,
+      `${process.env.API_HOST}/api/entrypermissions/${permissionId}/checkout`,
       {
         method: "PATCH",
         cache: "no-store",

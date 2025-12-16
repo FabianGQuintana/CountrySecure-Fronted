@@ -1,4 +1,4 @@
-import { auth } from "@/auth"
+  import { auth } from "@/auth"
 import ModalVisitDetails from "@/components/Security/ModalVisitDetails"
 import { notFound } from "next/navigation"
 
@@ -14,13 +14,9 @@ export default async function VisitDetailPage({ params }: PageProps) {
   // Await params en Next.js 15+
   const { id } = await params
 
-  // // Obtener el guardId del usuario en sesión
   const guardId = session?.id
 
-  // console.log("=== DEBUG VISIT DETAIL ===")
-  // console.log("Permission ID:", id)
-  // console.log("Guard ID:", guardId)
-  // console.log("API Host:", process.env.API_HOST)
+ 
   console.log("Access Token:", session?.accessToken ? "Presente" : "Ausente")
 
   let permission: any = null

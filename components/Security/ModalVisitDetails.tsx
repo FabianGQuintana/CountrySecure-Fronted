@@ -45,8 +45,8 @@ const ModalVisitDetails: React.FC<ModalVisitDetailsProps> = ({ permission, guard
 
     try {
       await registerEntry({
-        permissionId: permission.id,
-        guardId: guardId,
+        permissionId: permission.id
+        
       })
       
       setSuccessMessage("✓ Entrada registrada exitosamente")
@@ -75,8 +75,8 @@ const ModalVisitDetails: React.FC<ModalVisitDetailsProps> = ({ permission, guard
 
     try {
       await registerDeparture({
-        permissionId: permission.id,
-        guardId: guardId,
+        permissionId: permission.id
+        
       })
       
       setSuccessMessage("✓ Salida registrada exitosamente")
@@ -105,7 +105,7 @@ const ModalVisitDetails: React.FC<ModalVisitDetailsProps> = ({ permission, guard
         <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-800 text-white p-5 rounded-t-2xl flex justify-between items-center shadow-lg z-10">
           <div>
             <h2 className="text-2xl font-bold">Detalles del Permiso</h2>
-            <p className="text-purple-200 text-xs mt-1">ID: {permission.id.substring(0, 13)}...</p>
+            <p className="text-purple-200 text-xs mt-1">ID: {permission.id}</p>
           </div>
           <button 
             onClick={handleClose} 
