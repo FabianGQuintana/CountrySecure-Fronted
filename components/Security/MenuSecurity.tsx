@@ -8,10 +8,16 @@ import {
   ClipboardList,
   LogOut,
   Shield,
-  Wrench ,
+  Wrench, 
+  User,
+  Users,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import { GiFamilyHouse } from "react-icons/gi";
+import { GrServices } from "react-icons/gr";
+import { PiSecurityCamera } from "react-icons/pi";
+import { MdDesignServices } from "react-icons/md";
 
 export default function MenuSecurity() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -122,9 +128,20 @@ export default function MenuSecurity() {
                 className="flex items-center gap-3 px-4 py-3 rounded-xl
                 hover:bg-purple-600/20 hover:text-white transition"
               >
-                <ClipboardList size={20} className="text-purple-400" />
+                <MdDesignServices size={20} className="text-purple-400" />
                 <span className="text-sm font-medium">
                   Services
+                </span>
+              </Link>
+
+              <Link
+                href="/security/family-visits"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl
+                hover:bg-purple-600/20 hover:text-white transition"
+              >
+                <Users size={20} className="text-purple-400" />
+                <span className="text-sm font-medium">
+                  Visitas de Familiares
                 </span>
               </Link>
 
@@ -133,7 +150,7 @@ export default function MenuSecurity() {
                 className="flex items-center gap-3 px-4 py-3 rounded-xl
                 hover:bg-purple-600/20 hover:text-white transition"
               >
-                <ClipboardList size={20} className="text-purple-400" />
+                <PiSecurityCamera size={20} className="text-purple-400" />
                 <span className="text-sm font-medium">
                   Camaras de Seguridad
                 </span>
