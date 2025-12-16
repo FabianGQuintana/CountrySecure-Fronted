@@ -5,7 +5,7 @@ export default async function VisitsPageWrapper() {
   const session = await auth();
   const accessToken = session?.accessToken;
   const apiHost = process.env.API_HOST || ""; 
-
+  
   return (
     <VisitsPageClient
       initialToken={accessToken || null}

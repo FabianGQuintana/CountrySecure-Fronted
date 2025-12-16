@@ -8,6 +8,7 @@ interface PageProps {
   }>
 }
 
+
 export default async function VisitDetailPage({ params }: PageProps) {
   const session = await auth()
   

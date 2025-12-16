@@ -5,6 +5,14 @@ import { Clock, CheckCircle, AlertTriangle } from "lucide-react";
 import VisitCard from "@/components/Security/VisitCard";
 
 // ===============================================
+// Helpers
+// ===============================================
+const isExpired = (validTo?: string) => {
+  if (!validTo) return false;
+  return new Date(validTo).getTime() < Date.now();
+};
+
+// ===============================================
 // Props
 // ===============================================
 interface VisitsPageClientProps {
@@ -126,7 +134,24 @@ export default function VisitsPageClient({
         });
 
         const data = await response.json();
-        setVisitPermissions(data.items || []);
+
+        // 🔴 NORMALIZACIÓN DE ESTADO (FRONT)
+        const normalizedItems = (data.items || []).map((p: any) => {
+          const expired = isExpired(p.validTo);
+
+          return {
+            ...p,
+            isExpired: expired,
+            effectiveStatus:
+              expired && !p.entryTime
+                ? "Expired"
+                : p.entryTime && !p.departureTime
+                ? "Active"
+                : "Pending",
+          };
+        });
+
+        setVisitPermissions(normalizedItems);
         setTotalPermissions(data.totalCount || 0);
       } finally {
         setIsLoading(false);
@@ -152,12 +177,13 @@ export default function VisitsPageClient({
     [paginaActual, totalPages, fetchCurrentPagePermissions]
   );
 
+  // KPIs (ya sin contar vencidos)
   const activeVisits = visitPermissions.filter(
-    (p) => p.entryTime && !p.departureTime
+    (p) => p.effectiveStatus === "Active"
   ).length;
 
   const pendingVisits = visitPermissions.filter(
-    (p) => !p.entryTime
+    (p) => p.effectiveStatus === "Pending"
   ).length;
 
   if (totalPermissions === 0) {
@@ -197,7 +223,7 @@ export default function VisitsPageClient({
           />
         </div>
 
-        {/* Cards + overlay loading */}
+        {/* Cards */}
         <div className="relative bg-slate-800/50 rounded-xl border border-purple-500/20 p-6 space-y-6">
           <div
             className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300 ${
