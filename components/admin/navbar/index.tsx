@@ -191,8 +191,8 @@ export default function MenuAdmin() {
                 onClick={() => toggleSubMenu("amenities")}
                 className={`hover:cursor-pointer  w-full flex justify-between items-center py-3 px-4 rounded-xl transition-all duration-300 ${
                   openSubMenu === "amenities"
-                    ? "bg-linear-to-r from-fuchsia-500 to-purple-500 text-white shadow-md"
-                    : "hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 text-gray-700 hover:text-fuchsia-700 border border-transparent hover:border-fuchsia-100"
+                    ? "bg-linear-to-r from-purple-500 to-purple-500 text-white shadow-md"
+                    : "hover:bg-linear-to-r hover:from-purple-50 hover:to-purple-50 text-gray-700 hover:text-purple-700 border border-transparent hover:border-purple-100"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -201,7 +201,7 @@ export default function MenuAdmin() {
                     className={
                       openSubMenu === "amenities"
                         ? "text-white"
-                        : "text-fuchsia-600"
+                        : "text-purple-600"
                     }
                   />
                   <span
@@ -217,7 +217,7 @@ export default function MenuAdmin() {
                 {openSubMenu === "amenities" ? (
                   <ChevronUp size={18} className="text-white" />
                 ) : (
-                  <ChevronDown size={18} className="text-fuchsia-500" />
+                  <ChevronDown size={18} className="text-purple-500" />
                 )}
               </button>
               {openSubMenu === "amenities" && (
@@ -225,20 +225,20 @@ export default function MenuAdmin() {
                   <li>
                     <Link
                       href="/admin/amenities"
-                      className="flex items-center gap-2 text-gray-700 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-purple-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
                       Amenities
                     </Link>
                   </li>
                   {/* <li>
                     <Link
                       href="/admin/usuarios"
-                      className="flex items-center gap-2 text-gray-700 hover:text-fuchsia-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-fuchsia-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-fuchsia-500"
+                      className="flex items-center gap-2 text-gray-700 hover:text-purple-700 py-2 px-4 rounded-lg hover:bg-linear-to-r hover:from-purple-50 hover:to-purple-50 transition-colors ml-2 border-l-2 border-transparent hover:border-purple-500"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <div className="w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
                       Solicitudes
                     </Link>
                   </li> */}
