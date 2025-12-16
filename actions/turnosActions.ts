@@ -1,12 +1,12 @@
+"use server"
+
 import { auth } from "@/auth"
 
-export type CreateTurnDto = {
+export async function createTurn(payload: {
     amenityId: string
     startTime: string
     endTime: string
-}
-
-export async function createTurn(data: CreateTurnDto) {
+}) {
     const session = await auth()
 
     if (!session?.accessToken) {
@@ -14,27 +14,22 @@ export async function createTurn(data: CreateTurnDto) {
     }
 
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/turns`,
+        `${process.env.NEXT_PUBLIC_API_HOST}/api/Turn`,
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${session.accessToken}`,
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(payload),
             cache: "no-store",
         }
     )
 
     if (!res.ok) {
         const error = await res.json()
-
-        throw new Error(
-            error?.message ||
-            error?.detail ||
-            "Error al reservar el amenity"
-        )
+        throw new Error(error.message || "Error al crear turno")
     }
 
-    return await res.json()
+    return res.json()
 }
