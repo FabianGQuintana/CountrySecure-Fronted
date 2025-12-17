@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { updateAmenities } from "@/actions/amenitiesActions";
 import { useSession } from "next-auth/react";
 import { IamenitiesRegister } from "@/types";
-import {
+import { 
   FiEdit2,
   FiSave,
   FiAlertCircle,
