@@ -8,13 +8,16 @@ import {
     CreditCard,
     Calendar,
     FileText,
-    CheckCircle2,
     AlertCircle,
     Sparkles,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { createEntryPermission } from "@/actions/permitsActions"
 import { PermissionType } from "@/types"
+
+import { FormInput } from "@/components/permits/FormInput"
+import { FormTextarea } from "@/components/permits/FormTextArea"
+import { PermitsSuccess } from "@/components/permits/PermitsSuccess"
 
 type FormErrors = {
     [key: string]: string
@@ -36,7 +39,9 @@ export default function PermitsPage() {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >
     ) => {
         const { name, value } = e.target
         setFormData((prev) => ({
@@ -82,7 +87,9 @@ export default function PermitsPage() {
             await createEntryPermission(payload)
             setSubmitSuccess(true)
         } catch (error: any) {
-            setErrors({ form: error.message || "Error inesperado al solicitar el permiso" })
+            setErrors({
+                form: error.message || "Error inesperado al solicitar el permiso",
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -103,7 +110,9 @@ export default function PermitsPage() {
     }
 
     const now = new Date()
-    const minDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    const minDateTime = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+    )
         .toISOString()
         .slice(0, 16)
 
@@ -117,52 +126,10 @@ export default function PermitsPage() {
             >
                 <AnimatePresence mode="wait">
                     {submitSuccess ? (
-                        <motion.div
-                            key="success"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-white p-12 rounded-3xl shadow-2xl text-center border border-violet-100"
-                        >
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                            >
-                                <CheckCircle2 className="w-20 h-20 text-violet-600 mx-auto mb-6" />
-                            </motion.div>
-                            <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                                ¡Permiso Creado!
-                            </h2>
-                            <p className="text-gray-600">
-                                Permiso generado para{" "}
-                                <strong>
-                                    {formData.nameVisit} {formData.lastNameVisit}
-                                </strong>
-                            </p>
-
-                            {/* 👉 ACÁ VAN LOS BOTONES */}
-                            <div className="mt-8 space-y-3">
-                                <button
-                                    onClick={resetForm}
-                                    className="w-full py-3 rounded-xl font-semibold text-white
-                   bg-gradient-to-r from-violet-600 to-purple-600
-                   hover:shadow-lg"
-                                >
-                                    Crear otro permiso
-                                </button>
-
-                                <button
-                                    onClick={() => window.location.reload()}
-                                    className="w-full py-3 rounded-xl font-semibold
-                   border border-gray-300 text-gray-700
-                   hover:bg-gray-50"
-                                >
-                                    Recargar página
-                                </button>
-                            </div>
-
-                        </motion.div>
+                        <PermitsSuccess
+                            name={`${formData.nameVisit} ${formData.lastNameVisit}`}
+                            onReset={resetForm}
+                        />
                     ) : (
                         <motion.form
                             key="form"
@@ -185,83 +152,35 @@ export default function PermitsPage() {
                                 </p>
                             </div>
 
-                            {/* Nombre */}
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                    <User className="w-4 h-4 text-violet-600" />
-                                    Nombre del visitante
-                                    <span className="text-violet-600">*</span>
-                                </label>
-                                <input
-                                    name="nameVisit"
-                                    value={formData.nameVisit}
-                                    onChange={handleChange}
-                                    className={cn(
-                                        "w-full px-4 py-3.5 border-2 rounded-xl transition-all duration-200",
-                                        "focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500",
-                                        "hover:border-violet-300",
-                                        errors.nameVisit ? "border-red-300 bg-red-50/50" : "border-gray-200",
-                                    )}
-                                />
-                                {errors.nameVisit && (
-                                    <p className="text-sm text-red-600 flex items-center gap-1">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {errors.nameVisit}
-                                    </p>
-                                )}
-                            </div>
+                            <FormInput
+                                label="Nombre del visitante"
+                                icon={User}
+                                required
+                                name="nameVisit"
+                                value={formData.nameVisit}
+                                onChange={handleChange}
+                                error={errors.nameVisit}
+                            />
 
-                            {/* Apellido */}
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                    <User className="w-4 h-4 text-violet-600" />
-                                    Apellido del visitante
-                                    <span className="text-violet-600">*</span>
-                                </label>
-                                <input
-                                    name="lastNameVisit"
-                                    value={formData.lastNameVisit}
-                                    onChange={handleChange}
-                                    className={cn(
-                                        "w-full px-4 py-3.5 border-2 rounded-xl transition-all duration-200",
-                                        "focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500",
-                                        "hover:border-violet-300",
-                                        errors.lastNameVisit ? "border-red-300 bg-red-50/50" : "border-gray-200",
-                                    )}
-                                />
-                                {errors.lastNameVisit && (
-                                    <p className="text-sm text-red-600 flex items-center gap-1">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {errors.lastNameVisit}
-                                    </p>
-                                )}
-                            </div>
+                            <FormInput
+                                label="Apellido del visitante"
+                                icon={User}
+                                required
+                                name="lastNameVisit"
+                                value={formData.lastNameVisit}
+                                onChange={handleChange}
+                                error={errors.lastNameVisit}
+                            />
 
-                            {/* DNI */}
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                    <CreditCard className="w-4 h-4 text-violet-600" />
-                                    DNI del visitante
-                                    <span className="text-violet-600">*</span>
-                                </label>
-                                <input
-                                    name="dniVisit"
-                                    value={formData.dniVisit}
-                                    onChange={handleChange}
-                                    className={cn(
-                                        "w-full px-4 py-3.5 border-2 rounded-xl transition-all duration-200",
-                                        "focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500",
-                                        "hover:border-violet-300",
-                                        errors.dniVisit ? "border-red-300 bg-red-50/50" : "border-gray-200",
-                                    )}
-                                />
-                                {errors.dniVisit && (
-                                    <p className="text-sm text-red-600 flex items-center gap-1">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {errors.dniVisit}
-                                    </p>
-                                )}
-                            </div>
+                            <FormInput
+                                label="DNI del visitante"
+                                icon={CreditCard}
+                                required
+                                name="dniVisit"
+                                value={formData.dniVisit}
+                                onChange={handleChange}
+                                error={errors.dniVisit}
+                            />
 
                             {/* Tipo */}
                             <div className="space-y-2">
@@ -274,10 +193,13 @@ export default function PermitsPage() {
                                     name="permissionType"
                                     value={formData.permissionType}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 hover:border-violet-300"
+                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl bg-white
+                  focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500"
                                 >
                                     <option value={PermissionType.Visit}>Visita</option>
-                                    <option value={PermissionType.Maintenance}>Mantenimiento</option>
+                                    <option value={PermissionType.Maintenance}>
+                                        Mantenimiento
+                                    </option>
                                 </select>
                             </div>
 
@@ -288,49 +210,34 @@ export default function PermitsPage() {
                                     Vigencia
                                     <span className="text-violet-600">*</span>
                                 </label>
+
                                 <div className="grid grid-cols-2 gap-4">
-                                    <input
+                                    <FormInput
                                         type="datetime-local"
                                         name="validFrom"
-                                        min={minDateTime}
                                         value={formData.validFrom}
+                                        min={minDateTime}
                                         onChange={handleChange}
-                                        className={cn(
-                                            "w-full px-4 py-3.5 border-2 rounded-xl transition-all duration-200",
-                                            "focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500",
-                                            "hover:border-violet-300",
-                                            errors.validFrom ? "border-red-300 bg-red-50/50" : "border-gray-200",
-                                        )}
+                                        error={errors.validFrom}
                                     />
-                                    <input
+
+                                    <FormInput
                                         type="datetime-local"
                                         name="validTo"
-                                        min={formData.validFrom || minDateTime}
                                         value={formData.validTo}
+                                        min={formData.validFrom || minDateTime}
                                         onChange={handleChange}
-                                        className={cn(
-                                            "w-full px-4 py-3.5 border-2 rounded-xl transition-all duration-200",
-                                            "focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500",
-                                            "hover:border-violet-300",
-                                            errors.validTo ? "border-red-300 bg-red-50/50" : "border-gray-200",
-                                        )}
+                                        error={errors.validTo}
                                     />
                                 </div>
                             </div>
 
-                            {/* Motivo */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-gray-700">
-                                    Motivo del ingreso
-                                </label>
-                                <textarea
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                    rows={3}
-                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 hover:border-violet-300"
-                                />
-                            </div>
+                            <FormTextarea
+                                label="Motivo del ingreso"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                            />
 
                             {errors.form && (
                                 <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -345,10 +252,9 @@ export default function PermitsPage() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 className={cn(
-                                    "w-full py-4 rounded-xl font-semibold text-white shadow-lg transition-all duration-200",
+                                    "w-full py-4 rounded-xl font-semibold text-white shadow-lg",
                                     "bg-gradient-to-r from-violet-600 to-purple-600",
-                                    "hover:shadow-xl hover:shadow-violet-500/30",
-                                    "disabled:opacity-50 disabled:cursor-not-allowed",
+                                    "disabled:opacity-50 disabled:cursor-not-allowed"
                                 )}
                             >
                                 {isSubmitting ? "Enviando..." : "Solicitar Permiso"}
