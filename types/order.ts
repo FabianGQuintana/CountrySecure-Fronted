@@ -51,6 +51,7 @@ export interface EntryPermissionResponseDto {
   status: PermissionStatus;
 
   validFrom: string;          // DateTime → ISO string
+  validTo: string;            // DateTime → ISO string
   entryTime?: string | null;
 departureTime?: string | null;
 

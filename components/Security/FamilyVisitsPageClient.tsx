@@ -1,8 +1,14 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Eye, ChevronLeft, ChevronRight, Users } from "lucide-react"
+import { Eye, ChevronLeft, ChevronRight, Users, History } from "lucide-react"
 import Link from "next/link"
+
+/* 🔴 EXPIRADO */
+const isExpired = (status: string, validTo?: string) => {
+  if (status !== "Pending" || !validTo) return false
+  return new Date() > new Date(validTo)
+}
 
 interface Props {
   initialToken: string | null
@@ -90,6 +96,13 @@ export default function FamilyVisitsPageClient({
             visitas encontradas
           </p>
         </div>
+        <Link
+                  href="/security/logs?type=Visit&hideTypeFilter=true"
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold"
+                >
+                  <History size={18} />
+                  Ver historial
+                </Link>
       </div>
 
       {/* FILTRO */}
@@ -138,24 +151,31 @@ export default function FamilyVisitsPageClient({
                 {new Date(v.validFrom).toLocaleDateString("es-AR")}
               </div>
 
-              {/* ESTADO */}
-              <span
-                className={`self-start mt-3 px-3 py-1 text-xs font-bold rounded-lg border
-                  ${
-                    v.status === "Pending"
-                      ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
-                      : v.status === "Completed"
-                      ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50"
-                      : "bg-red-500/20 text-red-300 border-red-500/50"
-                  }
-                `}
-              >
-                {v.status}
-              </span>
+              {(() => {
+                const expired = isExpired(String(v.status), v.validTo)
+
+                return (
+                  <span
+                    className={`self-start mt-3 px-3 py-1 text-xs font-bold rounded-lg border
+                      ${
+                        expired
+                          ? "bg-red-600/30 text-red-300 border-red-500"
+                          : String(v.status) === "Pending"
+                          ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
+                          : String(v.status) === "Completed"
+                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50"
+                          : "bg-red-500/20 text-red-300 border-red-500/50"
+                      }
+                    `}
+                  >
+                    {expired ? "Expired" : String(v.status)}
+                  </span>
+                )
+              })()}
 
               {/* DETALLE */}
               <Link
-                    href={`/security/visit/${v.id}`}
+                    href={`/security/family-visits/${v.id}`}
                     className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2
                                 bg-gradient-to-r from-purple-600 to-purple-800
                                 hover:from-purple-500 hover:to-purple-700

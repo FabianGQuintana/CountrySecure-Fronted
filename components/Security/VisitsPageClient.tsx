@@ -195,7 +195,7 @@ export default function VisitsPageClient({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
+    <div className="min--screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-10">
         <h1 className="text-5xl font-bold text-white text-center">
           Visitas programadas para hoy

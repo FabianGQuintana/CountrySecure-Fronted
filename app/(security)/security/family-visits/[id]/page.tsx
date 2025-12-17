@@ -55,7 +55,7 @@ export default function ServiceDetailPage() {
             {/* TITULO + VOLVER */}
             <div className="flex items-start gap-4">
               <Link
-                href={`/security/services/`}
+                href={`/security/family-visits/`}
                 className="mt-1 inline-flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-gray-300 hover:bg-slate-700 hover:text-white transition"
               >
                 <ArrowLeft className="w-9 h-9" />
@@ -125,11 +125,7 @@ export default function ServiceDetailPage() {
             </Info>
 
             <Info label="DNI">{data.visitor.dniVisit}</Info>
-            <Info label="Servicio">{data.order.description}</Info>
-            <Info label="Proveedor">{data.order.supplierName}</Info>
-            <Info label="Tipo de servicio">
-              {String(data.order.orderType)}
-            </Info>
+            
           </div>
 
           {/* RESIDENTE */}

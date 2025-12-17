@@ -5,6 +5,13 @@ import { Eye, History, ChevronLeft, ChevronRight } from "lucide-react"
 import { EntryPermissionResponseDto } from "@/types/order"
 import Link from "next/link"
 
+
+/* 🔴 EXPIRADO */
+const isExpired = (status: string, validTo?: string) => {
+  if (status !== "Pending" || !validTo) return false
+  return new Date() > new Date(validTo)
+}
+
 export default function ServicesCardsPage() {
   const [services, setServices] = useState<EntryPermissionResponseDto[]>([])
   const [search, setSearch] = useState("")
@@ -131,6 +138,7 @@ export default function ServicesCardsPage() {
             key={s.id}
             className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all"
           >
+            
             <div className="h-2 bg-gradient-to-r from-purple-600 to-purple-800" />
 
             <div className="p-5 flex flex-col h-full">
@@ -169,19 +177,27 @@ export default function ServicesCardsPage() {
               </div>
 
               {/* STATUS */}
-              <span
-                className={`self-start mt-3 px-3 py-1 text-xs font-bold rounded-lg border
-                  ${
-                    String(s.status) === "Pending"
-                      ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
-                      : String(s.status) === "Completed"
-                      ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50"
-                      : "bg-red-500/20 text-red-300 border-red-500/50"
-                  }
-                `}
-              >
-                {String(s.status)}
-              </span>
+              {(() => {
+                const expired = isExpired(String(s.status), s.validTo)
+
+                return (
+                  <span
+                    className={`self-start mt-3 px-3 py-1 text-xs font-bold rounded-lg border
+                      ${
+                        expired
+                          ? "bg-red-600/30 text-red-300 border-red-500"
+                          : String(s.status) === "Pending"
+                          ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
+                          : String(s.status) === "Completed"
+                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50"
+                          : "bg-red-500/20 text-red-300 border-red-500/50"
+                      }
+                    `}
+                  >
+                    {expired ? "Expired" : String(s.status)}
+                  </span>
+                )
+              })()}
 
               {/* BOTÓN */}
               <Link

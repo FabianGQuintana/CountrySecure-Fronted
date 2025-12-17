@@ -214,10 +214,7 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
             </p>
           </div>
 
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white">
-            <Download size={18} className="mr-2" />
-            Exportar
-          </Button>
+          
         </div>
 
         {/* FILTROS */}
@@ -321,8 +318,6 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
                         "Residente",
                         "Entrada",
                         "Salida",
-                        "Guardia E.",
-                        "Guardia S.",
                         "Estado",
                       ].map((h) => (
                         <th
@@ -361,24 +356,6 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
                         <td className="px-4 py-4 text-gray-300">
                           {formatDateTime(log.departureTime)}
                         </td>
-
-                        <td className="px-4 py-4 text-gray-300">
-                          {log.checkOutGuard ? (
-                            `${log.checkOutGuard.name} ${log.checkOutGuard.lastname}`
-                          ) : (
-                            "—"
-                          )}
-                        </td>
-
-
-                        <td className="px-4 py-4 text-gray-300">
-                        {log.checkOutGuard ? (
-                          `${log.checkOutGuard.name} ${log.checkOutGuard.lastname}`
-                        ) : (
-                          "—"
-                        )}
-                      </td>
-
 
                         <td className="px-4 py-4">
                           {getStatusBadge(log.status)}
