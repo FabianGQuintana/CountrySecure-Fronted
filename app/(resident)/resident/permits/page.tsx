@@ -28,10 +28,6 @@ export default function PermitsPage() {
 
     const { data: session, status } = useSession()
 
-    if (status === "loading") {
-        return null
-    }
-
     const [formData, setFormData] = useState({
         permissionType: PermissionType.Visit,
         nameVisit: "",
@@ -119,6 +115,10 @@ export default function PermitsPage() {
             clearTimeout(t)
         }
     }, [formData.dniVisit])
+
+    if (status === "loading") {
+        return null
+    }
 
     const validate = () => {
         const next: FormErrors = {}
