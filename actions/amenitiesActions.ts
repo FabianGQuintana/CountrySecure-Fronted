@@ -3,6 +3,22 @@
 import { auth } from "@/auth";
 import { Iamenities, IamenitiesRegister } from "@/types";
 
+export type AmenityReferenceDto = {
+  id: string
+  amenityName: string
+}
+
+export type AmenityResponseDto = {
+  id: string
+  amenityName: string
+  description: string
+  schedules: string
+  capacity: number
+  status: string
+  createdAt: string
+  lastModifiedAt?: string | null
+}
+
 export async function newAmenities(data: Iamenities) {
   const session = await auth();
   try {
@@ -65,4 +81,39 @@ export async function AltaBaja(id: string) {
   } catch (error) {
     throw error;
   }
+}
+
+export async function getAmenities(): Promise<AmenityReferenceDto[]> {
+  const session = await auth()
+
+  if (!session?.accessToken) {
+    throw new Error("No autenticado")
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_HOST}/api/Amenity`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      cache: "no-store",
+    }
+  )
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => null)
+    throw new Error(error?.message || "Error al obtener los amenities")
+  }
+
+  const data: AmenityResponseDto[] = await res.json()
+
+  // 👉 Solo activos y mapeo liviano para UI
+  return data
+    .filter((a) => a.status === "Active")
+    .map((a) => ({
+      id: a.id,
+      amenityName: a.amenityName,
+    }))
 }

@@ -45,7 +45,7 @@ export default function Menu() {
             <HomeIcon className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-purple-500 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-purple-700 transition-all duration-300">
-            CountryClub
+            CountrySecure
           </span>
         </Link>
 

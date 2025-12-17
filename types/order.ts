@@ -53,7 +53,7 @@ export interface EntryPermissionResponseDto {
   validFrom: string;          // DateTime → ISO string
   validTo: string;            // DateTime → ISO string
   entryTime?: string | null;
-departureTime?: string | null;
+  departureTime?: string | null;
 
 
   baseEntityStatus: string;
@@ -103,5 +103,15 @@ export function permissionStatusToText(
     default:
       return "—"
   }
+}
+
+export type OrderResponseDto = {
+  id: string
+  description: string
+  supplierName: string
+  orderType: OrderStatus // o OrderStatus enum si lo tenés en el front
+  status: string
+  requests?: string[]
+  entryPermissions?: string[]
 }
 

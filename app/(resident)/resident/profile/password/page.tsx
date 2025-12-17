@@ -71,7 +71,7 @@ export default function ChangePasswordPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 p-4 sm:p-6 lg:p-10 lg:ml-64">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-purple-50/20 p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto mb-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -79,7 +79,7 @@ export default function ChangePasswordPage() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-cyan-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-purple-600 bg-clip-text text-transparent mb-2">
               Seguridad de la Cuenta
             </h1>
             <p className="text-slate-600 text-lg">Mantené tu cuenta protegida con una contraseña segura</p>
@@ -88,7 +88,7 @@ export default function ChangePasswordPage() {
           <motion.div whileHover={{ x: -5 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/resident/profile"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-medium hover:text-cyan-600 hover:border-cyan-300 transition shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-medium hover:text-purple-600 hover:border-purple-300 transition shadow-sm"
             >
               <FiArrowLeft /> Volver
             </Link>
@@ -105,7 +105,7 @@ export default function ChangePasswordPage() {
           className="lg:col-span-2 space-y-6"
         >
           {/* Card de seguridad */}
-          <Card className="bg-gradient-to-br from-cyan-500 to-blue-600 border-0 shadow-xl">
+          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
             <CardContent className="p-6 text-white">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -113,7 +113,7 @@ export default function ChangePasswordPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Protegé tu cuenta</h3>
-                  <p className="text-cyan-50 leading-relaxed">
+                  <p className="text-purple-50 leading-relaxed">
                     Una contraseña fuerte es tu primera línea de defensa contra accesos no autorizados.
                   </p>
                 </div>
@@ -130,19 +130,19 @@ export default function ChangePasswordPage() {
               </h3>
               <ul className="space-y-3 text-slate-600">
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0" />
                   <span>Usá una combinación única de letras, números y símbolos</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0" />
                   <span>Evitá usar información personal obvia</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0" />
                   <span>No reutilices contraseñas de otras cuentas</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0" />
                   <span>Cambiá tu contraseña regularmente</span>
                 </li>
               </ul>
@@ -170,8 +170,8 @@ export default function ChangePasswordPage() {
               <CardContent className="p-8 space-y-6">
                 <div className="border-b border-slate-200 pb-4 mb-2">
                   <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                    <div className="p-2 bg-cyan-100 rounded-lg">
-                      <FiLock className="text-cyan-600" size={24} />
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <FiLock className="text-purple-600" size={24} />
                     </div>
                     Cambiar Contraseña
                   </h2>
@@ -199,7 +199,7 @@ export default function ChangePasswordPage() {
                       value={formData.currentPassword}
                       onChange={handleChange}
                       className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
-                                            focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+                                            focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                             transition duration-200 bg-slate-50 hover:bg-white"
                       placeholder="Ingresá tu contraseña actual"
                     />
@@ -217,7 +217,7 @@ export default function ChangePasswordPage() {
                       value={formData.newPassword}
                       onChange={handleChange}
                       className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
-                                            focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+                                            focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                             transition duration-200 bg-slate-50 hover:bg-white"
                       placeholder="Creá una contraseña segura"
                     />
@@ -235,7 +235,7 @@ export default function ChangePasswordPage() {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
-                                            focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+                                            focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                             transition duration-200 bg-slate-50 hover:bg-white"
                       placeholder="Confirmá tu nueva contraseña"
                     />
@@ -253,7 +253,7 @@ export default function ChangePasswordPage() {
     py-4 rounded-xl font-semibold shadow-lg transition duration-300
     ${isSaving
                       ? "bg-slate-400 cursor-not-allowed"
-                      : "bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700"
+                      : "bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700"
                     }`}
                 >
                   <FiSave size={20} />
