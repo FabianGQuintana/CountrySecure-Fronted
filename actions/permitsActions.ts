@@ -5,12 +5,12 @@ import { PermissionType } from "@/types";
 
 type CreateEntryPermissionPayload = {
     permissionType: PermissionType
-    description?: string
+    description?: string | null
     validFrom: string
     validTo: string
-    nameVisit: string
-    lastNameVisit: string
-    dniVisit: number
+    visitId: string
+    userId: string
+    orderId?: string | null
 }
 
 export async function createEntryPermission(

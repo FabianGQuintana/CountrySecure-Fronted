@@ -1,267 +1,313 @@
 "use client"
 
-import type React from "react"
+import { useEffect, useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
 import {
+    CheckCircle2,
+    AlertCircle,
+    Send,
     User,
     CreditCard,
     Calendar,
+    Wrench,
     FileText,
-    AlertCircle,
-    Sparkles,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { createEntryPermission } from "@/actions/permitsActions"
+
 import { PermissionType } from "@/types"
+import { createEntryPermission } from "@/actions/permitsActions"
+import { createVisit, getVisitsByDni } from "@/actions/visitActions"
+import { getOrders } from "@/actions/orderActions"
+import { VisitResponseDto } from "@/types/visits"
+import { OrderResponseDto, OrderStatusText } from "@/types/order"
+import { useSession } from "next-auth/react"
 
-import { FormInput } from "@/components/permits/FormInput"
-import { FormTextarea } from "@/components/permits/FormTextArea"
-import { PermitsSuccess } from "@/components/permits/PermitsSuccess"
-
-type FormErrors = {
-    [key: string]: string
-}
+type FormErrors = Record<string, string>
 
 export default function PermitsPage() {
+
+    const { data: session, status } = useSession()
+
+    if (status === "loading") {
+        return null
+    }
+
     const [formData, setFormData] = useState({
+        permissionType: PermissionType.Visit,
         nameVisit: "",
         lastNameVisit: "",
         dniVisit: "",
-        permissionType: PermissionType.Visit,
+        orderId: "",
+        description: "",
         validFrom: "",
         validTo: "",
-        description: "",
     })
 
     const [errors, setErrors] = useState<FormErrors>({})
     const [submitSuccess, setSubmitSuccess] = useState(false)
+    const [submitError, setSubmitError] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >
-    ) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({
-            ...prev,
-            [name]: name === "permissionType" ? Number(value) : value,
-        }))
+    const [resolvedVisit, setResolvedVisit] = useState<VisitResponseDto | null>(null)
+    const [isResolvingVisit, setIsResolvingVisit] = useState(false)
 
-        if (errors[name]) {
-            setErrors((prev) => ({ ...prev, [name]: "" }))
-        }
+    const [orders, setOrders] = useState<OrderResponseDto[]>([])
+    const [isLoadingOrders, setIsLoadingOrders] = useState(false)
+
+    const isMaintenance = formData.permissionType === PermissionType.Maintenance
+
+    const setField = (key: keyof typeof formData, value: any) => {
+        setFormData((prev) => ({ ...prev, [key]: value }))
+        setErrors((prev) => {
+            const next = { ...prev }
+            delete next[key as string]
+            return next
+        })
+        setSubmitError(null)
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const minDateTimeLocal = useMemo(() => {
+        const d = new Date()
+        d.setSeconds(0, 0)
+        const pad = (n: number) => String(n).padStart(2, "0")
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+            d.getHours(),
+        )}:${pad(d.getMinutes())}`
+    }, [])
+
+    useEffect(() => {
+        if (!isMaintenance) return
+            ; (async () => {
+                try {
+                    setIsLoadingOrders(true)
+                    setOrders(await getOrders())
+                } catch (e: any) {
+                    setSubmitError(e?.message ?? "No se pudieron cargar los servicios.")
+                } finally {
+                    setIsLoadingOrders(false)
+                }
+            })()
+    }, [isMaintenance])
+
+    useEffect(() => {
+        setResolvedVisit(null)
         setErrors({})
+        setSubmitError(null)
+        setSubmitSuccess(false)
+        if (!isMaintenance) setFormData((p) => ({ ...p, orderId: "" }))
+    }, [formData.permissionType, isMaintenance])
+
+    useEffect(() => {
+        const dni = formData.dniVisit.trim()
+        const dniNum = Number(dni)
+        setResolvedVisit(null)
+        if (!dni || Number.isNaN(dniNum) || dni.length < 7) return
+
+        let cancelled = false
+        const t = setTimeout(async () => {
+            try {
+                setIsResolvingVisit(true)
+                const v = await getVisitsByDni(dniNum)
+                if (!cancelled) setResolvedVisit(v.length > 0 ? v[0] : null)
+            } finally {
+                if (!cancelled) setIsResolvingVisit(false)
+            }
+        }, 500)
+
+        return () => {
+            cancelled = true
+            clearTimeout(t)
+        }
+    }, [formData.dniVisit])
+
+    const validate = () => {
+        const next: FormErrors = {}
+
+        if (!formData.validFrom) next.validFrom = "Ingresá fecha/hora de inicio."
+        if (!formData.validTo) next.validTo = "Ingresá fecha/hora de fin."
+
+        if (formData.validFrom && formData.validTo) {
+            if (new Date(formData.validTo) <= new Date(formData.validFrom)) {
+                next.validTo = "Debe ser posterior a la fecha de inicio."
+            }
+        }
+
+        if (!formData.nameVisit.trim()) next.nameVisit = "Ingresá nombre."
+        if (!formData.lastNameVisit.trim()) next.lastNameVisit = "Ingresá apellido."
+        if (!formData.dniVisit.trim()) next.dniVisit = "Ingresá DNI."
+        if (isMaintenance && !formData.orderId) next.orderId = "Seleccioná un servicio."
+
+        setErrors(next)
+        return Object.keys(next).length === 0
+    }
+
+    const handleSubmit = async () => {
+        if (!validate()) return
         setIsSubmitting(true)
-
-        const newErrors: FormErrors = {}
-
-        if (!formData.nameVisit) newErrors.nameVisit = "El nombre es requerido"
-        if (!formData.lastNameVisit) newErrors.lastNameVisit = "El apellido es requerido"
-        if (!formData.dniVisit) newErrors.dniVisit = "El DNI es requerido"
-        if (!formData.validFrom) newErrors.validFrom = "Fecha desde requerida"
-        if (!formData.validTo) newErrors.validTo = "Fecha hasta requerida"
-
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors)
-            setIsSubmitting(false)
-            return
-        }
-
-        const payload = {
-            permissionType: formData.permissionType,
-            description: formData.description,
-            validFrom: formData.validFrom,
-            validTo: formData.validTo,
-            nameVisit: formData.nameVisit,
-            lastNameVisit: formData.lastNameVisit,
-            dniVisit: Number(formData.dniVisit),
-        }
+        setSubmitError(null)
+        setSubmitSuccess(false)
 
         try {
-            await createEntryPermission(payload)
-            setSubmitSuccess(true)
-        } catch (error: any) {
-            setErrors({
-                form: error.message || "Error inesperado al solicitar el permiso",
+            const dniNum = Number(formData.dniVisit)
+            let visitId = resolvedVisit?.visitId
+
+            if (!visitId) {
+                const v = await createVisit({
+                    nameVisit: formData.nameVisit.trim(),
+                    lastNameVisit: formData.lastNameVisit.trim(),
+                    dniVisit: dniNum,
+                })
+                visitId = v.visitId
+            }
+
+            const userId = session?.user?.id
+            if (!userId) throw new Error("Usuario no autenticado.")
+
+            await createEntryPermission({
+                permissionType: formData.permissionType,
+                description: formData.description || null,
+                validFrom: new Date(formData.validFrom).toISOString(),
+                validTo: new Date(formData.validTo).toISOString(),
+                visitId,
+                userId,
+                orderId: isMaintenance ? formData.orderId : null,
             })
+
+            setSubmitSuccess(true)
+        } catch (e: any) {
+            setSubmitError(e?.message ?? "Error al crear el permiso.")
         } finally {
             setIsSubmitting(false)
         }
     }
 
-    const resetForm = () => {
-        setFormData({
-            nameVisit: "",
-            lastNameVisit: "",
-            dniVisit: "",
-            permissionType: PermissionType.Visit,
-            validFrom: "",
-            validTo: "",
-            description: "",
-        })
-        setErrors({})
-        setSubmitSuccess(false)
-    }
 
-    const now = new Date()
-    const minDateTime = new Date(
-        now.getTime() - now.getTimezoneOffset() * 60000
-    )
-        .toISOString()
-        .slice(0, 16)
+    const inputBase =
+        "w-full px-4 py-3.5 border-2 rounded-xl transition-all duration-200 bg-white"
+    const inputOk =
+        "border-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 hover:border-violet-300"
+    const inputErr = "border-red-300 bg-red-50/50"
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-100 px-4 py-12">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="max-w-lg w-full"
-            >
-                <AnimatePresence mode="wait">
-                    {submitSuccess ? (
-                        <PermitsSuccess
-                            name={`${formData.nameVisit} ${formData.lastNameVisit}`}
-                            onReset={resetForm}
+            <motion.div className="max-w-3xl w-full bg-white rounded-3xl shadow-2xl border border-violet-100 p-10 space-y-6">
+                <h1 className="text-3xl font-bold text-gray-900">Permiso de ingreso</h1>
+                <p className="text-gray-600">Completá los datos para generar el permiso.</p>
+
+                {/* Tipo */}
+                <select
+                    value={formData.permissionType}
+                    onChange={(e) => setField("permissionType", Number(e.target.value))}
+                    className={cn(inputBase, inputOk)}
+                >
+                    <option value={PermissionType.Visit}>Visita</option>
+                    <option value={PermissionType.Maintenance}>Mantenimiento</option>
+                </select>
+
+                {/* Fechas */}
+                <div className="grid md:grid-cols-2 gap-4">
+                    {/* Desde */}
+                    <div className="space-y-1">
+                        <label className="text-sm font-semibold text-gray-700">
+                            Válido desde
+                        </label>
+                        <input
+                            type="datetime-local"
+                            min={minDateTimeLocal}
+                            value={formData.validFrom}
+                            onChange={(e) => setField("validFrom", e.target.value)}
+                            className={cn(inputBase, errors.validFrom ? inputErr : inputOk)}
                         />
-                    ) : (
-                        <motion.form
-                            key="form"
-                            onSubmit={handleSubmit}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl space-y-6 border border-violet-100"
-                        >
-                            {/* Header */}
-                            <div className="text-center mb-8">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 mb-4 shadow-lg shadow-violet-500/30">
-                                    <Sparkles className="w-8 h-8 text-white" />
-                                </div>
-                                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                    Solicitud de Permiso
-                                </h1>
-                                <p className="text-gray-600">
-                                    Completa el formulario para autorizar el ingreso
-                                </p>
-                            </div>
+                        {errors.validFrom && (
+                            <p className="text-sm text-red-600 flex items-center gap-1">
+                                <AlertCircle className="w-4 h-4" />
+                                {errors.validFrom}
+                            </p>
+                        )}
+                    </div>
 
-                            <FormInput
-                                label="Nombre del visitante"
-                                icon={User}
-                                required
-                                name="nameVisit"
-                                value={formData.nameVisit}
-                                onChange={handleChange}
-                                error={errors.nameVisit}
-                            />
+                    {/* Hasta */}
+                    <div className="space-y-1">
+                        <label className="text-sm font-semibold text-gray-700">
+                            Válido hasta
+                        </label>
+                        <input
+                            type="datetime-local"
+                            min={minDateTimeLocal}
+                            value={formData.validTo}
+                            onChange={(e) => setField("validTo", e.target.value)}
+                            className={cn(inputBase, errors.validTo ? inputErr : inputOk)}
+                        />
+                        {errors.validTo && (
+                            <p className="text-sm text-red-600 flex items-center gap-1">
+                                <AlertCircle className="w-4 h-4" />
+                                {errors.validTo}
+                            </p>
+                        )}
+                    </div>
+                </div>
 
-                            <FormInput
-                                label="Apellido del visitante"
-                                icon={User}
-                                required
-                                name="lastNameVisit"
-                                value={formData.lastNameVisit}
-                                onChange={handleChange}
-                                error={errors.lastNameVisit}
-                            />
 
-                            <FormInput
-                                label="DNI del visitante"
-                                icon={CreditCard}
-                                required
-                                name="dniVisit"
-                                value={formData.dniVisit}
-                                onChange={handleChange}
-                                error={errors.dniVisit}
-                            />
+                {/* Datos visita */}
+                <div className="grid md:grid-cols-3 gap-4">
+                    <input
+                        placeholder="Nombre"
+                        value={formData.nameVisit}
+                        onChange={(e) => setField("nameVisit", e.target.value)}
+                        className={cn(inputBase, errors.nameVisit ? inputErr : inputOk)}
+                    />
+                    <input
+                        placeholder="Apellido"
+                        value={formData.lastNameVisit}
+                        onChange={(e) => setField("lastNameVisit", e.target.value)}
+                        className={cn(inputBase, errors.lastNameVisit ? inputErr : inputOk)}
+                    />
+                    <input
+                        placeholder="DNI"
+                        value={formData.dniVisit}
+                        onChange={(e) => setField("dniVisit", e.target.value)}
+                        className={cn(inputBase, errors.dniVisit ? inputErr : inputOk)}
+                    />
+                </div>
 
-                            {/* Tipo */}
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                    <FileText className="w-4 h-4 text-violet-600" />
-                                    Tipo de permiso
-                                    <span className="text-violet-600">*</span>
-                                </label>
-                                <select
-                                    name="permissionType"
-                                    value={formData.permissionType}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl bg-white
-                  focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500"
-                                >
-                                    <option value={PermissionType.Visit}>Visita</option>
-                                    <option value={PermissionType.Maintenance}>
-                                        Mantenimiento
-                                    </option>
-                                </select>
-                            </div>
+                {/* Mantenimiento */}
+                {isMaintenance && (
+                    <select
+                        value={formData.orderId}
+                        onChange={(e) => setField("orderId", e.target.value)}
+                        className={cn(inputBase, errors.orderId ? inputErr : inputOk)}
+                    >
+                        <option value="">Seleccionar servicio</option>
+                        {orders.map((o) => (
+                            <option key={o.id} value={o.id}>
+                                {OrderStatusText[o.orderType]} — {o.supplierName}
+                            </option>
+                        ))}
+                    </select>
+                )}
 
-                            {/* Fechas */}
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                    <Calendar className="w-4 h-4 text-violet-600" />
-                                    Vigencia
-                                    <span className="text-violet-600">*</span>
-                                </label>
+                {/* Feedback */}
+                {submitError && (
+                    <div className="flex gap-2 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+                        <AlertCircle className="w-5 h-5" />
+                        {submitError}
+                    </div>
+                )}
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <FormInput
-                                        type="datetime-local"
-                                        name="validFrom"
-                                        value={formData.validFrom}
-                                        min={minDateTime}
-                                        onChange={handleChange}
-                                        error={errors.validFrom}
-                                    />
+                {submitSuccess && (
+                    <div className="flex gap-2 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700">
+                        <CheckCircle2 className="w-5 h-5" />
+                        Permiso creado correctamente.
+                    </div>
+                )}
 
-                                    <FormInput
-                                        type="datetime-local"
-                                        name="validTo"
-                                        value={formData.validTo}
-                                        min={formData.validFrom || minDateTime}
-                                        onChange={handleChange}
-                                        error={errors.validTo}
-                                    />
-                                </div>
-                            </div>
-
-                            <FormTextarea
-                                label="Motivo del ingreso"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                            />
-
-                            {errors.form && (
-                                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-                                    <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                                    <p className="text-sm text-red-700">{errors.form}</p>
-                                </div>
-                            )}
-
-                            <motion.button
-                                type="submit"
-                                disabled={isSubmitting}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={cn(
-                                    "w-full py-4 rounded-xl font-semibold text-white shadow-lg",
-                                    "bg-gradient-to-r from-violet-600 to-purple-600",
-                                    "disabled:opacity-50 disabled:cursor-not-allowed"
-                                )}
-                            >
-                                {isSubmitting ? "Enviando..." : "Solicitar Permiso"}
-                            </motion.button>
-                        </motion.form>
-                    )}
-                </AnimatePresence>
+                <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="w-full py-4 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 shadow-lg hover:shadow-violet-500/30 transition-all disabled:opacity-50"
+                >
+                    {isSubmitting ? "Creando permiso..." : "Crear permiso"}
+                </button>
             </motion.div>
         </div>
     )
