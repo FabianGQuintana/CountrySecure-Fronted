@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { FiAlertCircle } from "react-icons/fi";
 import { TablaAmenities } from "@/components/admin/amenities/tablaAmenities";
 
