@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/UI/card";
 import { Shield, Camera, Lock, Eye, Clock, UserCheck } from "lucide-react";
 import camerasImage from "@/public/images/camera.png";
 import gateImage from "@/public/images/gate.png";

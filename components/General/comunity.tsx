@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/UI/card";
 import { Heart, Users, Calendar, MessageCircle } from "lucide-react";
 
 const benefits = [
