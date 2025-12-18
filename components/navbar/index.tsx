@@ -1,50 +1,50 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import { MenuIcon, X, HomeIcon } from "lucide-react"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { MenuIcon, X, HomeIcon } from "lucide-react";
 
 export default function Menu() {
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const barraMenu = [
     { nombre: "", ruta: "/" },
     { nombre: "Seguridad", ruta: "/#seguridad" },
     { nombre: "Amenities", ruta: "/#amenities" },
     { nombre: "Comunidad", ruta: "/#comunidad" },
-  ]
+  ];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMobileMenuOpen(false)
+        setMobileMenuOpen(false);
       }
     }
 
     function handleResize() {
       if (window.innerWidth >= 768) {
-        setMobileMenuOpen(false)
+        setMobileMenuOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
-    window.addEventListener("resize", handleResize)
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <nav className="w-full sticky top-0 z-50 bg-sky-50/95 backdrop-blur-md border-b border-sky-100/50 shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="p-1.5 rounded-lg bg-gradient-to-br from-purple-400 to-purple-500 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-105">
+          <div className="p-1.5 rounded-lg bg-linear-to-br from-purple-400 to-purple-500 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-105">
             <HomeIcon className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-purple-500 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-purple-700 transition-all duration-300">
+          <span className="text-xl font-bold bg-linear-to-r from-purple-500 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-purple-700 transition-all duration-300">
             CountrySecure
           </span>
         </Link>
@@ -58,7 +58,7 @@ export default function Menu() {
                 className="relative text-slate-700 font-medium hover:text-purple-600 transition-colors duration-300 group"
               >
                 {nombre}
-                <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-gradient-to-r from-purple-500 to-purple-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-full" />
+                <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-linear-to-r from-purple-500 to-purple-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-full" />
               </Link>
             </li>
           ))}
@@ -71,7 +71,6 @@ export default function Menu() {
         >
           Ingresar
         </Link>
-
 
         {/* Botón hamburguesa */}
         <button
@@ -87,7 +86,7 @@ export default function Menu() {
       <div
         ref={menuRef}
         className={`
-          fixed inset-y-0 left-0 z-40 w-72 h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 shadow-2xl
+          fixed inset-y-0 left-0 z-40 w-72 h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 p-6 shadow-2xl
           transform transition-transform duration-300 ease-in-out
           ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
           md:hidden
@@ -97,7 +96,7 @@ export default function Menu() {
           {/* Mobile menu header */}
           <div className="mb-8 pb-6 border-b border-slate-700/50">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-gradient-to-br from-purple-400 to-purple-500 shadow-sm">
+              <div className="p-1.5 rounded-lg bg-linear-to-br from-purple-400 to-purple-500 shadow-sm">
                 <HomeIcon className="w-5 h-5 text-white" />
               </div>
               <span className="text-lg font-bold text-white">CountryClub</span>
@@ -123,7 +122,7 @@ export default function Menu() {
           <div className="pt-6 border-t border-slate-700/50">
             <Link
               href="/login"
-              className="flex items-center justify-center gap-2 text-white font-medium bg-gradient-to-r from-purple-500 to-purple-600 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
+              className="flex items-center justify-center gap-2 text-white font-medium bg-linear-to-r from-purple-500 to-purple-600 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
               onClick={() => setMobileMenuOpen(false)}
             >
               Ingresar
@@ -140,5 +139,5 @@ export default function Menu() {
         />
       )}
     </nav>
-  )
+  );
 }

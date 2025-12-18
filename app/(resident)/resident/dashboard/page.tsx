@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/UI/card";
 import { FiUser, FiHome, FiKey, FiCalendar } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -98,12 +98,10 @@ export default function ResidentDashboard() {
 
   return (
     <div className="flex bg-linear-to-br from-blue-50 via-white to-green-50">
-
       {/* <ResidentSidebar /> */}
 
       {/* CONTENEDOR PRINCIPAL */}
       <div className="w-full p-10 text-gray-900">
-
         {/* HEADER */}
         <div className="mb-12 flex flex-col">
           <motion.h1
@@ -199,7 +197,6 @@ export default function ResidentDashboard() {
             </motion.div>
           ))}
         </div>
-
       </div>
     </div>
   );

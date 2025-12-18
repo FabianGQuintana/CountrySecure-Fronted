@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { QRCodeCanvas } from "qrcode.react"
-import type React from "react"
-import { useEffect, useState, } from "react"
-import { useParams, notFound } from "next/navigation"
-import { EntryPermissionResponseDto } from "@/types/order"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { QRCodeCanvas } from "qrcode.react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useParams, notFound } from "next/navigation";
+import { EntryPermissionResponseDto } from "@/types/order";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function ServiceDetailPage() {
-  const params = useParams()
-  const id = params.id as string
+  const params = useParams();
+  const id = params.id as string;
 
-  const [data, setData] = useState<EntryPermissionResponseDto | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState<EntryPermissionResponseDto | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchService = async () => {
@@ -21,37 +21,32 @@ export default function ServiceDetailPage() {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/${id}`,
           { cache: "no-store" }
-        )
+        );
 
-        if (!res.ok) return notFound()
-        const json = await res.json()
-        setData(json)
+        if (!res.ok) return notFound();
+        const json = await res.json();
+        setData(json);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchService()
-  }, [id])
+    fetchService();
+  }, [id]);
 
-  if (loading) return <p className="p-6 text-gray-400">Cargando...</p>
-  if (!data) return notFound()
+  if (loading) return <p className="p-6 text-gray-400">Cargando...</p>;
+  if (!data) return notFound();
 
   return (
-    <div className="in-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
-
+    <div className="in-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
       {/* CARD PRINCIPAL */}
-      <section className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-xl">
-
+      <section className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-xl">
         {/* BARRA SUPERIOR */}
-        <div className="h-2 bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-2xl" />
+        <div className="h-2 bg-linear-to-r from-purple-600 to-purple-800 rounded-t-2xl" />
 
         <div className="p-6">
-
           {/* HEADER + QR */}
           <div className="flex flex-col md:flex-row justify-between gap-8">
-
-      
             {/* TITULO + VOLVER */}
             <div className="flex items-start gap-4">
               <Link
@@ -59,7 +54,6 @@ export default function ServiceDetailPage() {
                 className="mt-1 inline-flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-gray-300 hover:bg-slate-700 hover:text-white transition"
               >
                 <ArrowLeft className="w-9 h-9" />
-                
               </Link>
 
               <div>
@@ -71,7 +65,6 @@ export default function ServiceDetailPage() {
                 </p>
               </div>
             </div>
-
 
             {/* QR */}
             <div className="flex flex-col items-center">
@@ -127,9 +120,7 @@ export default function ServiceDetailPage() {
             <Info label="DNI">{data.visitor.dniVisit}</Info>
             <Info label="Servicio">{data.order.description}</Info>
             <Info label="Proveedor">{data.order.supplierName}</Info>
-            <Info label="Tipo de servicio">
-              {String(data.order.orderType)}
-            </Info>
+            <Info label="Tipo de servicio">{String(data.order.orderType)}</Info>
           </div>
 
           {/* RESIDENTE */}
@@ -145,7 +136,7 @@ export default function ServiceDetailPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }
 
 /* TITULO DE SECCION */
@@ -154,7 +145,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
     <h2 className="text-2xl font-bold text-white mt-10 mb-6 pb-3 border-b border-purple-500/30">
       {children}
     </h2>
-  )
+  );
 }
 
 /* INFO */
@@ -162,17 +153,15 @@ function Info({
   label,
   children,
 }: {
-  label: string
-  children: React.ReactNode
+  label: string;
+  children: React.ReactNode;
 }) {
   return (
     <div>
       <p className="text-xs font-semibold text-purple-400 uppercase tracking-wide">
         {label}
       </p>
-      <p className="text-base font-medium text-gray-200">
-        {children}
-      </p>
+      <p className="text-base font-medium text-gray-200">{children}</p>
     </div>
-  )
+  );
 }

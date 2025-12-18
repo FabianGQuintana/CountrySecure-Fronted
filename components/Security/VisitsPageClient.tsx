@@ -195,7 +195,7 @@ export default function VisitsPageClient({
   }
 
   return (
-    <div className="min--screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
+    <div className="min--screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-10">
         <h1 className="text-5xl font-bold text-white text-center">
           Visitas programadas para hoy
@@ -207,19 +207,19 @@ export default function VisitsPageClient({
             title="Permisos Hoy (Total)"
             value={totalPermissions}
             icon={Clock}
-            colorClass="bg-gradient-to-br from-purple-600 to-purple-800"
+            colorClass="bg-linear-to-br from-purple-600 to-purple-800"
           />
           <KpiCard
             title="Visitas Activas (Pág.)"
             value={activeVisits}
             icon={CheckCircle}
-            colorClass="bg-gradient-to-br from-emerald-600 to-teal-700"
+            colorClass="bg-linear-to-br from-emerald-600 to-teal-700"
           />
           <KpiCard
             title="Próximas Entradas (Pág.)"
             value={pendingVisits}
             icon={AlertTriangle}
-            colorClass="bg-gradient-to-br from-amber-500 to-orange-600"
+            colorClass="bg-linear-to-br from-amber-500 to-orange-600"
           />
         </div>
 

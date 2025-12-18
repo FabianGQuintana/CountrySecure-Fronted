@@ -1,4 +1,3 @@
-
 // import { auth } from "@/auth";
 // import { redirect } from "next/navigation";
 // import SessionProviderWrapper from "@/components/SessionProviderWrapper";
@@ -34,25 +33,24 @@
 //   );
 // }
 
-
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
-import SessionProviderWrapper from "@/components/SessionProviderWrapper"
-import MenuSecurity from "@/components/Security/MenuSecurity"
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+import MenuSecurity from "@/components/Security/MenuSecurity";
 
 export default async function AdminLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const user = await auth()
+  const user = await auth();
 
   if (!user) {
-    redirect("/login")
+    redirect("/login");
   }
 
   if (user.role !== "Security") {
-    redirect("/")
+    redirect("/");
   }
 
   return (
@@ -62,10 +60,10 @@ export default async function AdminLayout({
         <MenuSecurity />
 
         {/* Main content */}
-        <main className="flex-1 lg:ml-64 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 min-h-screen">
+        <main className="flex-1 lg:ml-64 bg-linear-to-br from-slate-900 via-slate-900 to-slate-800 min-h-screen">
           {children}
         </main>
       </div>
     </SessionProviderWrapper>
-  )
+  );
 }

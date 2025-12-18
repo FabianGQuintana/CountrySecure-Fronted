@@ -139,29 +139,36 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
         {/* Visitante o Proveedor */}
         {permission.type === "Visit" ? (
           <div className="flex items-start gap-3">
-            <User size={18} className="text-purple-400 mt-0.5 flex-shrink-0" />
+            <User size={18} className="text-purple-400 mt-0.5 shrink-0" />
             <div>
               <p className="text-sm font-semibold text-white">
-                {permission.visitor?.nameVisit} {permission.visitor?.lastNameVisit}
+                {permission.visitor?.nameVisit}{" "}
+                {permission.visitor?.lastNameVisit}
               </p>
-              <p className="text-xs text-gray-400">DNI: {permission.visitor?.dniVisit || "N/A"}</p>
+              <p className="text-xs text-gray-400">
+                DNI: {permission.visitor?.dniVisit || "N/A"}
+              </p>
             </div>
           </div>
         ) : permission.order ? (
           <div className="flex items-start gap-3">
-            <Truck size={18} className="text-orange-400 mt-0.5 flex-shrink-0" />
+            <Truck size={18} className="text-orange-400 mt-0.5 shrink-0" />
             <div>
               <p className="text-sm font-semibold text-white">
                 {permission.order.supplierName}
               </p>
-              <p className="text-xs text-gray-400">{permission.order.orderType}</p>
+              <p className="text-xs text-gray-400">
+                {permission.order.orderType}
+              </p>
             </div>
           </div>
         ) : (
           <div className="flex items-start gap-3">
-            <Package size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+            <Package size={18} className="text-gray-400 mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-white">Servicio sin detalles</p>
+              <p className="text-sm font-semibold text-white">
+                Servicio sin detalles
+              </p>
               <p className="text-xs text-gray-400">Información no disponible</p>
             </div>
           </div>
@@ -169,7 +176,7 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
 
         {/* Residente */}
         <div className="flex items-start gap-3">
-          <User size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+          <User size={18} className="text-gray-400 mt-0.5 shrink-0" />
           <div>
             <p className="text-xs text-gray-500">Residente</p>
             <p className="text-sm text-gray-300">
@@ -182,12 +189,16 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
 
         {/* Horario */}
         <div className="flex items-start gap-3">
-          <Calendar size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+          <Calendar size={18} className="text-gray-400 mt-0.5 shrink-0" />
           <div>
             <p className="text-xs text-gray-500">Horario programado</p>
-            <p className="text-sm text-gray-300">{formatDateTime(permission.validFrom)}</p>
+            <p className="text-sm text-gray-300">
+              {formatDateTime(permission.validFrom)}
+            </p>
             <p className="text-xs text-gray-400">hasta</p>
-            <p className="text-sm text-gray-300">{formatDateTime(permission.validTo)}</p>
+            <p className="text-sm text-gray-300">
+              {formatDateTime(permission.validTo)}
+            </p>
           </div>
         </div>
 
@@ -213,14 +224,14 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
       </div>
 
       {/* Button */}
-      <Button 
+      <Button
         onClick={handleViewMore}
-        className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
+        className="w-full bg-linear-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
       >
         Ver más
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default VisitCard
+export default VisitCard;

@@ -1,31 +1,30 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useState } from "react"
-import { Eye, History, ChevronLeft, ChevronRight } from "lucide-react"
-import { EntryPermissionResponseDto } from "@/types/order"
-import Link from "next/link"
-
+import { useEffect, useMemo, useState } from "react";
+import { Eye, History, ChevronLeft, ChevronRight } from "lucide-react";
+import { EntryPermissionResponseDto } from "@/types/order";
+import Link from "next/link";
 
 /* 🔴 EXPIRADO */
 const isExpired = (status: string, validTo?: string) => {
-  if (status !== "Pending" || !validTo) return false
-  return new Date() > new Date(validTo)
-}
+  if (status !== "Pending" || !validTo) return false;
+  return new Date() > new Date(validTo);
+};
 
 export default function ServicesCardsPage() {
-  const [services, setServices] = useState<EntryPermissionResponseDto[]>([])
-  const [search, setSearch] = useState("")
-  const [typeFilter, setTypeFilter] = useState("all")
-  const [loading, setLoading] = useState(true)
+  const [services, setServices] = useState<EntryPermissionResponseDto[]>([]);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
 
   const [selectedService, setSelectedService] =
-    useState<EntryPermissionResponseDto | null>(null)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalLoading, setModalLoading] = useState(false)
+    useState<EntryPermissionResponseDto | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
   // 🔢 PAGINACIÓN
-  const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 8
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
 
   /* 🔄 Traer servicios */
   useEffect(() => {
@@ -34,54 +33,53 @@ export default function ServicesCardsPage() {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/type/Maintenance`,
           { cache: "no-store" }
-        )
-        const data = await res.json()
-        setServices(data)
+        );
+        const data = await res.json();
+        setServices(data);
       } catch (e) {
-        console.error(e)
+        console.error(e);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchServices()
-  }, [])
+    fetchServices();
+  }, []);
 
   /* 🧠 Tipos únicos */
   const serviceTypes = useMemo(() => {
-    return Array.from(new Set(services.map((s) => String(s.order.orderType))))
-  }, [services])
+    return Array.from(new Set(services.map((s) => String(s.order.orderType))));
+  }, [services]);
 
   /* 🔍 Filtros */
   const filteredServices = useMemo(() => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     return services.filter((s) => {
       const matchesSearch =
         s.order.description?.toLowerCase().includes(search.toLowerCase()) ||
-        s.order.supplierName.toLowerCase().includes(search.toLowerCase())
+        s.order.supplierName.toLowerCase().includes(search.toLowerCase());
 
       const matchesType =
-        typeFilter === "all" || String(s.order.orderType) === typeFilter
+        typeFilter === "all" || String(s.order.orderType) === typeFilter;
 
-      return matchesSearch && matchesType
-    })
-  }, [services, search, typeFilter])
+      return matchesSearch && matchesType;
+    });
+  }, [services, search, typeFilter]);
 
   /* 📄 Datos paginados */
-  const totalPages = Math.ceil(filteredServices.length / pageSize)
-  const startIndex = (currentPage - 1) * pageSize
+  const totalPages = Math.ceil(filteredServices.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
   const paginatedServices = filteredServices.slice(
     startIndex,
     startIndex + pageSize
-  )
+  );
 
   if (loading) {
-    return <p className="p-6 text-gray-300">Cargando servicios...</p>
+    return <p className="p-6 text-gray-300">Cargando servicios...</p>;
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto text-gray-200">
-
       {/* HEADER */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -104,8 +102,6 @@ export default function ServicesCardsPage() {
           Ver historial
         </Link>
       </div>
-
-
 
       {/* FILTROS */}
       <div className="bg-slate-800/70 border border-slate-700 rounded-xl p-4 shadow mb-8 flex flex-col md:flex-row gap-4">
@@ -136,10 +132,9 @@ export default function ServicesCardsPage() {
         {paginatedServices.map((s) => (
           <div
             key={s.id}
-            className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all"
+            className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all"
           >
-            
-            <div className="h-2 bg-gradient-to-r from-purple-600 to-purple-800" />
+            <div className="h-2 bg-linear-to-r from-purple-600 to-purple-800" />
 
             <div className="p-5 flex flex-col h-full">
               {/* SERVICIO */}
@@ -172,13 +167,12 @@ export default function ServicesCardsPage() {
 
               {/* FECHA */}
               <div className="mt-2 text-sm text-gray-500">
-                Válido desde{" "}
-                {new Date(s.validFrom).toLocaleDateString("es-AR")}
+                Válido desde {new Date(s.validFrom).toLocaleDateString("es-AR")}
               </div>
 
               {/* STATUS */}
               {(() => {
-                const expired = isExpired(String(s.status), s.validTo)
+                const expired = isExpired(String(s.status), s.validTo);
 
                 return (
                   <span
@@ -196,13 +190,13 @@ export default function ServicesCardsPage() {
                   >
                     {expired ? "Expired" : String(s.status)}
                   </span>
-                )
+                );
               })()}
 
               {/* BOTÓN */}
               <Link
                 href={`/security/services/${s.id}/`}
-                className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-lg"
+                className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-linear-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-lg font-semibold transition-all shadow-lg"
               >
                 <Eye className="w-4 h-4" />
                 Ver detalle
@@ -216,7 +210,6 @@ export default function ServicesCardsPage() {
       {totalPages > 1 && (
         <div className="mt-8 bg-slate-800/70 border border-slate-700 rounded-xl p-5 shadow">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-
             <div className="text-gray-400 text-sm">
               Página {currentPage} de {totalPages}
             </div>
@@ -255,5 +248,5 @@ export default function ServicesCardsPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

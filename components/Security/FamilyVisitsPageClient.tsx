@@ -1,87 +1,87 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useState } from "react"
-import { Eye, ChevronLeft, ChevronRight, Users, History } from "lucide-react"
-import Link from "next/link"
+import { useEffect, useMemo, useState } from "react";
+import { Eye, ChevronLeft, ChevronRight, Users, History } from "lucide-react";
+import Link from "next/link";
 
 /* 🔴 EXPIRADO */
 const isExpired = (status: string, validTo?: string) => {
-  if (status !== "Pending" || !validTo) return false
-  return new Date() > new Date(validTo)
-}
+  if (status !== "Pending" || !validTo) return false;
+  return new Date() > new Date(validTo);
+};
 
 interface Props {
-  initialToken: string | null
-  apiHost: string
+  initialToken: string | null;
+  apiHost: string;
 }
 
 export default function FamilyVisitsPageClient({
   initialToken,
   apiHost,
 }: Props) {
-  const [visits, setVisits] = useState<any[]>([])
-  const [search, setSearch] = useState("")
-  const [loading, setLoading] = useState(true)
+  const [visits, setVisits] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // 📄 PAGINACIÓN
-  const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 8
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
 
   /* 🔄 Fetch visitas familiares */
   useEffect(() => {
     const fetchVisits = async () => {
       try {
-        const res = await fetch(
-          `${apiHost}/api/entrypermissions/type/Visit`,
-          {
-            headers: {
-              Authorization: `Bearer ${initialToken}`,
-            },
-            cache: "no-store",
-          }
-        )
+        const res = await fetch(`${apiHost}/api/entrypermissions/type/Visit`, {
+          headers: {
+            Authorization: `Bearer ${initialToken}`,
+          },
+          cache: "no-store",
+        });
 
-        const data = await res.json()
-        setVisits(Array.isArray(data) ? data : data.items || [])
+        const data = await res.json();
+        setVisits(Array.isArray(data) ? data : data.items || []);
       } catch (e) {
-        console.error(e)
+        console.error(e);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchVisits()
-  }, [apiHost, initialToken])
+    fetchVisits();
+  }, [apiHost, initialToken]);
 
   /* 🔍 Filtro búsqueda */
   const filteredVisits = useMemo(() => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     return visits.filter((v) => {
-      const visitorName = `${v.visitor?.nameVisit ?? ""} ${v.visitor?.lastNameVisit ?? ""}`
-      const residentName = `${v.resident?.name ?? ""} ${v.resident?.lastname ?? ""}`
+      const visitorName = `${v.visitor?.nameVisit ?? ""} ${
+        v.visitor?.lastNameVisit ?? ""
+      }`;
+      const residentName = `${v.resident?.name ?? ""} ${
+        v.resident?.lastname ?? ""
+      }`;
 
       return (
         visitorName.toLowerCase().includes(search.toLowerCase()) ||
         residentName.toLowerCase().includes(search.toLowerCase())
-      )
-    })
-  }, [visits, search])
+      );
+    });
+  }, [visits, search]);
 
   /* 📄 Datos paginados */
-  const totalPages = Math.ceil(filteredVisits.length / pageSize)
-  const startIndex = (currentPage - 1) * pageSize
+  const totalPages = Math.ceil(filteredVisits.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
   const paginatedVisits = filteredVisits.slice(
     startIndex,
     startIndex + pageSize
-  )
+  );
 
   if (loading) {
-    return <p className="p-6 text-gray-300">Cargando visitas familiares...</p>
+    return <p className="p-6 text-gray-300">Cargando visitas familiares...</p>;
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto text-gray-200">
-
       {/* HEADER */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -97,12 +97,12 @@ export default function FamilyVisitsPageClient({
           </p>
         </div>
         <Link
-                  href="/security/logs?type=Visit&hideTypeFilter=true"
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold"
-                >
-                  <History size={18} />
-                  Ver historial
-                </Link>
+          href="/security/logs?type=Visit&hideTypeFilter=true"
+          className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold"
+        >
+          <History size={18} />
+          Ver historial
+        </Link>
       </div>
 
       {/* FILTRO */}
@@ -121,12 +121,11 @@ export default function FamilyVisitsPageClient({
         {paginatedVisits.map((v) => (
           <div
             key={v.id}
-            className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all"
+            className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all"
           >
-            <div className="h-2 bg-gradient-to-r from-indigo-600 to-purple-700" />
+            <div className="h-2 bg-linear-to-r from-indigo-600 to-purple-700" />
 
             <div className="p-5 flex flex-col h-full">
-
               {/* VISITANTE */}
               <div>
                 <h3 className="text-lg font-bold text-white">
@@ -147,12 +146,11 @@ export default function FamilyVisitsPageClient({
 
               {/* FECHA */}
               <div className="mt-2 text-sm text-gray-500">
-                Válido desde{" "}
-                {new Date(v.validFrom).toLocaleDateString("es-AR")}
+                Válido desde {new Date(v.validFrom).toLocaleDateString("es-AR")}
               </div>
 
               {(() => {
-                const expired = isExpired(String(v.status), v.validTo)
+                const expired = isExpired(String(v.status), v.validTo);
 
                 return (
                   <span
@@ -170,20 +168,20 @@ export default function FamilyVisitsPageClient({
                   >
                     {expired ? "Expired" : String(v.status)}
                   </span>
-                )
+                );
               })()}
 
               {/* DETALLE */}
               <Link
-                    href={`/security/family-visits/${v.id}`}
-                    className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2
-                                bg-gradient-to-r from-purple-600 to-purple-800
+                href={`/security/family-visits/${v.id}`}
+                className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2
+                                bg-linear-to-r from-purple-600 to-purple-800
                                 hover:from-purple-500 hover:to-purple-700
                                 text-white rounded-lg font-semibold transition-all"
-                    >
-                    <Eye className="w-4 h-4" />
-                    Ver detalle
-                    </Link>
+              >
+                <Eye className="w-4 h-4" />
+                Ver detalle
+              </Link>
             </div>
           </div>
         ))}
@@ -230,5 +228,5 @@ export default function FamilyVisitsPageClient({
         </div>
       )}
     </div>
-  )
+  );
 }

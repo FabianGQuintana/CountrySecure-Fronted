@@ -1,45 +1,56 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { FiUser, FiMail, FiPhone, FiHome, FiSettings, FiArrowRight, FiShield, FiEdit } from "react-icons/fi"
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { useEffect, useState } from "react"
-import { getCurrentUser } from "@/actions/usuariosActions"
+import { motion } from "framer-motion";
+import {
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiHome,
+  FiSettings,
+  FiArrowRight,
+  FiShield,
+  FiEdit,
+} from "react-icons/fi";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/UI/card";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "@/actions/usuariosActions";
 
 export default function ResidentProfile() {
-
-  const properties = [{ street: "Av. Principal", number: 123, status: "Activa" }, { street: "Calle Los Robles", number: 87, status: "Activa" },]
+  const properties = [
+    { street: "Av. Principal", number: 123, status: "Activa" },
+    { street: "Calle Los Robles", number: 87, status: "Activa" },
+  ];
 
   const [user, setUser] = useState<{
-    name: string
-    lastname: string
-    dni: number
-    phone: string
-    email: string
-  } | null>(null)
+    name: string;
+    lastname: string;
+    dni: number;
+    phone: string;
+    email: string;
+  } | null>(null);
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const data = await getCurrentUser()
-        setUser(data)
+        const data = await getCurrentUser();
+        setUser(data);
       } catch (error) {
-        console.error("Error cargando usuario", error)
+        console.error("Error cargando usuario", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    loadUser()
-  }, [])
+    loadUser();
+  }, []);
 
-  const initials = `${user?.name[0] || ""}${user?.lastname[0] || ""}`
+  const initials = `${user?.name[0] || ""}${user?.lastname[0] || ""}`;
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-purple-50/30 to-purple-100/20 p-4 sm:p-6 lg:p-10">
+    <div className="bg-linear-to-br from-slate-50 via-purple-50/30 to-purple-100/20 p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto mb-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -50,14 +61,16 @@ export default function ResidentProfile() {
             <h1 className="text-4xl font-bold text-purple-600 mb-2">
               Mi Perfil
             </h1>
-            <p className="text-slate-600 text-lg">Información personal y de residencia</p>
+            <p className="text-slate-600 text-lg">
+              Información personal y de residencia
+            </p>
           </div>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/resident/profile/edit"
               className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white 
-                            bg-gradient-to-r from-purple-500 to-purple-600 shadow-lg hover:shadow-xl 
+                            bg-linear-to-r from-purple-500 to-purple-600 shadow-lg hover:shadow-xl 
                             transition duration-300 hover:from-purple-600 hover:to-purple-700"
             >
               <FiEdit size={18} />
@@ -75,7 +88,7 @@ export default function ResidentProfile() {
           transition={{ delay: 0.1 }}
           className="lg:col-span-2 space-y-6"
         >
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
+          <Card className="bg-linear-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
             <CardContent className="p-8">
               <div className="flex flex-col items-center text-center">
                 <div
@@ -99,7 +112,9 @@ export default function ResidentProfile() {
                   <FiShield className="text-purple-600" size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800 mb-1">Seguridad</h3>
+                  <h3 className="text-lg font-bold text-slate-800 mb-1">
+                    Seguridad
+                  </h3>
                   <p className="text-sm text-slate-600">Protegé tu cuenta</p>
                 </div>
               </div>
@@ -146,14 +161,20 @@ export default function ResidentProfile() {
 
               <div className="space-y-4">
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                  <p className="text-sm font-semibold text-slate-500 mb-1">Nombre completo</p>
+                  <p className="text-sm font-semibold text-slate-500 mb-1">
+                    Nombre completo
+                  </p>
                   <p className="text-lg text-slate-800 font-medium">
                     {user?.name} {user?.lastname}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                  <p className="text-sm font-semibold text-slate-500 mb-1">DNI</p>
-                  <p className="text-lg text-slate-800 font-medium">{user?.dni}</p>
+                  <p className="text-sm font-semibold text-slate-500 mb-1">
+                    DNI
+                  </p>
+                  <p className="text-lg text-slate-800 font-medium">
+                    {user?.dni}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -172,20 +193,24 @@ export default function ResidentProfile() {
 
               <div className="space-y-4">
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex items-center gap-4">
-                  <div className="p-3 bg-purple-100 rounded-lg flex-shrink-0">
+                  <div className="p-3 bg-purple-100 rounded-lg shrink-0">
                     <FiMail className="text-purple-600" size={20} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">Email</p>
+                    <p className="text-sm font-semibold text-slate-500">
+                      Email
+                    </p>
                     <p className="text-slate-800 font-medium">{user?.email}</p>
                   </div>
                 </div>
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex items-center gap-4">
-                  <div className="p-3 bg-green-100 rounded-lg flex-shrink-0">
+                  <div className="p-3 bg-green-100 rounded-lg shrink-0">
                     <FiPhone className="text-green-600" size={20} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">Teléfono</p>
+                    <p className="text-sm font-semibold text-slate-500">
+                      Teléfono
+                    </p>
                     <p className="text-slate-800 font-medium">{user?.phone}</p>
                   </div>
                 </div>
@@ -205,8 +230,10 @@ export default function ResidentProfile() {
               </div>
 
               {properties.length === 1 ? (
-                <div className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-purple-50 border border-purple-200">
-                  <p className="text-sm font-semibold text-slate-500 mb-1">Dirección</p>
+                <div className="p-6 rounded-xl bg-linear-to-br from-purple-50 to-purple-50 border border-purple-200">
+                  <p className="text-sm font-semibold text-slate-500 mb-1">
+                    Dirección
+                  </p>
                   <p className="text-xl text-slate-800 font-bold mb-3">
                     {properties[0].street} {properties[0].number}
                   </p>
@@ -242,5 +269,5 @@ export default function ResidentProfile() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

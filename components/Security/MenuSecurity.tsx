@@ -8,7 +8,7 @@ import {
   ClipboardList,
   LogOut,
   Shield,
-  Wrench, 
+  Wrench,
   User,
   Users,
 } from "lucide-react";
@@ -59,16 +59,16 @@ export default function MenuSecurity() {
     <>
       {/* Botón menú móvil */}
       {!isMobileMenuOpen && (
-  <button
-    onClick={() => setIsMobileMenuOpen(true)}
-    className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl 
-              bg-gradient-to-r from-purple-600 to-indigo-600 
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl 
+              bg-linear-to-r from-purple-600 to-indigo-600 
               text-white shadow-lg"
-    aria-label="Abrir menú"
-  >
-    <Menu size={22} />
-  </button>
-)}
+          aria-label="Abrir menú"
+        >
+          <Menu size={22} />
+        </button>
+      )}
 
       {/* Sidebar */}
       <aside
@@ -76,13 +76,17 @@ export default function MenuSecurity() {
         className={`fixed inset-y-0 left-0 z-40 w-64 h-screen bg-slate-900 text-gray-300
         border-r border-purple-500/20 shadow-xl
         transform transition-transform duration-300
-        ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        ${
+          isMobileMenuOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
+        }`}
       >
         <div className="flex flex-col h-full justify-between p-6">
           {/* ===== USER HEADER ===== */}
           <div>
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-xl shadow-lg">
+              <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-xl shadow-lg">
                 🛡️
               </div>
 
@@ -90,9 +94,7 @@ export default function MenuSecurity() {
                 <p className="text-white font-semibold">
                   {session.user.name || "Administrador"}
                 </p>
-                <p className="text-xs text-gray-400">
-                  {session.user.email}
-                </p>
+                <p className="text-xs text-gray-400">{session.user.email}</p>
                 <p className="text-[11px] text-purple-400 mt-1">
                   Panel de Seguridad
                 </p>
@@ -107,9 +109,7 @@ export default function MenuSecurity() {
                 hover:bg-purple-600/20 hover:text-white transition"
               >
                 <CalendarCheck size={20} className="text-purple-400" />
-                <span className="text-sm font-medium">
-                  Visitas de Hoy
-                </span>
+                <span className="text-sm font-medium">Visitas de Hoy</span>
               </Link>
 
               <Link
@@ -129,9 +129,7 @@ export default function MenuSecurity() {
                 hover:bg-purple-600/20 hover:text-white transition"
               >
                 <MdDesignServices size={20} className="text-purple-400" />
-                <span className="text-sm font-medium">
-                  Services
-                </span>
+                <span className="text-sm font-medium">Services</span>
               </Link>
 
               <Link

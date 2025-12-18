@@ -1,4 +1,4 @@
-import { MapPin, ArrowDown } from "lucide-react"
+import { MapPin, ArrowDown } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -27,9 +27,8 @@ const Hero = () => {
       {/* Contenido */}
       <div className="relative z-10 container mx-auto px-4 text-center">
         <div className="animate-fade-in bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl p-8 md:p-12 shadow-2xl max-w-4xl mx-auto">
-
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 bg-gradient-to-br from-purple-100 to-orange-100 border border-purple-200">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 bg-linear-to-br from-purple-100 to-orange-100 border border-purple-200">
             <MapPin className="h-4 w-4 text-purple-600" />
             <span className="text-sm font-medium text-gray-700">
               Tu hogar soñado te espera
@@ -37,7 +36,7 @@ const Hero = () => {
           </div>
 
           {/* Título */}
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight bg-linear-to-r from-purple-600 via-purple-500 to-orange-500 bg-clip-text text-transparent">
             Viví la experiencia
             <br />
             del barrio ideal
@@ -55,7 +54,7 @@ const Hero = () => {
             <button
               className="
                 flex items-center gap-2 px-8 py-4 rounded-xl
-                bg-gradient-to-r from-purple-500 to-orange-500
+                bg-linear-to-r from-purple-500 to-orange-500
                 text-white font-semibold text-lg
                 shadow-lg shadow-purple-500/30
                 hover:shadow-purple-500/50
@@ -74,7 +73,7 @@ const Hero = () => {
       {/* Fade inferior */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
     </section>
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;

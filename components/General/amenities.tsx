@@ -1,9 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Waves, Dumbbell, Trees, Baby, Sparkles } from "lucide-react"
-import poolImage from "@/public/images/pool.png"
-import gymImage from "@/public/images/gym.png"
-import parkImage from "@/public/images/park.png"
-import playgroundImage from "@/public/images/playground.png"
+import { Card, CardContent } from "@/components/ui/card";
+import { Waves, Dumbbell, Trees, Baby, Sparkles } from "lucide-react";
+import poolImage from "@/public/images/pool.png";
+import gymImage from "@/public/images/gym.png";
+import parkImage from "@/public/images/park.png";
+import playgroundImage from "@/public/images/playground.png";
 
 const amenities = [
   {
@@ -30,13 +30,13 @@ const amenities = [
     icon: Baby,
     image: playgroundImage,
   },
-]
+];
 
 const Amenities = () => {
   return (
     <section
       id="amenities"
-      className="py-24 bg-gradient-to-br from-sky-50 via-white to-purple-50 relative overflow-hidden"
+      className="py-24 bg-linear-to-br from-sky-50 via-white to-purple-50 relative overflow-hidden"
     >
       {/* Background decorativo */}
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
@@ -49,15 +49,16 @@ const Amenities = () => {
       <div className="container mx-auto px-4 relative">
         {/* Header */}
         <div className="text-center mb-20 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-orange-500 rounded-full mb-6 shadow-lg shadow-purple-500/30 hover:scale-110 transition-all">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-purple-500 to-orange-500 rounded-full mb-6 shadow-lg shadow-purple-500/30 hover:scale-110 transition-all">
             <Sparkles className="h-9 w-9 text-white" />
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-purple-600 via-purple-500 to-orange-500 bg-clip-text text-transparent">
             Amenities Premium
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Espacios diseñados para el bienestar, el entretenimiento y la calidad de vida de tu familia
+            Espacios diseñados para el bienestar, el entretenimiento y la
+            calidad de vida de tu familia
           </p>
         </div>
 
@@ -79,10 +80,12 @@ const Amenities = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent" />
 
                 <div className="absolute bottom-4 left-4 flex items-center gap-3">
-                  <div className="p-3 bg-gradient-to-br from-purple-500 to-orange-500 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="p-3 bg-linear-to-br from-purple-500 to-orange-500 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
                     <amenity.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-white">{amenity.title}</h3>
+                  <h3 className="text-lg font-bold text-white">
+                    {amenity.title}
+                  </h3>
                 </div>
               </div>
 
@@ -99,7 +102,12 @@ const Amenities = () => {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </div>
               </CardContent>
@@ -108,7 +116,7 @@ const Amenities = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Amenities
+export default Amenities;
