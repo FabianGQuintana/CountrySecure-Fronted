@@ -46,22 +46,22 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-gray-400">
                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-fuchsia-400" />
-                <span>Av. Principal 123, Ciudad</span>
+                <span>9 de Julio 1449, Corrientes Capital</span>
               </li>
               <li className="flex items-center gap-2 text-sm text-gray-400">
                 <Phone className="h-4 w-4 flex-shrink-0 text-fuchsia-400" />
-                <span>+54 11 1234-5678</span>
+                <span>+54 03794891449</span>
               </li>
               <li className="flex items-center gap-2 text-sm text-gray-400">
                 <Mail className="h-4 w-4 flex-shrink-0 text-fuchsia-400" />
-                <span>info@countryclub.com</span>
+                <span>info@countrySecure.com</span>
               </li>
             </ul>
           </div>
 
           {/* Social Media */}
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300">Síguenos</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-300">Seguinos</h4>
             <div className="flex gap-3">
               {[
                 { icon: Facebook, label: "Facebook" },

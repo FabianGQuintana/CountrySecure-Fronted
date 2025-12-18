@@ -39,7 +39,7 @@ export default function ResidentProfile() {
   const initials = `${user?.name[0] || ""}${user?.lastname[0] || ""}`
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 p-4 sm:p-6 lg:p-10">
+    <div className="bg-gradient-to-br from-slate-50 via-purple-50/30 to-purple-100/20 p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto mb-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -47,7 +47,7 @@ export default function ResidentProfile() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-cyan-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold text-purple-600 mb-2">
               Mi Perfil
             </h1>
             <p className="text-slate-600 text-lg">Información personal y de residencia</p>
@@ -57,8 +57,8 @@ export default function ResidentProfile() {
             <Link
               href="/resident/profile/edit"
               className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white 
-                            bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg hover:shadow-xl 
-                            transition duration-300 hover:from-cyan-600 hover:to-blue-700"
+                            bg-gradient-to-r from-purple-500 to-purple-600 shadow-lg hover:shadow-xl 
+                            transition duration-300 hover:from-purple-600 hover:to-purple-700"
             >
               <FiEdit size={18} />
               Editar Perfil
@@ -75,7 +75,7 @@ export default function ResidentProfile() {
           transition={{ delay: 0.1 }}
           className="lg:col-span-2 space-y-6"
         >
-          <Card className="bg-gradient-to-br from-cyan-500 to-blue-600 border-0 shadow-xl">
+          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
             <CardContent className="p-8">
               <div className="flex flex-col items-center text-center">
                 <div
@@ -87,7 +87,7 @@ export default function ResidentProfile() {
                 <h2 className="text-2xl font-bold text-white mb-1">
                   {user?.name} {user?.lastname}
                 </h2>
-                <p className="text-cyan-50 text-sm">DNI: {user?.dni}</p>
+                <p className="text-purple-100 text-sm">DNI: {user?.dni}</p>
               </div>
             </CardContent>
           </Card>
@@ -95,8 +95,8 @@ export default function ResidentProfile() {
           <Card className="bg-white border border-slate-200 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-start gap-4 mb-4">
-                <div className="p-3 bg-cyan-100 rounded-xl">
-                  <FiShield className="text-cyan-600" size={24} />
+                <div className="p-3 bg-purple-100 rounded-xl">
+                  <FiShield className="text-purple-600" size={24} />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-800 mb-1">Seguridad</h3>
@@ -108,8 +108,8 @@ export default function ResidentProfile() {
                 <Link
                   href="/resident/profile/password"
                   className="flex items-center justify-between p-4 rounded-lg 
-                                    bg-slate-50 hover:bg-cyan-50 border border-slate-200 hover:border-cyan-300
-                                    text-slate-700 hover:text-cyan-600 font-medium transition duration-200 group"
+                                    bg-slate-50 hover:bg-purple-50 border border-slate-200 hover:border-purple-300
+                                    text-slate-700 hover:text-purple-600 font-medium transition duration-200 group"
                 >
                   <span>Cambiar contraseña</span>
                   <FiArrowRight className="group-hover:translate-x-1 transition" />
@@ -137,8 +137,8 @@ export default function ResidentProfile() {
             <CardContent className="p-8">
               <div className="border-b border-slate-200 pb-4 mb-6">
                 <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <FiUser className="text-blue-600" size={24} />
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <FiUser className="text-purple-600" size={24} />
                   </div>
                   Datos Personales
                 </h2>
@@ -172,8 +172,8 @@ export default function ResidentProfile() {
 
               <div className="space-y-4">
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex items-center gap-4">
-                  <div className="p-3 bg-blue-100 rounded-lg flex-shrink-0">
-                    <FiMail className="text-blue-600" size={20} />
+                  <div className="p-3 bg-purple-100 rounded-lg flex-shrink-0">
+                    <FiMail className="text-purple-600" size={20} />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-500">Email</p>
@@ -205,7 +205,7 @@ export default function ResidentProfile() {
               </div>
 
               {properties.length === 1 ? (
-                <div className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200">
+                <div className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-purple-50 border border-purple-200">
                   <p className="text-sm font-semibold text-slate-500 mb-1">Dirección</p>
                   <p className="text-xl text-slate-800 font-bold mb-3">
                     {properties[0].street} {properties[0].number}

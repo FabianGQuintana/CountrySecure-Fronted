@@ -83,13 +83,13 @@ export default function EditResidentProfile() {
     if (loading) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-white">
-                <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" />
             </div>
         )
     }
 
     return (
-        <div className="w-full bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/20 p-4 sm:p-6 lg:p-10">
+        <div className="w-full bg-gradient-to-br from-slate-50 via-purple-50/30 to-purple-50/20 p-4 sm:p-6 lg:p-10">
             {/* HEADER */}
             <div className="max-w-7xl mx-auto mb-8">
                 <motion.div
@@ -98,7 +98,7 @@ export default function EditResidentProfile() {
                     className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
                 >
                     <div>
-                        <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-cyan-600 bg-clip-text text-transparent mb-2">
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-purple-600 bg-clip-text text-transparent mb-2">
                             Editar Perfil
                         </h1>
                         <p className="text-slate-600 text-lg">Actualiza tu información personal</p>
@@ -108,7 +108,7 @@ export default function EditResidentProfile() {
                         <Link
                             href="/resident/profile"
                             className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-slate-600 
-                            hover:text-cyan-600 bg-white border border-slate-200 hover:border-cyan-300
+                            hover:text-purple-600 bg-white border border-slate-200 hover:border-purple-300
                             shadow-sm hover:shadow transition duration-200"
                         >
                             <FiArrowLeft size={18} />
@@ -127,7 +127,7 @@ export default function EditResidentProfile() {
                     className="lg:col-span-2 space-y-6"
                 >
                     {/* Avatar Preview */}
-                    <Card className="bg-gradient-to-br from-cyan-500 to-blue-600 border-0 shadow-xl">
+                    <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
                         <CardContent className="p-8">
                             <div className="flex flex-col items-center text-center">
                                 <div
@@ -139,7 +139,7 @@ export default function EditResidentProfile() {
                                 <h2 className="text-2xl font-bold text-white mb-1">
                                     {formData.name || "Nombre"} {formData.lastname || "Apellido"}
                                 </h2>
-                                <p className="text-cyan-50 text-sm">Vista previa de tu perfil</p>
+                                <p className="text-purple-50 text-sm">Vista previa de tu perfil</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -148,8 +148,8 @@ export default function EditResidentProfile() {
                     <Card className="bg-white border border-slate-200 shadow-lg">
                         <CardContent className="p-6">
                             <div className="flex items-start gap-4 mb-4">
-                                <div className="p-3 bg-blue-100 rounded-xl">
-                                    <FiShield className="text-blue-600" size={24} />
+                                <div className="p-3 bg-purple-100 rounded-xl">
+                                    <FiShield className="text-purple-600" size={24} />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-800 mb-1">Seguridad de Datos</h3>
@@ -220,8 +220,8 @@ export default function EditResidentProfile() {
                             <CardContent className="p-8">
                                 <div className="border-b border-slate-200 pb-4 mb-6">
                                     <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                                        <div className="p-2 bg-cyan-100 rounded-lg">
-                                            <FiUser className="text-cyan-600" size={24} />
+                                        <div className="p-2 bg-purple-100 rounded-lg">
+                                            <FiUser className="text-purple-600" size={24} />
                                         </div>
                                         Información Personal
                                     </h2>
@@ -241,7 +241,7 @@ export default function EditResidentProfile() {
                                                 value={formData.name}
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
-                                  focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+                                  focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                   transition duration-200 text-slate-800 font-medium"
                                                 placeholder="Tu nombre"
                                             />
@@ -258,7 +258,7 @@ export default function EditResidentProfile() {
                                                 value={formData.lastname}
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
-                                  focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+                                  focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                   transition duration-200 text-slate-800 font-medium"
                                                 placeholder="Tu apellido"
                                             />
@@ -310,7 +310,7 @@ export default function EditResidentProfile() {
                                             value={formData.email}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
-                                focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+                                focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                 transition duration-200 text-slate-800 font-medium"
                                             placeholder="tu@email.com"
                                         />
@@ -329,7 +329,7 @@ export default function EditResidentProfile() {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
-                                focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+                                focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                 transition duration-200 text-slate-800 font-medium"
                                             placeholder="+54 379 4556677"
                                         />
@@ -344,9 +344,9 @@ export default function EditResidentProfile() {
                                             type="submit"
                                             disabled={isSaving}
                                             className="w-full flex items-center justify-center gap-3
-                                bg-gradient-to-r from-cyan-500 to-blue-600 text-white
+                                bg-gradient-to-r from-purple-500 to-purple-600 text-white
                                 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl 
-                                transition duration-300 hover:from-cyan-600 hover:to-blue-700
+                                transition duration-300 hover:from-purple-600 hover:to-purple-700
                                 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             {isSaving ? (
@@ -382,7 +382,7 @@ export default function EditResidentProfile() {
                                 ¿Necesitás cambiar tu contraseña?{" "}
                                 <Link
                                     href="/resident/profile/password"
-                                    className="text-cyan-600 font-semibold hover:text-cyan-700 hover:underline transition"
+                                    className="text-purple-600 font-semibold hover:text-purple-700 hover:underline transition"
                                 >
                                     Cambiar contraseña
                                 </Link>

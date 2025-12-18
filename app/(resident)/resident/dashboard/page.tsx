@@ -113,7 +113,7 @@ export default function ResidentDashboard() {
             className="text-4xl font-bold"
           >
             Hola,{" "}
-            <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-purple-200 to-purple-500 bg-clip-text text-transparent">
               {session.user?.name || "Residente"}
             </span>
           </motion.h1>
@@ -190,7 +190,7 @@ export default function ResidentDashboard() {
 
                   <motion.div
                     whileHover={{ x: 5 }}
-                    className="mt-6 text-sm font-medium text-cyan-500 flex items-center"
+                    className="mt-6 text-sm font-medium text-purple-500 flex items-center"
                   >
                     Acceder <span className="ml-2">↗</span>
                   </motion.div>
