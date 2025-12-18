@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { auth } from "@/auth";
 import { TablaUsuarios } from "@/components/admin/usuarios";
 import { FiAlertCircle } from "react-icons/fi";
