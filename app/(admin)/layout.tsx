@@ -8,14 +8,14 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const user = await auth();
-  // if (!user) {
-  //   redirect("/login");
-  // }
+  const user = await auth();
+  if (!user) {
+    redirect("/login");
+  }
 
-  // if (user.role !== "Admin") {
-  //   redirect("/");
-  // }
+  if (user.role !== "Admin") {
+    redirect("/");
+  }
 
   return (
     <SessionProviderWrapper>
