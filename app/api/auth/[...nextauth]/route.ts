@@ -183,7 +183,7 @@ const authOptions = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: true, // Obliga a usar HTTPS (el certificado lo maneja AWS)
+        // secure: true,
       },
     },
   },
