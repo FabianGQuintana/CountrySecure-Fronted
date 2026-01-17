@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CountrySecure - Frontend 🏰🛡️
 
-## Getting Started
+**CountrySecure** es una solución tecnológica integral diseñada para la gestión operativa y el control de seguridad en barrios privados y comunidades cerradas. Este repositorio contiene el código de la interfaz de usuario (frontend), desarrollada con un enfoque en la eficiencia, la seguridad y una experiencia de navegación intuitiva para administradores, residentes y personal de seguridad.
 
-First, run the development server:
+## 📝 Origen del Proyecto y Despliegue
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Este sistema fue desarrollado originalmente como proyecto final para el bootcamp de la empresa **Devlights**. Durante la fase activa del programa, la plataforma estuvo desplegada y operativa en la infraestructura de **Amazon Web Services (AWS)**, utilizando dominios específicos provistos por la organización para pruebas en entornos reales. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> **Nota:** Tras la finalización del bootcamp, los servicios de hosting y dominios asociados han sido dados de baja, por lo que el acceso a la versión en vivo ya no se encuentra disponible. Este repositorio se mantiene como registro del desarrollo técnico y arquitectónico alcanzado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tecnologías Principales
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+El proyecto utiliza un stack moderno para garantizar un rendimiento óptimo y escalabilidad:
 
-## Learn More
+* **Framework:** [Next.js 16 (App Router)](https://nextjs.org/)
+* **Lenguaje:** [TypeScript](https://www.typescriptlang.org/) para un desarrollo tipado y seguro
+* **Estilos y UI:** [Tailwind CSS 4](https://tailwindcss.com/) y [Framer Motion](https://www.framer.com/motion/) para una interfaz dinámica y animada
+* **Gestión de Formularios:** [React Hook Form](https://react-hook-form.com/) con validaciones robustas mediante [Zod](https://zod.dev/)
+* **Autenticación:** [NextAuth.js](https://next-auth.js.org/) para el manejo seguro de sesiones y roles
+* **Iconografía:** [Lucide React](https://lucide.dev/) y [React Icons](https://react-icons.github.io/react-icons/)
 
-To learn more about Next.js, take a look at the following resources:
+## ✨ Características y Funcionalidades
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+El sistema segmenta sus funciones según el perfil del usuario para garantizar el control total del predio:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 🔒 Seguridad y Acceso
+* **Control de Roles:** Implementación de layouts y rutas protegidas específicamente para Administradores, Seguridad y Residentes.
+* **Validación por QR:** Capacidad técnica para la generación de códigos QR destinados a agilizar el ingreso de visitas.
 
-## Deploy on Vercel
+### 🛠️ Módulos para la Administración
+* **Gestión de Comunidad:** Administración completa de residentes, personal y unidades habitacionales (lotes).
+* **Control de Órdenes:** Seguimiento de solicitudes de servicios y mantenimiento dentro del country.
+* **Gestión de Amenities:** Configuración y supervisión de espacios comunes (piscinas, canchas, gimnasios).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 📑 Operaciones de Seguridad
+* **Registro de Visitas:** Panel en tiempo real para el personal de guardia, permitiendo registrar ingresos y salidas de familiares y servicios externos.
+* **Monitoreo:** Interfaz diseñada para la integración de visualización de cámaras de seguridad.
+* **Logs de Auditoría:** Historial detallado de movimientos y acciones dentro del sistema para máxima transparencia.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 👤 Portal del Residente
+* **Autogestión:** Los residentes pueden autorizar visitas de forma anticipada y gestionar su perfil personal.
+* **Reservas:** Sistema de turnos para el uso de amenities y espacios compartidos.
+
+## 📦 Instalación Local
+
+Si deseas explorar el código o ejecutarlo localmente:
+
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone [https://github.com/fabiangquintana/countrysecure-fronted.git](https://github.com/fabiangquintana/countrysecure-fronted.git)
+    cd countrysecure-fronted
+    ```
+
+2.  **Instalar dependencias:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configuración de variables de entorno:**
+    Crea un archivo `.env.local` y define las variables necesarias (URL de la API, secretos de NextAuth, etc.).
+
+4.  **Iniciar el servidor de desarrollo:**
+    ```bash
+    npm run dev
+    ```
+    La aplicación estará disponible en `http://localhost:3000`.
+
+---
+Desarrollado con enfoque profesional para la gestión de seguridad residencial.
