@@ -1,9 +1,11 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
 // Para usar en componentes del servidor
 export async function auth() {
   const session = await getServerSession(authOptions);
+  // Si la renovación del token falló, se trata como sesión inexistente (los layouts redirigen a /login)
+  if (session?.error) return undefined;
   return session?.user;
 }
 

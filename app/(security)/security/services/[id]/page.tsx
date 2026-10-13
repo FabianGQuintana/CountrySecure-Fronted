@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams, notFound } from "next/navigation";
 import { EntryPermissionResponseDto } from "@/types/order";
 import Link from "next/link";
+import { getEntryPermissionById } from "@/actions/securityActions";
 import { ArrowLeft } from "lucide-react";
 
 export default function ServiceDetailPage() {
@@ -18,13 +19,8 @@ export default function ServiceDetailPage() {
   useEffect(() => {
     const fetchService = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/${id}`,
-          { cache: "no-store" }
-        );
-
-        if (!res.ok) return notFound();
-        const json = await res.json();
+        const json = await getEntryPermissionById(id);
+        if (!json) return notFound();
         setData(json);
       } finally {
         setLoading(false);

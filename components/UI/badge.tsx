@@ -1,15 +1,25 @@
 import { cn } from "@/lib/utils"
 
+type BadgeVariant = "default" | "outline" | "secondary"
+
 type BadgeProps = {
   children: React.ReactNode
   className?: string
+  variant?: BadgeVariant
 }
 
-export function Badge({ children, className }: BadgeProps) {
+const variantClasses: Record<BadgeVariant, string> = {
+  default: "border-transparent bg-slate-900 text-white",
+  outline: "bg-transparent",
+  secondary: "border-transparent bg-slate-100 text-slate-900",
+}
+
+export function Badge({ children, className, variant = "outline" }: BadgeProps) {
   return (
     <span
       className={cn(
         "inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium",
+        variantClasses[variant],
         className
       )}
     >

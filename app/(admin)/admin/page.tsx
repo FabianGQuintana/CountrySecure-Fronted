@@ -46,34 +46,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!session || session.user.role !== "Admin") {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80">
-        <div className="bg-white p-10 rounded-3xl shadow-lg text-center max-w-lg border border-purple-100/50">
-          <div className="relative w-32 h-32 mx-auto mb-6">
-            <div className="absolute inset-0 bg-linear-to-br from-purple-300/30 to-pink-300/30 rounded-full blur-xl opacity-40"></div>
-            <div className="relative flex items-center justify-center w-full h-full text-6xl">
-              🚫
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-transparent bg-linear-to-r from-purple-500 to-pink-500 bg-clip-text mb-4">
-            Acceso Restringido
-          </h1>
-          <p className="text-gray-500 mb-8 text-lg">
-            {!session
-              ? "Debes iniciar sesión para acceder al panel de administración."
-              : "Tu cuenta no tiene permisos para acceder a esta sección."}
-          </p>
-          <a
-            href={!session ? "/auth/login" : "/"}
-            className="inline-block bg-linear-to-r from-purple-500/90 via-purple-600 to-indigo-600/90 text-white px-8 py-4 rounded-xl font-semibold hover:from-purple-600 hover:via-purple-700 hover:to-indigo-700 transition-all duration-300 shadow hover:shadow-lg"
-          >
-            {!session ? "Iniciar Sesión" : "Volver al Inicio"}
-          </a>
-        </div>
-      </div>
-    );
-  }
+  // El acceso por rol lo garantizan middleware.ts y el layout del grupo de rutas.
 
   const formatTime = (date: Date) =>
     date.toLocaleTimeString("es-ES", {

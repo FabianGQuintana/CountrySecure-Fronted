@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Eye, History, ChevronLeft, ChevronRight } from "lucide-react";
 import { EntryPermissionResponseDto } from "@/types/order";
 import Link from "next/link";
+import { getMaintenancePermissions } from "@/actions/securityActions";
 
 /* 🔴 EXPIRADO */
 const isExpired = (status: string, validTo?: string) => {
@@ -30,11 +31,7 @@ export default function ServicesCardsPage() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/type/Maintenance`,
-          { cache: "no-store" }
-        );
-        const data = await res.json();
+        const data = await getMaintenancePermissions();
         setServices(data);
       } catch (e) {
         console.error(e);

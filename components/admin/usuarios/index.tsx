@@ -28,6 +28,7 @@ import ModalRegisterUser from "./modalNewUser";
 import { Estados } from "@/components/estados";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUsers } from "@/hook/userRoles";
+import { AltaBaja } from "@/actions/usuariosActions";
 
 export function TablaUsuarios({
   role,
@@ -167,23 +168,19 @@ export function TablaUsuarios({
   };
 
   // Función para cambiar estado del usuario
+  // El backend expone un toggle (PATCH /api/users/{id}/toggle-active), por eso
+  // solo se llama si el estado pedido difiere del actual.
   const cambiarEstadoUsuario = async (id: string, nuevoEstado: boolean) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/users/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ active: nuevoEstado }),
-        }
-      );
-
-      if (response.ok) {
-        await refreshUsers();
+      const usuario = usuarios.find((u) => u.id === id);
+      if (usuario && usuario.active === nuevoEstado) {
         setMenuAbierto(null);
+        return;
       }
+
+      await AltaBaja(id);
+      await refreshUsers();
+      setMenuAbierto(null);
     } catch (error) {
       console.error("Error al cambiar estado:", error);
     }

@@ -1,10 +1,12 @@
+"use server";
+
 import { auth } from "@/auth";
 //baja logica
 export async function altaBaja(id: string) {
   const session = await auth();
   try {
     const response = await fetch(
-      `${process.env.API_HOST}/api/request/${id}/Softdelete`,
+      `${process.env.API_HOST}/api/Requests/${id}/SoftDelete`,
       {
         method: "PATCH",
         headers: {

@@ -17,29 +17,7 @@ export default function ResidentDashboard() {
     );
   }
 
-  if (!session || session.user.role !== "Resident") {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen bg-linear-to-br from-blue-50 via-white to-green-50">
-        <div className="bg-white p-10 rounded-3xl shadow-lg text-center max-w-lg border border-gray-200">
-          <div className="text-6xl mb-6">🚫</div>
-          <h1 className="text-3xl font-bold text-red-500 mb-4">
-            Acceso Denegado
-          </h1>
-          <p className="text-gray-500 mb-8 text-lg">
-            {!session
-              ? "Debes iniciar sesión para acceder."
-              : "No tienes permisos para acceder a esta sección."}
-          </p>
-          <a
-            href={!session ? "/auth/login" : "/"}
-            className="inline-block bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-600 transition-all shadow"
-          >
-            {!session ? "Iniciar Sesión" : "Volver al Inicio"}
-          </a>
-        </div>
-      </div>
-    );
-  }
+  // El acceso por rol lo garantizan middleware.ts y el layout del grupo de rutas.
 
   const kpis = [
     {
@@ -112,7 +90,7 @@ export default function ResidentDashboard() {
           >
             Hola,{" "}
             <span className="bg-linear-to-r from-purple-200 to-purple-500 bg-clip-text text-transparent">
-              {session.user?.name || "Residente"}
+              {session?.user?.name || "Residente"}
             </span>
           </motion.h1>
           <p className="text-gray-500 text-lg mt-2">Panel de Residente</p>

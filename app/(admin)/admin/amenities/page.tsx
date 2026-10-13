@@ -1,15 +1,18 @@
 export const dynamic = "force-dynamic";
 
+import { auth } from "@/auth";
 import { FiAlertCircle } from "react-icons/fi";
 import { TablaAmenities } from "@/components/admin/amenities/tablaAmenities";
 
 export default async function Amenities() {
   let amenities: any[] | null = null;
+  const session = await auth();
 
   try {
     const response = await fetch(`${process.env.API_HOST}/api/Amenity`, {
       method: "GET",
       cache: "no-store",
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
     });
     amenities = await response.json();
   } catch (error) {

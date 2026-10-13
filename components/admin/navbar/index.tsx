@@ -79,7 +79,7 @@ export default function MenuAdmin() {
             Inicia sesión para acceder al panel de administración
           </p>
           <Link
-            href="/auth/login"
+            href="/login"
             className="bg-linear-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
           >
             Iniciar Sesión

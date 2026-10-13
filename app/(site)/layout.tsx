@@ -18,9 +18,10 @@ export default async function RootLayout({
       case "Security":
         redirect("/security/");
       case "Resident":
-        redirect("/resident/");
+        redirect("/resident/dashboard");
       default:
-        redirect("/");
+        // Rol desconocido: se muestra la landing (evita un bucle de redirección en "/")
+        break;
     }
   }
 

@@ -105,3 +105,34 @@ export async function registerDeparture({
     throw error;
   }
 }
+// Detalle de un permiso de ingreso (usado por las vistas de servicios y visitas familiares)
+export async function getEntryPermissionById(id: string) {
+  const session = await auth();
+
+  const response = await fetch(
+    `${process.env.API_HOST}/api/entrypermissions/${id}`,
+    {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
+    }
+  );
+
+  if (!response.ok) return null;
+  return await response.json();
+}
+
+// Permisos de tipo mantenimiento (servicios / proveedores)
+export async function getMaintenancePermissions() {
+  const session = await auth();
+
+  const response = await fetch(
+    `${process.env.API_HOST}/api/entrypermissions/type/Maintenance`,
+    {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
+    }
+  );
+
+  if (!response.ok) throw new Error("Error al obtener los servicios");
+  return await response.json();
+}
