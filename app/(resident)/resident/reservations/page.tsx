@@ -4,60 +4,50 @@ import { motion } from "framer-motion";
 import { Calendar, Clock, Home, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/UI/card";
 import { Badge } from "@/components/UI/badge";
+import { useCallback, useEffect, useState } from "react";
+import { cancelTurn, getMyTurns, type TurnResponse } from "@/actions/turnosActions";
 
-// 👉 Tipo base (ajustalo a tu DTO real)
+type ReservationStatus = "PENDING" | "COMPLETED" | "FINISHED" | "CANCELLED";
+
 type Reservation = {
   id: string;
   amenityName: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: "APPROVED" | "PENDING" | "REJECTED" | "CANCELLED";
+  start: Date;
+  end: Date;
+  status: ReservationStatus;
 };
 
-// 🔧 MOCK (después lo reemplazás por action / fetch)
-const reservations: Reservation[] = [
-  {
-    id: "1",
-    amenityName: "SUM Principal",
-    date: "2025-03-20",
-    startTime: "18:00",
-    endTime: "22:00",
-    status: "APPROVED",
-  },
-  {
-    id: "2",
-    amenityName: "Parrilla",
-    date: "2025-03-25",
-    startTime: "12:00",
-    endTime: "15:00",
-    status: "PENDING",
-  },
-  {
-    id: "3",
-    amenityName: "Piscina",
-    date: "2025-04-01",
-    startTime: "10:00",
-    endTime: "14:00",
-    status: "APPROVED",
-  },
-];
+// Traduce el turno de la API al modelo de la vista
+function toReservation(turn: TurnResponse): Reservation {
+  const start = new Date(turn.startTime);
+  const end = new Date(turn.endTime);
 
-const statusConfig = {
-  APPROVED: {
-    label: "Aprobada",
+  let status: ReservationStatus = "PENDING";
+  if (turn.turnStatus === "Cancelled" || turn.status === "Inactive") status = "CANCELLED";
+  else if (turn.turnStatus === "Completed") status = "COMPLETED";
+  else if (end < new Date()) status = "FINISHED";
+
+  return { id: turn.id, amenityName: turn.amenity?.name ?? "Amenity", start, end, status };
+}
+
+const formatTime = (d: Date) =>
+  d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+
+const statusConfig: Record<ReservationStatus, { label: string; className: string }> = {
+  PENDING: {
+    label: "Confirmada",
     className:
       "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30",
   },
-  PENDING: {
-    label: "Pendiente",
+  COMPLETED: {
+    label: "Completada",
+    className:
+      "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/30",
+  },
+  FINISHED: {
+    label: "Finalizada",
     className:
       "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/30",
-  },
-  REJECTED: {
-    label: "Rechazada",
-    className:
-      "bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/30",
   },
   CANCELLED: {
     label: "Cancelada",
@@ -67,6 +57,42 @@ const statusConfig = {
 };
 
 export default function ResidentReservationsPage() {
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      setError(null);
+      const turns = await getMyTurns();
+      // Próximas primero, luego el historial
+      const items = turns.map(toReservation).sort((a, b) => b.start.getTime() - a.start.getTime());
+      setReservations(items);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al cargar las reservas");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const handleCancel = async (id: string) => {
+    if (!confirm("¿Cancelar esta reserva?")) return;
+    setCancellingId(id);
+    try {
+      await cancelTurn(id);
+      await load();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "No se pudo cancelar la reserva");
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-b from-background via-background to-purple-500/5">
       <div className="container max-w-7xl mx-auto px-4 py-8 md:py-12 space-y-8">
@@ -92,8 +118,18 @@ export default function ResidentReservationsPage() {
           </p>
         </motion.div>
 
-        {/* Empty state mejorado */}
-        {reservations.length === 0 && (
+        {loading && (
+          <p className="text-muted-foreground animate-pulse">Cargando reservas...</p>
+        )}
+
+        {error && (
+          <Card className="border border-red-200 bg-red-50">
+            <CardContent className="p-6 text-red-600">{error}</CardContent>
+          </Card>
+        )}
+
+        {/* Empty state */}
+        {!loading && !error && reservations.length === 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -174,9 +210,7 @@ export default function ResidentReservationsPage() {
                         <div>
                           <p className="text-xs text-muted-foreground">Fecha</p>
                           <p className="font-medium">
-                            {new Date(
-                              reservation.date + "T00:00:00"
-                            ).toLocaleDateString("es-AR", {
+                            {reservation.start.toLocaleDateString("es-AR", {
                               day: "numeric",
                               month: "long",
                               year: "numeric",
@@ -194,11 +228,21 @@ export default function ResidentReservationsPage() {
                             Horario
                           </p>
                           <p className="font-medium">
-                            {reservation.startTime} - {reservation.endTime}
+                            {formatTime(reservation.start)} - {formatTime(reservation.end)}
                           </p>
                         </div>
                       </div>
                     </div>
+
+                    {reservation.status === "PENDING" && reservation.start > new Date() && (
+                      <button
+                        onClick={() => handleCancel(reservation.id)}
+                        disabled={cancellingId === reservation.id}
+                        className="w-full text-sm font-medium text-red-600 border border-red-200 rounded-lg py-2 hover:bg-red-50 transition disabled:opacity-50"
+                      >
+                        {cancellingId === reservation.id ? "Cancelando..." : "Cancelar reserva"}
+                      </button>
+                    )}
 
                     {/* Indicador de hover */}
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-purple-500 via-purple-600 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />

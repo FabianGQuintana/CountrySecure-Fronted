@@ -107,3 +107,14 @@ export enum PermissionType {
     PropertyNumber: number;
     LotId: string;
   }
+
+// Respuesta de GET /api/property/me (PropertyResponseDto)
+export interface IPropiedadResidente {
+  propertyId: string;
+  street: string;
+  propertyNumber: number;
+  propertyStatus: string;
+  statusAuditoria: string;
+  lotName?: string | null;
+  ownerName?: string | null;
+}

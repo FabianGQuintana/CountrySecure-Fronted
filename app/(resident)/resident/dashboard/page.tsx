@@ -1,13 +1,22 @@
 "use client";
 
 import { Card, CardContent } from "@/components/UI/card";
-import { FiUser, FiHome, FiKey, FiCalendar } from "react-icons/fi";
+import { FiUser, FiHome, FiKey, FiCalendar, FiTool } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
-import ResidentSidebar from "@/components/residentes/sideBar/ResidentSidebar";
+import { useEffect, useState } from "react";
+import { getResidentStats } from "@/actions/statsActions";
+import type { ResidentStats } from "@/types/stats";
 
 export default function ResidentDashboard() {
   const { data: session, status } = useSession();
+  const [stats, setStats] = useState<ResidentStats | null>(null);
+
+  useEffect(() => {
+    getResidentStats()
+      .then(setStats)
+      .catch((error) => console.error("Error al cargar estadísticas:", error));
+  }, []);
 
   if (status === "loading") {
     return (
@@ -17,33 +26,44 @@ export default function ResidentDashboard() {
     );
   }
 
-  // El acceso por rol lo garantizan middleware.ts y el layout del grupo de rutas.
+  // El acceso por rol lo garantizan proxy.ts y el layout del grupo de rutas.
+
+  const value = (n?: number) => (stats ? String(n ?? 0) : "—");
+
+  const formatLastActivity = (iso: string | null | undefined) => {
+    if (!stats) return "—";
+    if (!iso) return "Sin actividad";
+    const date = new Date(iso);
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) return "Hoy";
+    return date.toLocaleDateString("es-AR", { day: "numeric", month: "short" });
+  };
 
   const kpis = [
     {
-      title: "Mis reservas activas",
-      value: "3",
+      title: "Mis próximas reservas",
+      value: value(stats?.upcomingReservations),
       icon: <FiCalendar size={28} />,
       color: "from-blue-400 to-cyan-300",
       delay: 0.1,
     },
     {
-      title: "Permisos solicitados",
-      value: "12",
+      title: "Permisos de ingreso activos",
+      value: value(stats?.activePermits),
       icon: <FiKey size={28} />,
       color: "from-green-400 to-teal-300",
       delay: 0.2,
     },
     {
       title: "Amenities disponibles",
-      value: "8",
+      value: value(stats?.availableAmenities),
       icon: <FiHome size={28} />,
       color: "from-yellow-400 to-orange-300",
       delay: 0.3,
     },
     {
       title: "Última actividad",
-      value: "Hoy",
+      value: formatLastActivity(stats?.lastActivityAt),
       icon: <FiUser size={28} />,
       color: "from-purple-400 to-pink-300",
       delay: 0.4,
@@ -72,11 +92,24 @@ export default function ResidentDashboard() {
       icon: <FiKey size={32} />,
       delay: 0.3,
     },
+    {
+      title: "Mis Reservas",
+      desc: "Consultá y cancelá tus turnos reservados.",
+      href: "/resident/reservations",
+      icon: <FiCalendar size={32} />,
+      delay: 0.4,
+    },
+    {
+      title: "Solicitudes",
+      desc: "Pedí servicios de mantenimiento a la administración.",
+      href: "/resident/requests",
+      icon: <FiTool size={32} />,
+      delay: 0.5,
+    },
   ];
 
   return (
     <div className="flex bg-linear-to-br from-blue-50 via-white to-green-50">
-      {/* <ResidentSidebar /> */}
 
       {/* CONTENEDOR PRINCIPAL */}
       <div className="w-full p-10 text-gray-900">

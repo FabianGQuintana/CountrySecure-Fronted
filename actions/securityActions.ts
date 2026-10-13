@@ -136,3 +136,19 @@ export async function getMaintenancePermissions() {
   if (!response.ok) throw new Error("Error al obtener los servicios");
   return await response.json();
 }
+
+// Todos los permisos de ingreso (tabla "Permisos" de Seguridad)
+export async function getAllPermissions(pageNumber = 1, pageSize = 500) {
+  const session = await auth();
+
+  const response = await fetch(
+    `${process.env.API_HOST}/api/entrypermissions?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
+    }
+  );
+
+  if (!response.ok) throw new Error(`Error al obtener los permisos (${response.status})`);
+  return await response.json();
+}

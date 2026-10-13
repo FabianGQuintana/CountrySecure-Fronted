@@ -5,10 +5,7 @@ import {
   FiUsers,
   FiHome,
   FiTool,
-  FiTrendingUp,
-  FiSettings,
   FiBarChart2,
-  FiBell,
   FiCalendar,
   FiShield,
   FiPackage,
@@ -17,11 +14,21 @@ import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getAdminStats } from "@/actions/statsActions";
+import type { AdminStats } from "@/types/stats";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [time, setTime] = useState(new Date());
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [statsError, setStatsError] = useState(false);
+
+  useEffect(() => {
+    getAdminStats()
+      .then(setStats)
+      .catch(() => setStatsError(true));
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 60000);
@@ -46,7 +53,7 @@ export default function AdminDashboard() {
     );
   }
 
-  // El acceso por rol lo garantizan middleware.ts y el layout del grupo de rutas.
+  // El acceso por rol lo garantizan proxy.ts y el layout del grupo de rutas.
 
   const formatTime = (date: Date) =>
     date.toLocaleTimeString("es-ES", {
@@ -62,57 +69,59 @@ export default function AdminDashboard() {
       year: "numeric",
     });
 
+  const value = (n?: number) => (stats ? String(n ?? 0) : "—");
+
   const kpis = [
     {
-      title: "Usuarios Activos",
-      value: "1,245",
-      change: "+12.5%",
+      title: "Residentes Activos",
+      value: value(stats?.totalResidents),
+      change: `${stats?.inactiveUsers ?? 0} inactivos`,
       icon: <FiUsers size={28} />,
       color: "from-purple-400/90 via-violet-400/80 to-fuchsia-300/90",
       delay: 0.1,
-      trend: "up",
+      trend: "neutral",
     },
     {
-      title: "Reservas Activas",
-      value: "342",
-      change: "+8.2%",
-      icon: <FiHome size={28} />,
+      title: "Próximas Reservas",
+      value: value(stats?.upcomingReservations),
+      change: `${stats?.reservationsToday ?? 0} hoy`,
+      icon: <FiCalendar size={28} />,
       color: "from-fuchsia-400/90 via-pink-400/80 to-rose-300/90",
       delay: 0.2,
       trend: "up",
     },
     {
       title: "Servicios Activos",
-      value: "27",
-      change: "+2",
+      value: value(stats?.activeOrders),
+      change: `${stats?.pendingRequests ?? 0} solicitudes`,
       icon: <FiTool size={28} />,
       color: "from-violet-500/90 via-indigo-400/80 to-purple-400/90",
       delay: 0.3,
-      trend: "up",
+      trend: "neutral",
     },
     {
-      title: "Crecimiento Mensual",
-      value: "+14%",
-      change: "vs último mes",
-      icon: <FiTrendingUp size={28} />,
+      title: "Propiedades Ocupadas",
+      value: value(stats?.occupiedProperties),
+      change: `de ${stats?.totalProperties ?? 0}`,
+      icon: <FiHome size={28} />,
       color: "from-purple-500/90 via-violet-500/80 to-indigo-400/90",
       delay: 0.4,
-      trend: "up",
+      trend: "neutral",
     },
     {
-      title: "Tasa de Satisfacción",
-      value: "94.2%",
-      change: "+3.1%",
+      title: "Permisos de Hoy",
+      value: value(stats?.permitsToday),
+      change: `${stats?.visitorsInside ?? 0} adentro`,
       icon: <FiBarChart2 size={28} />,
       color: "from-indigo-500/90 via-blue-400/80 to-violet-400/90",
       delay: 0.5,
       trend: "up",
     },
     {
-      title: "Notificaciones Pendientes",
-      value: "18",
-      change: "5 nuevas",
-      icon: <FiBell size={28} />,
+      title: "Personal de Seguridad",
+      value: value(stats?.totalSecurityStaff),
+      change: `${stats?.totalAmenities ?? 0} amenities`,
+      icon: <FiShield size={28} />,
       color: "from-rose-500/90 via-pink-400/80 to-fuchsia-300/90",
       delay: 0.6,
       trend: "neutral",
@@ -148,10 +157,10 @@ export default function AdminDashboard() {
       delay: 0.3,
     },
     {
-      title: "Configuración",
-      desc: "Ajustes del sistema",
-      icon: <FiSettings size={32} />,
-      // onClick: () => router.push("/admin/settings"),
+      title: "Lotes y Propiedades",
+      desc: "Administrar lotes y viviendas",
+      icon: <FiHome size={32} />,
+      onClick: () => router.push("/admin/propiedades"),
       color:
         "bg-linear-to-br from-purple-500/90 via-violet-500/80 to-indigo-400/90",
       delay: 0.4,
@@ -166,10 +175,10 @@ export default function AdminDashboard() {
       delay: 0.5,
     },
     {
-      title: "Inventario",
-      desc: "Gestión de recursos y activos",
+      title: "Reservas de Amenities",
+      desc: "Ver los turnos reservados",
       icon: <FiPackage size={32} />,
-      // onClick: () => router.push("/admin/inventory"),
+      onClick: () => router.push("/admin/amenities/solicitudes"),
       color:
         "bg-linear-to-br from-rose-500/90 via-pink-400/80 to-fuchsia-300/90",
       delay: 0.6,
@@ -221,6 +230,11 @@ export default function AdminDashboard() {
           <span className="bg-linear-to-r from-purple-500 via-violet-500 to-pink-500 bg-clip-text text-transparent">
             Métricas Principales
           </span>
+          {statsError && (
+            <span className="ml-3 text-sm font-normal text-rose-500">
+              No se pudieron cargar las métricas
+            </span>
+          )}
           <div className="ml-3 h-1 flex-1 bg-linear-to-r from-purple-100 via-violet-100 to-pink-100 rounded-full"></div>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">

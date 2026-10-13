@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
+import { KeyRound } from "lucide-react";
 import Link from "next/link";
 import { GiFamilyHouse } from "react-icons/gi";
 import { GrServices } from "react-icons/gr";
@@ -121,6 +122,15 @@ export default function MenuSecurity() {
                 <span className="text-sm font-medium">
                   Registro de Entradas
                 </span>
+              </Link>
+
+              <Link
+                href="/security/permissions"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl
+                hover:bg-purple-600/20 hover:text-white transition"
+              >
+                <KeyRound size={20} className="text-purple-400" />
+                <span className="text-sm font-medium">Permisos</span>
               </Link>
 
               <Link

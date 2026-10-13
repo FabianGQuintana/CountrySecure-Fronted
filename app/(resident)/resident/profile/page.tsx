@@ -15,12 +15,11 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/UI/card";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/actions/usuariosActions";
+import { getMyProperties } from "@/actions/propiedadLoteActions";
+import type { IPropiedadResidente } from "@/types";
 
 export default function ResidentProfile() {
-  const properties = [
-    { street: "Av. Principal", number: 123, status: "Activa" },
-    { street: "Calle Los Robles", number: 87, status: "Activa" },
-  ];
+  const [properties, setProperties] = useState<IPropiedadResidente[]>([]);
 
   const [user, setUser] = useState<{
     name: string;
@@ -35,8 +34,9 @@ export default function ResidentProfile() {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const data = await getCurrentUser();
+        const [data, props] = await Promise.all([getCurrentUser(), getMyProperties()]);
         setUser(data);
+        setProperties(props);
       } catch (error) {
         console.error("Error cargando usuario", error);
       } finally {
@@ -229,14 +229,21 @@ export default function ResidentProfile() {
                 </h2>
               </div>
 
-              {properties.length === 1 ? (
+              {properties.length === 0 ? (
+                <p className="text-slate-500">
+                  {loading ? "Cargando propiedades..." : "No tenés propiedades asignadas. Consultá con la administración."}
+                </p>
+              ) : properties.length === 1 ? (
                 <div className="p-6 rounded-xl bg-linear-to-br from-purple-50 to-purple-50 border border-purple-200">
                   <p className="text-sm font-semibold text-slate-500 mb-1">
                     Dirección
                   </p>
                   <p className="text-xl text-slate-800 font-bold mb-3">
-                    {properties[0].street} {properties[0].number}
+                    {properties[0].street} {properties[0].propertyNumber}
                   </p>
+                  {properties[0].lotName && (
+                    <p className="text-sm text-slate-500">Lote: {properties[0].lotName}</p>
+                  )}
                   {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                     {properties[0].status}
                   </span> */}
@@ -245,7 +252,7 @@ export default function ResidentProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {properties.map((prop, index) => (
                     <motion.div
-                      key={index}
+                      key={prop.propertyId}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
@@ -253,7 +260,7 @@ export default function ResidentProfile() {
                       <Card className="border border-slate-200 shadow-sm hover:shadow-md transition">
                         <CardContent className="p-5">
                           <p className="font-bold text-slate-800 text-lg mb-2">
-                            {prop.street} {prop.number}
+                            {prop.street} {prop.propertyNumber}
                           </p>
                           {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                             {prop.status}

@@ -22,7 +22,7 @@ const HOME_BY_ROLE: Record<Role, string> = {
  * Reemplaza los guards que antes se repetían del lado del cliente.
  * (Los layouts de cada grupo mantienen su verificación en el servidor como defensa en profundidad.)
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const route = PROTECTED_ROUTES.find(
     (r) => pathname === r.prefix || pathname.startsWith(`${r.prefix}/`)
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET || process.env.JWT_SECRET,
-    cookieName: "next-auth.session-token", // mismo nombre que en lib/authOptions.ts
+    cookieName: "next-auth.session-token", // mismo nombre que en lib/authOptions.ts (Next 16: proxy reemplaza a middleware)
   });
 
   // Sin sesión, o con la renovación del token fallida -> login

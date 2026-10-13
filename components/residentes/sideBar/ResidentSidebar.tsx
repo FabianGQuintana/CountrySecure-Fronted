@@ -1,6 +1,6 @@
 "use client";
 
-import { FiUser, FiHome, FiKey, FiCalendar, FiX } from "react-icons/fi";
+import { FiUser, FiHome, FiKey, FiCalendar, FiX, FiTool } from "react-icons/fi";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -33,6 +33,11 @@ export default function ResidentSidebar({ onClose }: ResidentSidebarProps) {
       label: "Mis Reservas",
       href: "/resident/reservations",
       icon: <FiCalendar size={20} />,
+    },
+    {
+      label: "Solicitudes",
+      href: "/resident/requests",
+      icon: <FiTool size={20} />,
     },
   ];
 

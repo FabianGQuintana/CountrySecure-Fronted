@@ -42,7 +42,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
     };
   } catch (error) {
     console.error("Error al renovar el access token:", error);
-    // middleware.ts y los guards redirigen a /login cuando ven este error
+    // proxy.ts y los guards redirigen a /login cuando ven este error
     return { ...token, error: "RefreshAccessTokenError" };
   }
 }
