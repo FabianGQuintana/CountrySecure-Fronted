@@ -1,62 +1,42 @@
 import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import type { JWT } from "next-auth/jwt";
 import { login } from "@/actions/AuthActions";
 
-// Renovamos el access token un minuto antes de que venza
-const REFRESH_MARGIN_MS = 60 * 1000;
+// La sesión de NextAuth dura lo mismo que el refresh token del backend (7 días).
+export const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+
+// Nombre de la cookie de sesión. Lo comparten NextAuth y el proxy.
+export const SESSION_COOKIE_NAME = "next-auth.session-token";
+
 // Fallback si el backend no informa la expiración (el JWT del backend dura 8 h)
 const DEFAULT_ACCESS_TOKEN_TTL_MS = 8 * 60 * 60 * 1000;
 
-function parseExpiration(expiration?: string): number {
+export function parseExpiration(expiration?: string): number {
   const parsed = expiration ? Date.parse(expiration) : NaN;
   return Number.isNaN(parsed) ? Date.now() + DEFAULT_ACCESS_TOKEN_TTL_MS : parsed;
 }
 
 /**
- * Rotación silenciosa: pide un nuevo par access/refresh token al backend.
- * El refresh token anterior queda marcado como usado en la base (rotación).
+ * IMPORTANTE: acá NO se renueva el access token.
+ * Los callbacks de NextAuth corren dentro de Server Components, donde no se pueden escribir
+ * cookies: el token renovado se perdería y el refresh token (de un solo uso) quedaría consumido.
+ * La renovación vive en `proxy.ts`, el único lugar que puede persistir la cookie.
  */
-async function refreshAccessToken(token: JWT): Promise<JWT> {
-  try {
-    const response = await fetch(`${process.env.API_HOST}/api/auth/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        accessToken: token.accessToken,
-        refreshToken: token.refreshToken,
-      }),
-      cache: "no-store",
-    });
-
-    if (!response.ok) throw new Error(`Refresh failed: ${response.status}`);
-
-    const data = await response.json();
-
-    return {
-      ...token,
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken ?? token.refreshToken,
-      accessTokenExpires: parseExpiration(data.expiration),
-      error: undefined,
-    };
-  } catch (error) {
-    console.error("Error al renovar el access token:", error);
-    // proxy.ts y los guards redirigen a /login cuando ven este error
-    return { ...token, error: "RefreshAccessTokenError" };
-  }
-}
-
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: SESSION_MAX_AGE_SECONDS,
+  },
+
+  jwt: {
+    maxAge: SESSION_MAX_AGE_SECONDS,
   },
 
   secret: process.env.AUTH_SECRET || process.env.JWT_SECRET,
 
   cookies: {
     sessionToken: {
-      name: "next-auth.session-token",
+      name: SESSION_COOKIE_NAME,
       options: {
         httpOnly: true,
         sameSite: "lax",
@@ -121,16 +101,11 @@ export const authOptions: NextAuthOptions = {
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
           accessTokenExpires: user.accessTokenExpires,
+          error: undefined,
         };
       }
 
-      // Access token todavía vigente
-      if (token.accessTokenExpires && Date.now() < token.accessTokenExpires - REFRESH_MARGIN_MS) {
-        return token;
-      }
-
-      // Vencido o por vencer: rotación silenciosa
-      return refreshAccessToken(token);
+      return token;
     },
 
     async session({ session, token }) {
@@ -144,7 +119,13 @@ export const authOptions: NextAuthOptions = {
         role: token.role,
         accessToken: token.accessToken,
       };
-      session.error = token.error;
+
+      // Si el access token ya venció y el proxy no pudo renovarlo, la sesión se considera inválida.
+      if (token.error) {
+        session.error = token.error;
+      } else if (token.accessTokenExpires && Date.now() >= token.accessTokenExpires) {
+        session.error = "RefreshAccessTokenError";
+      }
 
       return session;
     },
@@ -163,6 +144,7 @@ export const authOptions: NextAuthOptions = {
           },
           body: JSON.stringify({ refreshToken: token.refreshToken }),
           cache: "no-store",
+          signal: AbortSignal.timeout(5000),
         });
       } catch (error) {
         console.error("Error al revocar el refresh token:", error);

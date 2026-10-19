@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import LoginFormulario from "./login-form";
 
 export default function Login() {
@@ -16,7 +17,7 @@ export default function Login() {
 
       {/* Contenido */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <LoginFormulario />
+        <Suspense fallback={null}><LoginFormulario /></Suspense>
       </div>
     </main>
   );

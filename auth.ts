@@ -1,29 +1,14 @@
-import { authOptions } from "@/lib/authOptions";
+import "server-only";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
-// Para usar en componentes del servidor
+/**
+ * Única forma de leer la sesión en el servidor (Server Components, layouts y Server Actions).
+ * Devuelve el usuario de la sesión o `undefined` si no hay sesión válida
+ * (sin cookie, o con el token vencido/irrecuperable). Nunca renueva tokens: eso lo hace `proxy.ts`.
+ */
 export async function auth() {
   const session = await getServerSession(authOptions);
-  // Si la renovación del token falló, se trata como sesión inexistente (los layouts redirigen a /login)
-  if (session?.error) return undefined;
-  return session?.user;
-}
-
-// Para usar en componentes del servidor (da toda la sesión)
-export async function getSession() {
-  return await getServerSession(authOptions);
-}
-
-// Re-exporta signIn y signOut para el cliente
-export { signIn, signOut } from "next-auth/react";
-
-// Para proteger rutas en el servidor
-export async function requireAuth() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    throw new Error("No autenticado");
-  }
-
+  if (!session || session.error) return undefined;
   return session.user;
 }

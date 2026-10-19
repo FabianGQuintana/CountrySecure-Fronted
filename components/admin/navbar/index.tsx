@@ -375,7 +375,7 @@ export default function MenuAdmin() {
         <div className="mt-6 border-t border-gray-200 pt-4">
           <button
             className="hover:cursor-pointer flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-linear-to-r from-gray-50 to-white text-gray-700 hover:text-red-600 hover:bg-linear-to-r hover:from-red-50 hover:to-red-50 transition-all duration-300 border border-gray-100 hover:border-red-100 shadow-sm hover:shadow-md font-medium"
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/login" })}
           >
             <LogOut size={18} />
             Cerrar Sesión

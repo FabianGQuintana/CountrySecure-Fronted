@@ -168,7 +168,7 @@ export default function MenuSecurity() {
 
           {/* ===== LOGOUT ===== */}
           <button
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex items-center justify-center gap-3 px-4 py-3 rounded-xl
             border border-purple-500/30 text-gray-300
             hover:bg-red-600/20 hover:text-red-400 transition"

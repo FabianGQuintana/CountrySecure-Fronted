@@ -4,13 +4,17 @@ import type React from "react";
 
 import { IconAvatar, IconLock, IconEye, IconLoading } from "@/app/assets/icon";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
+import { safeCallbackUrl } from "@/lib/routes";
 
 export default function LoginFormulario() {
   const [verContraseña, setVerContraseña] = useState(false);
   const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState("");
+  const searchParams = useSearchParams();
+  const [error, setError] = useState(
+    searchParams.get("reason") === "expired" ? "Tu sesión expiró. Iniciá sesión nuevamente." : ""
+  );
 
   const router = useRouter();
 
@@ -37,19 +41,9 @@ export default function LoginFormulario() {
 
     const session = await getSession();
 
-    const rol = session?.user?.role;
-
-    // ⬇️ Redirección según el rol
-    if (rol === "Admin") {
-      router.replace("/admin/");
-    } else if (rol === "Resident") {
-      router.replace("/resident/dashboard");
-    } else if (rol === "Security") {
-      router.replace("/security");
-    } else {
-      router.replace("/"); // fallback
-    }
-
+    // Redirección según el rol (o a la página que se intentaba abrir, si es del mismo rol)
+    router.replace(safeCallbackUrl(searchParams.get("callbackUrl"), session?.user?.role));
+    router.refresh();
     setCargando(false);
   }
   return (
