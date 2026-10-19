@@ -18,13 +18,11 @@ export default async function VisitDetailPage({ params }: PageProps) {
   const guardId = session?.id
 
  
-  console.log("Access Token:", session?.accessToken ? "Presente" : "Ausente")
 
   let permission: any = null
 
   try {
     const url = `${process.env.API_HOST}/api/entrypermissions/${id}`
-    console.log("Fetching URL:", url)
 
     const response = await fetch(url, {
       method: "GET",
@@ -35,8 +33,6 @@ export default async function VisitDetailPage({ params }: PageProps) {
       },
     })
 
-    console.log("Response status:", response.status)
-    console.log("Response ok:", response.ok)
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -46,7 +42,6 @@ export default async function VisitDetailPage({ params }: PageProps) {
     }
 
     permission = await response.json()
-    console.log("Permission obtenido:", JSON.stringify(permission, null, 2))
   } catch (error) {
     console.error("=== ERROR EN FETCH ===")
     console.error(error)

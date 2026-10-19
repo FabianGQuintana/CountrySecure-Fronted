@@ -17,7 +17,7 @@ export default async function Order() {
     });
     orders = await response.json();
   } catch (err) {
-    console.log("error", err);
+    console.error("Error al obtener datos:", err);
   }
 
   if (!orders) {

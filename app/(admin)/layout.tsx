@@ -31,9 +31,3 @@ export default async function AdminLayout({
 }
 
 //colres par bg de admin
-// @media (prefers-color-scheme: dark) {
-//   :root {
-//     --background: #ffffff;
-//     --foreground: #969696;
-//   }
-// }

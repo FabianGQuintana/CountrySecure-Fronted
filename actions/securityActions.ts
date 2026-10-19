@@ -2,29 +2,6 @@
 
 import { auth } from "@/auth";
 
-export async function checkout(id: string) {
-  const session = await auth();
-
-  try {
-    const response = await fetch(
-      `${process.env.API_HOST}/api/entrypermissions/${id}`,
-      {
-        method: "PATCH",
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-      }
-    );
-    if (!response.ok) throw new Error("error al hacer el checkout");
-
-    return await response.json();
-  } catch (error) {
-    throw error;
-  }
-}
-
 // Registrar entrada (check-in)
 export async function registerEntry({ 
   permissionId
