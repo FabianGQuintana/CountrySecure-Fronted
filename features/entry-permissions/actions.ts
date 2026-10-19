@@ -9,6 +9,7 @@ import {
   getAllPermissions,
   getMyPermissions,
   getPass,
+  getSync,
   getPermissionById,
   getPermissionHistory,
   getTodayPermissions,
@@ -74,3 +75,6 @@ export const cancelPermission = async (id: string) =>
  */
 export const scanPass = async (input: { token: string; action?: ScanAction; offline?: boolean; scannedAt?: string }) =>
   runAction(() => api.post<ScanResultDto>("/api/entry-permissions/scan", input));
+
+/** Descarga la lista de pases del día para la caché de la guardia. */
+export const syncPasses = async () => runAction(() => getSync());

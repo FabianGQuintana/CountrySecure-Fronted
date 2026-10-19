@@ -2,16 +2,28 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Camera, CameraOff, LogIn, LogOut, ScanLine } from "lucide-react";
-import { scanPass } from "@/features/entry-permissions/actions";
+import { Camera, CameraOff, CloudOff, LogIn, LogOut, RefreshCw, ScanLine, Wifi } from "lucide-react";
+import { scanPass, syncPasses } from "@/features/entry-permissions/actions";
 import type { ScanAction } from "@/types/api";
 import { ScanResultOverlay, type OverlayState } from "./ScanResultOverlay";
 import { createFeedbackPlayer, resultTitle } from "./scanFeedback";
+import {
+  applyToCache,
+  loadCache,
+  loadQueue,
+  saveCache,
+  saveQueue,
+  validateOffline,
+  type PassCache,
+  type QueuedScan,
+} from "./offlineStore";
 
 const READER_ID = "qr-reader";
 // Tras cerrar un resultado se ignora el mismo QR un rato: el visitante todavía lo está mostrando
 const SAME_QR_COOLDOWN_MS = 3000;
 const HISTORY_SIZE = 8;
+// La lista de pases del día se renueva cada 5 minutos
+const SYNC_INTERVAL_MS = 5 * 60 * 1000;
 
 interface HistoryEntry {
   id: number;
@@ -32,6 +44,14 @@ export default function ScanScreen() {
   const [manual, setManual] = useState("");
   const [overlay, setOverlay] = useState<OverlayState | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+
+  // Respaldo sin conexión
+  const [offline, setOffline] = useState(false);
+  const [lastSync, setLastSync] = useState<string | null>(null);
+  const [pending, setPending] = useState(0);
+  const [syncing, setSyncing] = useState(false);
+  const cacheRef = useRef<PassCache | null>(null);
+  const flushingRef = useRef(false);
 
   // Las lecturas de la cámara llegan fuera del ciclo de render: se usan refs para ver siempre el valor actual
   const busyRef = useRef(false);
@@ -60,6 +80,36 @@ export default function ScanScreen() {
     setOverlay(state);
   }, []);
 
+  // Un fallo de red (sin internet o API caída) activa el modo sin conexión; un rechazo del servidor NO.
+  const isNetworkFailure = (result: Awaited<ReturnType<typeof scanPass>>) => !result.ok && result.status === 503;
+
+  const scanOffline = useCallback(
+    (token: string): { state: OverlayState; name: string } => {
+      const cache = cacheRef.current;
+      if (!cache) {
+        return {
+          state: { kind: "error", message: "Sin conexión y sin lista de pases descargada. Conectate una vez para poder validar sin red." },
+          name: "—",
+        };
+      }
+      const now = new Date();
+      const { result, updated } = validateOffline(cache, token, actionRef.current, now);
+
+      if (updated) {
+        cacheRef.current = applyToCache(cache, updated);
+        const queue: QueuedScan[] = [...loadQueue(), { token, action: actionRef.current, scannedAt: now.toISOString() }];
+        saveQueue(queue);
+        setPending(queue.length);
+      }
+
+      return {
+        state: { kind: "result", success: result.success, outcome: result.outcome, reason: result.reason, message: result.message, pass: result.pass, offline: true },
+        name: result.pass?.visitorName ?? "Pase desconocido",
+      };
+    },
+    []
+  );
+
   const handleToken = useCallback(
     async (raw: string) => {
       const token = raw.trim();
@@ -68,8 +118,26 @@ export default function ScanScreen() {
       if (last && last.token === token && Date.now() - last.at < SAME_QR_COOLDOWN_MS) return;
 
       busyRef.current = true; // sigue ocupado hasta que el guardia cierre el resultado
-      const result = await scanPass({ token, action: actionRef.current });
 
+      let result: Awaited<ReturnType<typeof scanPass>> | null = null;
+      if (!navigator.onLine) {
+        setOffline(true);
+      } else {
+        try {
+          result = await scanPass({ token, action: actionRef.current });
+        } catch {
+          result = null; // sin red: la Server Action ni siquiera llegó al servidor
+        }
+      }
+
+      if (!result || isNetworkFailure(result)) {
+        setOffline(true);
+        const fallback = scanOffline(token);
+        showOverlay(fallback.state, token, fallback.name);
+        return;
+      }
+
+      setOffline(false);
       if (!result.ok) {
         showOverlay({ kind: "error", message: result.error }, token, "—");
         return;
@@ -78,8 +146,90 @@ export default function ScanScreen() {
       const { success, outcome, reason, message, pass } = result.data;
       showOverlay({ kind: "result", success, outcome, reason, message, pass }, token, pass?.visitorName ?? "Pase desconocido");
     },
-    [showOverlay]
+    [showOverlay, scanOffline]
   );
+
+  // ---- Sincronización ----
+  /** Envía al servidor los escaneos hechos sin conexión, en orden. Se detiene si vuelve a caerse la red. */
+  const flushQueue = useCallback(async () => {
+    if (flushingRef.current) return;
+    flushingRef.current = true;
+    try {
+      let queue = loadQueue();
+      while (queue.length > 0) {
+        const item = queue[0];
+        let result: Awaited<ReturnType<typeof scanPass>>;
+        try {
+          result = await scanPass({ token: item.token, action: item.action, offline: true, scannedAt: item.scannedAt });
+        } catch {
+          return; // sin red: se reintenta en la próxima sincronización
+        }
+        if (isNetworkFailure(result)) return;
+
+        queue = queue.slice(1);
+        saveQueue(queue);
+        setPending(queue.length);
+
+        if (!result.ok) toast.error(`No se pudo sincronizar un ingreso: ${result.error}`);
+        else if (!result.data.success) {
+          toast.warning(`Un escaneo sin conexión fue rechazado al sincronizar (${result.data.pass?.visitorName ?? "pase"}): ${result.data.message}`, { duration: 15000 });
+        }
+      }
+    } finally {
+      flushingRef.current = false;
+    }
+  }, []);
+
+  /** Envía lo pendiente y descarga la lista actualizada de pases del día. */
+  const syncNow = useCallback(async () => {
+    setSyncing(true);
+    try {
+      await flushQueue();
+      if (loadQueue().length > 0) {
+        setOffline(true);
+        return;
+      }
+      let result: Awaited<ReturnType<typeof syncPasses>>;
+      try {
+        result = await syncPasses();
+      } catch {
+        setOffline(true);
+        return;
+      }
+      if (!result.ok) {
+        if (result.status === 503) setOffline(true);
+        return;
+      }
+      const cache: PassCache = { generatedAt: result.data.generatedAt, items: result.data.items };
+      cacheRef.current = cache;
+      saveCache(cache);
+      setLastSync(cache.generatedAt);
+      setOffline(false);
+    } finally {
+      setSyncing(false);
+    }
+  }, [flushQueue]);
+
+  useEffect(() => {
+    const cached = loadCache();
+    cacheRef.current = cached;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- restaura el respaldo guardado en este dispositivo
+    setLastSync(cached?.generatedAt ?? null);
+    setPending(loadQueue().length);
+    setOffline(!navigator.onLine);
+
+    void syncNow();
+    const timer = setInterval(() => void syncNow(), SYNC_INTERVAL_MS);
+    const onOnline = () => void syncNow();
+    const onOffline = () => setOffline(true);
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+    };
+  }, [syncNow]);
 
   const closeOverlay = useCallback(() => {
     setOverlay(null);
@@ -177,6 +327,30 @@ export default function ScanScreen() {
           Apuntá la cámara al QR del visitante. El ingreso se registra automáticamente si el pase es válido.
         </p>
       </header>
+
+      <div
+        role="status"
+        className={`flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border px-4 py-3 text-sm ${
+          offline ? "border-amber-500/40 bg-amber-500/10 text-amber-200" : "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+        }`}
+      >
+        {offline ? <CloudOff size={18} aria-hidden /> : <Wifi size={18} aria-hidden />}
+        <span className="font-semibold">{offline ? "Sin conexión: validando con la lista guardada" : "Conectado"}</span>
+        <span className="opacity-80">
+          {lastSync
+            ? `Lista de pases: ${new Date(lastSync).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}`
+            : "Lista de pases sin descargar"}
+        </span>
+        {pending > 0 && <span className="rounded-full bg-amber-500/30 px-2.5 py-0.5 font-semibold">{pending} pendiente{pending === 1 ? "" : "s"} de enviar</span>}
+        <button
+          type="button"
+          onClick={() => void syncNow()}
+          disabled={syncing}
+          className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 font-medium hover:bg-white/20 disabled:opacity-50"
+        >
+          <RefreshCw size={14} className={syncing ? "animate-spin" : ""} aria-hidden /> Sincronizar
+        </button>
+      </div>
 
       <div role="group" aria-label="Acción a registrar" className="flex gap-3">
         {modeButton("CheckIn", "Registrar ingreso", LogIn)}

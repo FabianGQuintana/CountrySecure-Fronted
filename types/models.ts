@@ -172,3 +172,25 @@ export interface ScanResultDto {
   scannedAt: string;
   pass?: PassDto | null;
 }
+
+export interface SyncPassDto extends PassDto {
+  entryTime?: string | null;
+  departureTime?: string | null;
+  /** Visitante o residente bloqueado: la guardia rechaza el pase aunque esté vigente. */
+  blocked: boolean;
+}
+
+export interface SyncResponseDto {
+  generatedAt: string;
+  items: SyncPassDto[];
+}
+
+export interface NotificationDto {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  permissionId?: string | null;
+  createdAt: string;
+  read: boolean;
+}

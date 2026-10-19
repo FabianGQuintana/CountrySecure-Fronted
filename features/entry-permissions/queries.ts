@@ -1,6 +1,6 @@
 import "server-only";
 import { api, fetchAll, type Query } from "@/lib/api-client";
-import type { EntryPermissionDto, GateCheckDto, PagedResult, PassDto } from "@/types/models";
+import type { EntryPermissionDto, GateCheckDto, PagedResult, PassDto, SyncResponseDto } from "@/types/models";
 
 export const getPermissionById = (id: string) => api.get<EntryPermissionDto>(`/api/entry-permissions/${id}`);
 
@@ -27,3 +27,6 @@ export const validateQr = (code: string) => api.get<GateCheckDto>("/api/entry-pe
 
 /** Historial completo de ingresos (recorre las páginas), para filtrar por fecha/tipo en el cliente. */
 export const getAllHistory = () => fetchAll<EntryPermissionDto>("/api/entry-permissions/history");
+
+/** Pases activos del día con su token, para validar sin conexión en la guardia. */
+export const getSync = () => api.get<SyncResponseDto>("/api/entry-permissions/sync");
