@@ -41,6 +41,46 @@ export const PERMISSION_TYPE_LABELS: Record<PermissionType, string> = {
   Maintenance: "Mantenimiento",
 };
 
+// ---- Vehículo y tipo de pase ----
+export const VehicleType = {
+  OnFoot: "OnFoot",
+  Car: "Car",
+  Motorcycle: "Motorcycle",
+} as const;
+export type VehicleType = (typeof VehicleType)[keyof typeof VehicleType];
+
+export const VEHICLE_TYPE_LABELS: Record<VehicleType, string> = {
+  OnFoot: "A pie",
+  Car: "Auto",
+  Motorcycle: "Moto",
+};
+
+export const PassType = {
+  SingleEntry: "SingleEntry",
+  MultipleEntries: "MultipleEntries",
+} as const;
+export type PassType = (typeof PassType)[keyof typeof PassType];
+
+export const PASS_TYPE_LABELS: Record<PassType, string> = {
+  SingleEntry: "Un solo ingreso",
+  MultipleEntries: "Múltiples ingresos",
+};
+
+// ---- Escaneo en la guardia ----
+export type ScanAction = "CheckIn" | "CheckOut";
+export type ScanOutcome = "CheckIn" | "CheckOut" | "Rejected";
+export type ScanReason =
+  | "None"
+  | "InvalidToken"
+  | "NotFound"
+  | "Cancelled"
+  | "AlreadyUsed"
+  | "AlreadyInside"
+  | "NotInside"
+  | "NotYetValid"
+  | "Expired"
+  | "Blocked";
+
 // ---- Estado de un permiso de ingreso ----
 export const PermissionStatus = {
   Cancelled: "Cancelled",

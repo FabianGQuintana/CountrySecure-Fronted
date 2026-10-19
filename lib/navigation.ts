@@ -7,6 +7,8 @@ import {
   KeyRound,
   LayoutDashboard,
   Map,
+  QrCode,
+  ScanLine,
   ShieldCheck,
   Star,
   UserCircle,
@@ -72,6 +74,7 @@ export const NAVIGATION: Record<Role, RoleNavigation> = {
           { label: "Mi perfil", href: "/resident/profile", icon: UserCircle },
           { label: "Reservar amenities", href: "/resident/amenities", icon: Star },
           { label: "Solicitar permisos", href: "/resident/permits", icon: KeyRound },
+          { label: "Mis pases", href: "/resident/passes", icon: QrCode },
           { label: "Mis reservas", href: "/resident/reservations", icon: CalendarDays },
           { label: "Solicitudes", href: "/resident/requests", icon: Wrench },
         ],
@@ -84,6 +87,7 @@ export const NAVIGATION: Record<Role, RoleNavigation> = {
     sections: [
       {
         items: [
+          { label: "Escanear QR", href: "/security/scan", icon: ScanLine },
           { label: "Visitas de hoy", href: "/security/visit", icon: CalendarCheck },
           { label: "Registro de entradas", href: "/security/logs", icon: ClipboardList },
           { label: "Permisos", href: "/security/permissions", icon: KeyRound },

@@ -1,6 +1,6 @@
 import "server-only";
 import { api, fetchAll, type Query } from "@/lib/api-client";
-import type { EntryPermissionDto, GateCheckDto, PagedResult } from "@/types/models";
+import type { EntryPermissionDto, GateCheckDto, PagedResult, PassDto } from "@/types/models";
 
 export const getPermissionById = (id: string) => api.get<EntryPermissionDto>(`/api/entry-permissions/${id}`);
 
@@ -10,6 +10,12 @@ export const getPermissionsPage = (query: Query = {}) =>
 
 /** Todos los permisos que cumplen el filtro (recorre las páginas). */
 export const getAllPermissions = (query: Query = {}) => fetchAll<EntryPermissionDto>("/api/entry-permissions", query);
+
+/** Pases del residente autenticado, incluidos los cancelados (historial personal). */
+export const getMyPermissions = () => fetchAll<EntryPermissionDto>("/api/entry-permissions/me");
+
+/** Pase digital (datos + token del QR) de un permiso. */
+export const getPass = (id: string) => api.get<PassDto>(`/api/entry-permissions/${id}/pass`);
 
 export const getTodayPermissions = (page: number, pageSize: number) =>
   api.get<PagedResult<EntryPermissionDto>>("/api/entry-permissions/today", { page, pageSize });

@@ -1,5 +1,5 @@
 // Modelos de respuesta de la API (JSON en camelCase). Un cambio de contrato en el backend debe reflejarse acá.
-import type { LotState, OrderStatus, PermissionStatus, PermissionType, RequestStatus, Role, TurnStatus } from "./api";
+import type { LotState, OrderStatus, PassType, PermissionStatus, PermissionType, RequestStatus, Role, ScanOutcome, ScanReason, TurnStatus, VehicleType } from "./api";
 
 // ---- Paginación ----
 export interface PagedResult<T> {
@@ -24,6 +24,8 @@ export interface UserDto {
   phone: string;
   email: string;
   active: boolean;
+  isBlocked?: boolean;
+  blockReason?: string | null;
   role: Role;
 }
 
@@ -103,6 +105,8 @@ export interface VisitDto {
   lastNameVisit: string;
   dniVisit: number;
   visitStatus: AuditStatus;
+  isBlocked?: boolean;
+  blockReason?: string | null;
 }
 
 export interface EntryPermissionDto {
@@ -110,6 +114,11 @@ export interface EntryPermissionDto {
   qrCodeValue: string;
   type: PermissionType;
   status: PermissionStatus;
+  passType: PassType;
+  companionsCount: number;
+  vehicleType: VehicleType;
+  vehiclePlate?: string | null;
+  vehicleModel?: string | null;
   validFrom: string;
   validTo?: string | null;
   entryTime?: string | null;
@@ -133,4 +142,33 @@ export interface GateCheckDto {
   residentFullName: string;
   checkResultStatus: string;
   message?: string | null;
+}
+
+/** Pase digital: lo que muestra la guardia al escanear y lo que ve la visita en el enlace público. */
+export interface PassDto {
+  permissionId: string;
+  /** Contenido del QR (token firmado). */
+  token: string;
+  status: PermissionStatus;
+  passType: PassType;
+  residentName: string;
+  destination: string;
+  visitorName: string;
+  visitorDni: number;
+  companionsCount: number;
+  vehicleType: VehicleType;
+  vehiclePlate?: string | null;
+  vehicleModel?: string | null;
+  validFrom: string;
+  validTo?: string | null;
+  description?: string | null;
+}
+
+export interface ScanResultDto {
+  success: boolean;
+  outcome: ScanOutcome;
+  reason: ScanReason;
+  message: string;
+  scannedAt: string;
+  pass?: PassDto | null;
 }

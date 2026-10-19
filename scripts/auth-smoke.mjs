@@ -29,8 +29,8 @@ const COOKIE = "next-auth.session-token";
 
 const ROLES = {
   Admin: { email: env.SMOKE_EMAIL_ADMIN || "admin@countrysecure.local", password: env.SMOKE_PASSWORD_ADMIN, pages: ["/admin", "/admin/users/residentes", "/admin/amenities", "/admin/orders", "/admin/lotes"], all: ["/admin/users/seguridad", "/admin/propiedades", "/admin/amenities/solicitudes"] },
-  Resident: { email: env.SMOKE_EMAIL_RESIDENT || "residente@countrysecure.local", password: env.SMOKE_PASSWORD_RESIDENT, pages: ["/resident/dashboard", "/resident/profile", "/resident/reservations", "/resident/requests", "/resident/amenities"], all: ["/resident/permits", "/resident/profile/edit", "/resident/profile/password"] },
-  Security: { email: env.SMOKE_EMAIL_SECURITY || "seguridad@countrysecure.local", password: env.SMOKE_PASSWORD_SECURITY, pages: ["/security/visit", "/security/logs", "/security/permissions", "/security/services", "/security/family-visits"], all: ["/security/securityCameras"] },
+  Resident: { email: env.SMOKE_EMAIL_RESIDENT || "residente@countrysecure.local", password: env.SMOKE_PASSWORD_RESIDENT, pages: ["/resident/dashboard", "/resident/profile", "/resident/reservations", "/resident/requests", "/resident/amenities"], all: ["/resident/permits", "/resident/passes", "/resident/profile/edit", "/resident/profile/password"] },
+  Security: { email: env.SMOKE_EMAIL_SECURITY || "seguridad@countrysecure.local", password: env.SMOKE_PASSWORD_SECURITY, pages: ["/security/visit", "/security/logs", "/security/permissions", "/security/services", "/security/family-visits"], all: ["/security/securityCameras", "/security/scan"] },
 };
 
 // ---- Utilidades ----
