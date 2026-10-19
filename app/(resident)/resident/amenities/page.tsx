@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import type React from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,7 +43,7 @@ export default function ReserveAmenityPage() {
     async function loadAmenities() {
       const result = await listAmenities();
       if (result.ok) setAmenities(result.data);
-      else console.error("Error cargando amenities:", result.error);
+      else toast.error(result.error);
       setIsLoadingAmenities(false);
     }
 

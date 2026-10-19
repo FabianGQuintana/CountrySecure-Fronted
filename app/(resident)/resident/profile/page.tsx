@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 import {
   FiUser,
@@ -28,10 +29,10 @@ export default function ResidentProfile() {
       const [userResult, propertiesResult] = await Promise.all([fetchCurrentUser(), listMyProperties()]);
 
       if (userResult.ok) setUser(userResult.data);
-      else console.error("Error cargando usuario:", userResult.error);
+      else toast.error(userResult.error);
 
       if (propertiesResult.ok) setProperties(propertiesResult.data);
-      else console.error("Error cargando propiedades:", propertiesResult.error);
+      else toast.error(propertiesResult.error);
 
       setLoading(false);
     };

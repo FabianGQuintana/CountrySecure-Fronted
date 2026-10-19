@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 /**
  * Tabla genérica con búsqueda, filtros por segmento, orden, selección y paginación.
@@ -301,7 +302,7 @@ export function DataTable<T>({
               {!isLoading && pageRows.length === 0 && (
                 <tr>
                   <td colSpan={columns.length + (selectable ? 1 : 0)} className={cn("px-6 py-12 text-center", t.muted)}>
-                    {emptyMessage}
+                    <EmptyState message={emptyMessage} />
                   </td>
                 </tr>
               )}

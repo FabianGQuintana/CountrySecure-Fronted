@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import type React from "react";
 
 import { useEffect, useState } from "react";
@@ -48,7 +49,7 @@ export default function EditResidentProfile() {
         reset({ name: user.name, lastname: user.lastname, phone: user.phone, email: user.email });
         setDni(user.dni);
       } else {
-        console.error("Error cargando usuario:", result.error);
+        toast.error(result.error);
       }
       setLoading(false);
     };

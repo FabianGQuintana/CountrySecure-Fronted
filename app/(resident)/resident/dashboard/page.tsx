@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { FiUser, FiHome, FiKey, FiCalendar, FiTool } from "react-icons/fi";
 import { motion } from "framer-motion";
@@ -15,7 +16,7 @@ export default function ResidentDashboard() {
   useEffect(() => {
     fetchResidentStats().then((result) => {
       if (result.ok) setStats(result.data);
-      else console.error("Error al cargar estadísticas:", result.error);
+      else toast.error(result.error);
     });
   }, []);
 

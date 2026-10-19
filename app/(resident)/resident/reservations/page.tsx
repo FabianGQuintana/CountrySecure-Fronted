@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Home, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -85,8 +86,11 @@ export default function ResidentReservationsPage() {
     if (!confirm("¿Cancelar esta reserva?")) return;
     setCancellingId(id);
     const result = await cancelTurn(id);
-    if (!result.ok) alert(result.error);
-    else await load();
+    if (!result.ok) toast.error(result.error);
+    else {
+      toast.success("Reserva cancelada.");
+      await load();
+    }
     setCancellingId(null);
   };
 

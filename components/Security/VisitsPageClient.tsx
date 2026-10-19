@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import React, { useState, useEffect, useCallback } from "react";
 import { Clock, CheckCircle, AlertTriangle } from "lucide-react";
 import type { EntryPermissionDto } from "@/types/models";
@@ -138,7 +139,7 @@ export default function VisitsPageClient() {
       setVisitPermissions(normalizedItems);
       setTotalPermissions(result.data.totalCount);
     } else {
-      console.error("Error al cargar los permisos del día:", result.error);
+      toast.error(result.error);
     }
 
     setIsLoading(false);

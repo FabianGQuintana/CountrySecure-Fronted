@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
 import { Eye, History, ChevronLeft, ChevronRight } from "lucide-react";
 import { EntryPermissionResponseDto } from "@/types/order";
@@ -37,7 +38,7 @@ export default function ServicesCardsPage() {
         const data = result.data;
         setServices(data);
       } catch (e) {
-        console.error(e);
+        toast.error(e instanceof Error ? e.message : "No se pudieron cargar los servicios.");
       } finally {
         setLoading(false);
       }

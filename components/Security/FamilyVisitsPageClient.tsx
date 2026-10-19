@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner";
 import type { EntryPermissionDto } from "@/types/models";
 
 import { useEffect, useMemo, useState } from "react";
@@ -26,7 +27,7 @@ export default function FamilyVisitsPageClient() {
     const fetchVisits = async () => {
       const result = await listVisitPermissions();
       if (result.ok) setVisits(result.data);
-      else console.error(result.error);
+      else toast.error(result.error);
       setLoading(false);
     };
 

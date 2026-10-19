@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FiTool, FiMapPin, FiPlus, FiX } from "react-icons/fi";
@@ -76,9 +77,10 @@ export default function ResidentRequestsPage() {
     if (!confirm("¿Cancelar esta solicitud?")) return;
     const result = await cancelRequest(id);
     if (!result.ok) {
-      alert(result.error);
+      toast.error(result.error);
       return;
     }
+    toast.success("Solicitud cancelada.");
     await load();
   };
 
