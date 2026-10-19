@@ -42,39 +42,10 @@ const LOT_STATE_CONFIG = {
   },
 } as const;
 
-const getLotStatusValue = (lote: any): LotState => {
-  const possibleStates = [
-    lote.LotStatus,
-    lote.lotStatus,
-    lote.lotState,
-    lote.status,
-    lote.LotState,
-  ];
-
-  for (const state of possibleStates) {
-    if (state !== undefined && state !== null) {
-      const numericValue = Number(state);
-      if (
-        !isNaN(numericValue) &&
-        Object.values(LotState).includes(numericValue)
-      ) {
-        return numericValue as LotState;
-      }
-      if (typeof state === "string") {
-        const lowerState = state.toLowerCase();
-        if (lowerState === "available" || lowerState === "disponible")
-          return LotState.Available;
-        if (lowerState === "full" || lowerState === "lleno")
-          return LotState.Full;
-        if (lowerState === "maintenance" || lowerState === "mantenimiento")
-          return LotState.Maintenance;
-        if (lowerState === "inactive" || lowerState === "inactivo")
-          return LotState.Inactive;
-      }
-    }
-  }
-
-  return LotState.Inactive;
+// La API devuelve el estado del lote como texto ("Available", "Full", ...)
+const getLotStatusValue = (lote: { lotState?: string; lotStatus?: string }): LotState => {
+  const state = lote.lotState ?? lote.lotStatus;
+  return (Object.values(LotState) as string[]).includes(state ?? "") ? (state as LotState) : LotState.Inactive;
 };
 
 const EstadoBadge = ({ estado }: { estado: LotState }) => {

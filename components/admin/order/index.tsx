@@ -21,7 +21,7 @@ import {
 } from "react-icons/hi";
 import { useSession } from "next-auth/react";
 import { Estados } from "@/components/estados";
-import { IOrder } from "@/types";
+import { IOrder, orderTypeLabel } from "@/types";
 import ModalNewOrder from "./modalNewOrder";
 
 export default function TablaOrders() {
@@ -38,16 +38,6 @@ export default function TablaOrders() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [modalOpen, setModalOpen] = useState(false);
   const itemsPerPage = 8;
-
-  const OrderTypeLabels: Record<string, string> = {
-    Gardening: "Jardinería",
-    Plumping: "Plomería",
-    Electrical: "Electricidad",
-    Cleaning: "Limpieza",
-    GeneralMaintenance: "Mantenimiento General",
-    Pool: "Piscina",
-    Security: "Seguridad",
-  };
 
   const fetchOrders = async () => {
     try {
@@ -123,15 +113,6 @@ export default function TablaOrders() {
 
   const goToEdit = (id: string) => {
     router.push(`/admin/orders/${id}`);
-  };
-
-  const getOrderTypeName = (type: any) => {
-    if (!type) return "Desconocido";
-    if (typeof type === "string") {
-      return OrderTypeLabels[type] ?? "Desconocido";
-    }
-    const numeric = Number(type);
-    return OrderTypeLabels[numeric.toString()] ?? "Desconocido";
   };
 
   return (
@@ -356,7 +337,7 @@ export default function TablaOrders() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 text-purple-700 border border-purple-100/50">
-                            {getOrderTypeName(order.orderType)}
+                            {orderTypeLabel(order.orderType)}
                           </div>
                         </td>
                         <td className="px-6 py-4">

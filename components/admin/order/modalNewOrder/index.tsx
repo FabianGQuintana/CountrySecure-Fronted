@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { newOrder } from "@/actions/orderActions";
 import { FiX } from "react-icons/fi";
-import { IOrderRegister, OrderStatus } from "@/types";
+import { IOrderRegister, OrderStatus, orderTypeLabel } from "@/types";
 
 interface ModalNewOrderProps {
   onClose: () => void;
@@ -50,7 +50,7 @@ export default function ModalNewOrder({
       await newOrder({
         description,
         supplierName,
-        orderType: Number(orderType),
+        orderType,
         requestIds: parseIds(requestIds),
         entryPermissionIds: parseIds(entryPermissionIds),
       } as IOrderRegister);
@@ -122,18 +122,16 @@ export default function ModalNewOrder({
             <select
               value={orderType}
               onChange={(e) =>
-                setOrderType(e.target.value as unknown as OrderStatus)
+                setOrderType(e.target.value as OrderStatus)
               }
               required
               className="w-full border border-gray-300 p-2 rounded-lg"
             >
               <option value="">Selecciona un tipo...</option>
-              {Object.entries(OrderStatus)
-                .filter(([, v]) => typeof v === "number")
-                .map(([key, value]) => (
-                  <option key={value} value={value}>
-                    {key}
-                  </option>
+              {Object.values(OrderStatus).map((value) => (
+                <option key={value} value={value}>
+                  {orderTypeLabel(value)}
+                </option>
               ))}
 
             </select>

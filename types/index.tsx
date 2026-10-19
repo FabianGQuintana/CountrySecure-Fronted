@@ -1,3 +1,6 @@
+import type { OrderStatus, LotState } from "./api";
+export * from "./api";
+
 import { inter } from "@/app/fonts";
 
 export interface Iusuario {
@@ -61,15 +64,6 @@ export interface IOrder {
   entryPermissionIds?: string[];
   status: string;
 }
-export enum OrderStatus {
-  Gardening = 1,
-  Plumbing = 2,
-  Electrical = 3,
-  Cleaning = 4,
-  GeneralMaintenance = 5,
-  Pool = 6,
-  Security = 7,
-}
 export interface IOrderRegisterForm {
   onClose: () => void;
   onSuccess?: () => void;
@@ -81,12 +75,6 @@ export interface IloteRegister {
   lotState: LotState;
 }
 
-export enum LotState {
-  Inactive = 0,
-  Available = 1,
-  Full = 2,
-  Maintenance = 3,
-}
 
 export interface IloteRegisterForm {
   onClose: () => void;
@@ -98,10 +86,6 @@ export interface ILoteForm {
   lotStatus: LotState;
 }
 
-export enum PermissionType {
-  Visit = 1,
-  Maintenance = 2
-}
   export interface IPropiedadRegister {
     Street: string;
     PropertyNumber: number;

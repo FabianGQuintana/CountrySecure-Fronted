@@ -19,15 +19,26 @@ import { createEntryPermission } from "@/actions/permitsActions";
 import { createVisit, getVisitsByDni } from "@/actions/visitActions";
 import { getOrders } from "@/actions/orderActions";
 import { VisitResponseDto } from "@/types/visits";
-import { OrderResponseDto, OrderStatusText } from "@/types/order";
+import { OrderResponseDto, orderTypeLabel } from "@/types/order";
 import { useSession } from "next-auth/react";
 
 type FormErrors = Record<string, string>;
 
+interface PermitFormData {
+  permissionType: PermissionType;
+  nameVisit: string;
+  lastNameVisit: string;
+  dniVisit: string;
+  orderId: string;
+  description: string;
+  validFrom: string;
+  validTo: string;
+}
+
 export default function PermitsPage() {
   const { data: session, status } = useSession();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PermitFormData>({
     permissionType: PermissionType.Visit,
     nameVisit: "",
     lastNameVisit: "",
@@ -201,7 +212,7 @@ export default function PermitsPage() {
         {/* Tipo */}
         <select
           value={formData.permissionType}
-          onChange={(e) => setField("permissionType", Number(e.target.value))}
+          onChange={(e) => setField("permissionType", e.target.value as PermissionType)}
           className={cn(inputBase, inputOk)}
         >
           <option value={PermissionType.Visit}>Visita</option>
@@ -283,7 +294,7 @@ export default function PermitsPage() {
             <option value="">Seleccionar servicio</option>
             {orders.map((o) => (
               <option key={o.id} value={o.id}>
-                {OrderStatusText[o.orderType]} — {o.supplierName}
+                {orderTypeLabel(o.orderType)} — {o.supplierName}
               </option>
             ))}
           </select>

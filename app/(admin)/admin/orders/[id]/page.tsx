@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { IOrder, OrderStatus } from "@/types";
+import { IOrder, OrderStatus, orderTypeLabel } from "@/types";
 import {
   FiArrowLeft,
   FiAlertCircle,
@@ -31,7 +31,7 @@ export default function OrderDetailPage() {
   const [isChangingStatus, setIsChangingStatus] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{ description: string; orderType: OrderStatus }>({
     description: "",
     orderType: OrderStatus.Gardening,
   });
@@ -134,27 +134,6 @@ export default function OrderDetailPage() {
       console.error(err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getOrderTypeName = (type: OrderStatus) => {
-    switch (type) {
-      case OrderStatus.Gardening:
-        return "Jardinería";
-      case OrderStatus.Plumbing:
-        return "Plomería";
-      case OrderStatus.Electrical:
-        return "Electricidad";
-      case OrderStatus.Cleaning:
-        return "Limpieza";
-      case OrderStatus.GeneralMaintenance:
-        return "Mantenimiento General";
-      case OrderStatus.Pool:
-        return "Piscina";
-      case OrderStatus.Security:
-        return "Seguridad";
-      default:
-        return "Desconocido";
     }
   };
 
@@ -287,13 +266,11 @@ export default function OrderDetailPage() {
                           : "bg-gray-100 border-gray-200 cursor-not-allowed"
                       }`}
                     >
-                      {Object.values(OrderStatus)
-                        .filter((v) => typeof v === "number")
-                        .map((v) => (
-                          <option key={v} value={v}>
-                            {getOrderTypeName(v as OrderStatus)}
-                          </option>
-                        ))}
+                      {Object.values(OrderStatus).map((v) => (
+                        <option key={v} value={v}>
+                          {orderTypeLabel(v)}
+                        </option>
+                      ))}
                     </select>
                   </div>
 

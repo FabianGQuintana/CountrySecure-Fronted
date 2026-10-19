@@ -128,7 +128,7 @@ export default function ModalNewLote({
               onChange={(e) =>
                 setForm({
                   ...form,
-                  lotStatus: Number(e.target.value) as LotState,
+                  lotStatus: e.target.value as LotState,
                 })
               }
               className="w-full border border-gray-300 p-2 rounded-lg"
