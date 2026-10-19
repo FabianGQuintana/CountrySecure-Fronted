@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 import {
   FiUsers,
@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getAdminStats } from "@/actions/statsActions";
+import { fetchAdminStats } from "@/features/stats/actions";
 import type { AdminStats } from "@/types/stats";
 
 export default function AdminDashboard() {
@@ -25,9 +25,10 @@ export default function AdminDashboard() {
   const [statsError, setStatsError] = useState(false);
 
   useEffect(() => {
-    getAdminStats()
-      .then(setStats)
-      .catch(() => setStatsError(true));
+    fetchAdminStats().then((result) => {
+      if (result.ok) setStats(result.data);
+      else setStatsError(true);
+    });
   }, []);
 
   useEffect(() => {

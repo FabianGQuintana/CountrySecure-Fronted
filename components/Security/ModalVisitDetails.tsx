@@ -1,5 +1,6 @@
 "use client";
 import type React from "react";
+import type { EntryPermissionDto } from "@/types/models";
 import { useState } from "react";
 import {
   X,
@@ -11,25 +12,21 @@ import {
   CheckCircle,
   Building,
 } from "lucide-react";
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { registerEntry, registerDeparture } from "@/actions/securityActions";
+import { checkInPermission, checkOutPermission } from "@/features/entry-permissions/actions";
 
 interface ModalVisitDetailsProps {
-  permission: any;
-  guardId?: string;
+  permission: EntryPermissionDto;
 }
 
-const ModalVisitDetails: React.FC<ModalVisitDetailsProps> = ({
-  permission,
-  guardId,
-}) => {
+const ModalVisitDetails: React.FC<ModalVisitDetailsProps> = ({ permission }) => {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const formatDateTime = (dateString?: string) => {
+  const formatDateTime = (dateString?: string | null) => {
     if (!dateString) return "No registrado";
     try {
       const date = new Date(dateString);
@@ -46,65 +43,47 @@ const ModalVisitDetails: React.FC<ModalVisitDetailsProps> = ({
   };
 
   const handleRegisterEntry = async () => {
-    if (!guardId) {
-      setError(
-        "No se pudo obtener el ID del guardia. Inicia sesión nuevamente."
-      );
-      return;
-    }
-
     setIsProcessing(true);
     setError(null);
     setSuccessMessage(null);
 
-    try {
-      await registerEntry({
-        permissionId: permission.id,
-      });
+    const result = await checkInPermission(permission.id);
 
-      setSuccessMessage("✓ Entrada registrada exitosamente");
-
-      // Esperar 1.5 segundos y luego cerrar
-      setTimeout(() => {
-        router.back();
-        router.refresh();
-      }, 1500);
-    } catch (err: any) {
-      console.error("Error al registrar entrada:", err);
-      setError(err.message || "Error al registrar la entrada");
+    if (!result.ok) {
+      setError(result.error);
       setIsProcessing(false);
+      return;
     }
+
+    setSuccessMessage("✓ Entrada registrada exitosamente");
+
+    // Esperar 1.5 segundos y luego cerrar
+    setTimeout(() => {
+      router.back();
+      router.refresh();
+    }, 1500);
   };
 
   const handleRegisterDeparture = async () => {
-    if (!guardId) {
-      setError(
-        "No se pudo obtener el ID del guardia. Inicia sesión nuevamente."
-      );
-      return;
-    }
-
     setIsProcessing(true);
     setError(null);
     setSuccessMessage(null);
 
-    try {
-      await registerDeparture({
-        permissionId: permission.id,
-      });
+    const result = await checkOutPermission(permission.id);
 
-      setSuccessMessage("✓ Salida registrada exitosamente");
-
-      // Esperar 1.5 segundos y luego cerrar
-      setTimeout(() => {
-        router.back();
-        router.refresh();
-      }, 1500);
-    } catch (err: any) {
-      console.error("Error al registrar salida:", err);
-      setError(err.message || "Error al registrar la salida");
+    if (!result.ok) {
+      setError(result.error);
       setIsProcessing(false);
+      return;
     }
+
+    setSuccessMessage("✓ Salida registrada exitosamente");
+
+    // Esperar 1.5 segundos y luego cerrar
+    setTimeout(() => {
+      router.back();
+      router.refresh();
+    }, 1500);
   };
 
   const handleClose = () => {
@@ -180,7 +159,7 @@ const ModalVisitDetails: React.FC<ModalVisitDetailsProps> = ({
               className={`px-3 py-1.5 rounded-lg font-bold text-xs ${
                 permission.status === "Pending"
                   ? "bg-amber-500/20 text-amber-300 border border-amber-500/50"
-                  : permission.status === "Active"
+                  : permission.entryTime && !permission.departureTime
                   ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50"
                   : "bg-gray-500/20 text-gray-300 border border-gray-500/50"
               }`}

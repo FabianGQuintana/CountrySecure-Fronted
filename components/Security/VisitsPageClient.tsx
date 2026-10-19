@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Clock, CheckCircle, AlertTriangle } from "lucide-react";
+import type { EntryPermissionDto } from "@/types/models";
 import VisitCard from "@/components/Security/VisitCard";
+import { fetchTodayPermissions } from "@/features/entry-permissions/actions";
 
 // ===============================================
 // Helpers
 // ===============================================
-const isExpired = (validTo?: string) => {
+const isExpired = (validTo?: string | null) => {
   if (!validTo) return false;
   return new Date(validTo).getTime() < Date.now();
 };
@@ -15,11 +17,6 @@ const isExpired = (validTo?: string) => {
 // ===============================================
 // Props
 // ===============================================
-interface VisitsPageClientProps {
-  initialToken: string | null;
-  initialApiHost: string | null;
-}
-
 // ===============================================
 // KPI Card
 // ===============================================
@@ -105,62 +102,50 @@ const PaginatorUI: React.FC<PaginatorUIProps> = ({
   );
 };
 
+type VisitPermission = EntryPermissionDto & { isExpired: boolean; effectiveStatus: string };
+
 // ===============================================
 // Main Component
 // ===============================================
-export default function VisitsPageClient({
-  initialToken,
-  initialApiHost,
-}: VisitsPageClientProps) {
-  const [visitPermissions, setVisitPermissions] = useState<any[]>([]);
+export default function VisitsPageClient() {
+  const [visitPermissions, setVisitPermissions] = useState<VisitPermission[]>([]);
   const [totalPermissions, setTotalPermissions] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [paginaActual, setPaginaActual] = useState(1);
 
   const uiPageSize = 6;
-  const accessToken = initialToken;
-  const apiHost = initialApiHost;
 
-  const fetchCurrentPagePermissions = useCallback(
-    async (targetPage: number) => {
-      if (!accessToken || !apiHost) return;
+  const fetchCurrentPagePermissions = useCallback(async (targetPage: number) => {
+    const result = await fetchTodayPermissions(targetPage, uiPageSize);
 
-      setIsLoading(true);
+    if (result.ok) {
+      // 🔴 NORMALIZACIÓN DE ESTADO (FRONT)
+      const normalizedItems = result.data.items.map((p) => {
+        const expired = isExpired(p.validTo);
 
-      try {
-        const url = `${apiHost}/api/entrypermissions/today?pageNumber=${targetPage}&pageSize=${uiPageSize}`;
-        const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        return {
+          ...p,
+          isExpired: expired,
+          effectiveStatus:
+            expired && !p.entryTime
+              ? "Expired"
+              : p.entryTime && !p.departureTime
+              ? "Active"
+              : "Pending",
+        };
+      });
 
-        const data = await response.json();
+      setVisitPermissions(normalizedItems);
+      setTotalPermissions(result.data.totalCount);
+    } else {
+      console.error("Error al cargar los permisos del día:", result.error);
+    }
 
-        // 🔴 NORMALIZACIÓN DE ESTADO (FRONT)
-        const normalizedItems = (data.items || []).map((p: any) => {
-          const expired = isExpired(p.validTo);
-
-          return {
-            ...p,
-            isExpired: expired,
-            effectiveStatus:
-              expired && !p.entryTime
-                ? "Expired"
-                : p.entryTime && !p.departureTime
-                ? "Active"
-                : "Pending",
-          };
-        });
-
-        setVisitPermissions(normalizedItems);
-        setTotalPermissions(data.totalCount || 0);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [accessToken, apiHost]
-  );
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de datos
     fetchCurrentPagePermissions(1);
   }, [fetchCurrentPagePermissions]);
 
@@ -172,6 +157,7 @@ export default function VisitsPageClient({
       if (newPage === paginaActual) return;
 
       setPaginaActual(newPage);
+      setIsLoading(true);
       fetchCurrentPagePermissions(newPage);
     },
     [paginaActual, totalPages, fetchCurrentPagePermissions]

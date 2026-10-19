@@ -1,44 +1,14 @@
 export const dynamic = "force-dynamic";
-import { auth } from "@/auth";
-import { TablaUsuarios } from "@/components/admin/usuarios";
-import { FiAlertCircle } from "react-icons/fi";
 
-export default async function Page() {
-  let usuarios: any[] | null = null; //el backend me devuelve un array de usuarios, por eso la variable usuarios es un []
-  const session = await auth();
-  try {
-    const response = await fetch(
-      `${process.env.API_HOST}/api/users?role=Resident`,
-      {
-        method: "GET", // cuando es un get no es necesario aclarar
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-        cache: "no-store",
-      }
-    );
+import { ErrorState } from "@/components/ui/ErrorState";
+import { UsersTable } from "@/features/users/components/UsersTable";
+import { getUsersByRole } from "@/features/users/queries";
+import { load } from "@/lib/load";
 
-    if (!response.ok) throw new Error("Error al obtener usuarios");
+export default async function ResidentsPage() {
+  const { data, error } = await load(() => getUsersByRole("Resident"));
 
-    usuarios = await response.json();
-  } catch (error) {
-    console.error("Error fetch usuarios:", error);
-  }
+  if (!data) return <ErrorState title="Error al cargar residentes" message={error} />;
 
-  if (!usuarios) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-red-700">
-        <FiAlertCircle size={48} className="mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Error al cargar usuarios</h2>
-        <p>Inténtelo más tarde</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex-1 p-6">
-      <TablaUsuarios role="Resident" params={usuarios} />
-    </div>
-  );
+  return <UsersTable role="Resident" initialUsers={data} />;
 }

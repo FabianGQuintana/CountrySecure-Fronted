@@ -1,36 +1,21 @@
 export const dynamic = "force-dynamic";
 
-import { FiAlertCircle } from "react-icons/fi";
-import { getAllPermissions } from "@/actions/securityActions";
-import PermissionsTable, { type ApiPermission } from "@/components/Security/PermissionsTable";
+import { ErrorState } from "@/components/ui/ErrorState";
+import PermissionsTable from "@/components/Security/PermissionsTable";
+import { getAllPermissions } from "@/features/entry-permissions/queries";
+import { load } from "@/lib/load";
 
 export default async function PermissionsPage() {
-  let permissions: ApiPermission[] | null = null;
-
-  try {
-    permissions = await getAllPermissions();
-  } catch (error) {
-    console.error("Error al obtener permisos:", error);
-  }
+  const { data, error } = await load(() => getAllPermissions());
 
   return (
     <div className="p-4 md:p-8 space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white">Permisos de Ingreso</h1>
-        <p className="text-slate-400 mt-1">
-          Todos los permisos creados por los residentes para visitas y proveedores.
-        </p>
+        <p className="text-slate-400 mt-1">Todos los permisos creados por los residentes para visitas y proveedores.</p>
       </div>
 
-      {permissions ? (
-        <PermissionsTable permissions={permissions} />
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-rose-400">
-          <FiAlertCircle size={40} className="mb-3" />
-          <p className="font-semibold">No se pudieron cargar los permisos</p>
-          <p className="text-sm text-slate-400">Inténtelo más tarde</p>
-        </div>
-      )}
+      {data ? <PermissionsTable permissions={data} /> : <ErrorState tone="dark" title="No se pudieron cargar los permisos" message={error} />}
     </div>
   );
 }

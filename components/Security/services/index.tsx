@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Eye, History, ChevronLeft, ChevronRight } from "lucide-react";
 import { EntryPermissionResponseDto } from "@/types/order";
 import Link from "next/link";
-import { getMaintenancePermissions } from "@/actions/securityActions";
+import { orderTypeLabel } from "@/types/api";
+import { listMaintenancePermissions } from "@/features/entry-permissions/actions";
 
 /* 🔴 EXPIRADO */
 const isExpired = (status: string, validTo?: string) => {
@@ -31,7 +32,9 @@ export default function ServicesCardsPage() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const data = await getMaintenancePermissions();
+        const result = await listMaintenancePermissions();
+        if (!result.ok) throw new Error(result.error);
+        const data = result.data;
         setServices(data);
       } catch (e) {
         console.error(e);
@@ -45,7 +48,7 @@ export default function ServicesCardsPage() {
 
   /* 🧠 Tipos únicos */
   const serviceTypes = useMemo(() => {
-    return Array.from(new Set(services.map((s) => String(s.order.orderType))));
+    return Array.from(new Set(services.map((s) => String(s.order?.orderType))));
   }, [services]);
 
   /* 🔍 Filtros */
@@ -53,11 +56,11 @@ export default function ServicesCardsPage() {
     setCurrentPage(1);
     return services.filter((s) => {
       const matchesSearch =
-        s.order.description?.toLowerCase().includes(search.toLowerCase()) ||
-        s.order.supplierName.toLowerCase().includes(search.toLowerCase());
+        s.order?.description?.toLowerCase().includes(search.toLowerCase()) ||
+        (s.order?.supplierName ?? "").toLowerCase().includes(search.toLowerCase());
 
       const matchesType =
-        typeFilter === "all" || String(s.order.orderType) === typeFilter;
+        typeFilter === "all" || String(s.order?.orderType) === typeFilter;
 
       return matchesSearch && matchesType;
     });
@@ -140,7 +143,7 @@ export default function ServicesCardsPage() {
                   {s.order?.description}
                 </h3>
                 <p className="text-sm text-gray-400">
-                  Tipo: <b>{String(s.order.orderType)}</b>
+                  Tipo: <b>{orderTypeLabel(s.order?.orderType)}</b>
                 </p>
               </div>
 
@@ -169,7 +172,7 @@ export default function ServicesCardsPage() {
 
               {/* STATUS */}
               {(() => {
-                const expired = isExpired(String(s.status), s.validTo);
+                const expired = isExpired(String(s.status), s.validTo ?? undefined);
 
                 return (
                   <span

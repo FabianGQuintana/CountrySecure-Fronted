@@ -1,25 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  CheckCircle2,
-  AlertCircle,
-  Send,
-  User,
-  CreditCard,
-  Calendar,
-  Wrench,
-  FileText,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import { PermissionType } from "@/types";
-import { createEntryPermission } from "@/actions/permitsActions";
-import { createVisit, getVisitsByDni } from "@/actions/visitActions";
-import { getOrders } from "@/actions/orderActions";
-import { VisitResponseDto } from "@/types/visits";
-import { OrderResponseDto, orderTypeLabel } from "@/types/order";
+import { PermissionType } from "@/types/api";
+import { createPermission } from "@/features/entry-permissions/actions";
+import { createVisit, findVisitsByDni } from "@/features/visits/actions";
+import { listOrders } from "@/features/orders/actions";
+import type { VisitDto, OrderDto } from "@/types/models";
+import { orderTypeLabel } from "@/types/api";
 import { useSession } from "next-auth/react";
 
 type FormErrors = Record<string, string>;
@@ -54,18 +45,25 @@ export default function PermitsPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [resolvedVisit, setResolvedVisit] = useState<VisitResponseDto | null>(
-    null
-  );
-  const [isResolvingVisit, setIsResolvingVisit] = useState(false);
+  // Último visitante encontrado por DNI; solo vale mientras el DNI escrito siga coincidiendo
+  const [lookup, setLookup] = useState<VisitDto | null>(null);
+  const resolvedVisit = lookup && String(lookup.dniVisit) === formData.dniVisit.trim() ? lookup : null;
 
-  const [orders, setOrders] = useState<OrderResponseDto[]>([]);
-  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [orders, setOrders] = useState<OrderDto[]>([]);
 
   const isMaintenance = formData.permissionType === PermissionType.Maintenance;
 
-  const setField = (key: keyof typeof formData, value: any) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+  const setField = <K extends keyof PermitFormData>(key: K, value: PermitFormData[K]) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+      // Al cambiar el tipo de permiso se descarta el servicio elegido
+      ...(key === "permissionType" && value !== PermissionType.Maintenance ? { orderId: "" } : {}),
+    }));
+    if (key === "permissionType") {
+      setErrors({});
+      setSubmitSuccess(false);
+    }
     setErrors((prev) => {
       const next = { ...prev };
       delete next[key as string];
@@ -86,40 +84,21 @@ export default function PermitsPage() {
   useEffect(() => {
     if (!isMaintenance) return;
     (async () => {
-      try {
-        setIsLoadingOrders(true);
-        setOrders(await getOrders());
-      } catch (e: any) {
-        setSubmitError(e?.message ?? "No se pudieron cargar los servicios.");
-      } finally {
-        setIsLoadingOrders(false);
-      }
+      const result = await listOrders();
+      if (result.ok) setOrders(result.data);
+      else setSubmitError(result.error);
     })();
   }, [isMaintenance]);
 
   useEffect(() => {
-    setResolvedVisit(null);
-    setErrors({});
-    setSubmitError(null);
-    setSubmitSuccess(false);
-    if (!isMaintenance) setFormData((p) => ({ ...p, orderId: "" }));
-  }, [formData.permissionType, isMaintenance]);
-
-  useEffect(() => {
     const dni = formData.dniVisit.trim();
     const dniNum = Number(dni);
-    setResolvedVisit(null);
     if (!dni || Number.isNaN(dniNum) || dni.length < 7) return;
 
     let cancelled = false;
     const t = setTimeout(async () => {
-      try {
-        setIsResolvingVisit(true);
-        const v = await getVisitsByDni(dniNum);
-        if (!cancelled) setResolvedVisit(v.length > 0 ? v[0] : null);
-      } finally {
-        if (!cancelled) setIsResolvingVisit(false);
-      }
+      const result = await findVisitsByDni(dniNum);
+      if (!cancelled) setLookup(result.ok && result.data.length > 0 ? result.data[0] : null);
     }, 500);
 
     return () => {
@@ -161,38 +140,44 @@ export default function PermitsPage() {
     setSubmitError(null);
     setSubmitSuccess(false);
 
-    try {
-      const dniNum = Number(formData.dniVisit);
-      let visitId = resolvedVisit?.visitId;
+    const dniNum = Number(formData.dniVisit);
+    let visitId = resolvedVisit?.visitId;
 
-      if (!visitId) {
-        const v = await createVisit({
-          nameVisit: formData.nameVisit.trim(),
-          lastNameVisit: formData.lastNameVisit.trim(),
-          dniVisit: dniNum,
-        });
-        visitId = v.visitId;
-      }
-
-      const userId = session?.user?.id;
-      if (!userId) throw new Error("Usuario no autenticado.");
-
-      await createEntryPermission({
-        permissionType: formData.permissionType,
-        description: formData.description || null,
-        validFrom: new Date(formData.validFrom).toISOString(),
-        validTo: new Date(formData.validTo).toISOString(),
-        visitId,
-        userId,
-        orderId: isMaintenance ? formData.orderId : null,
+    if (!visitId) {
+      const visit = await createVisit({
+        nameVisit: formData.nameVisit.trim(),
+        lastNameVisit: formData.lastNameVisit.trim(),
+        dniVisit: dniNum,
       });
 
-      setSubmitSuccess(true);
-    } catch (e: any) {
-      setSubmitError(e?.message ?? "Error al crear el permiso.");
-    } finally {
-      setIsSubmitting(false);
+      if (!visit.ok) {
+        setSubmitError(visit.error);
+        setIsSubmitting(false);
+        return;
+      }
+      visitId = visit.data.visitId;
     }
+
+    const userId = session?.user?.id;
+    if (!userId) {
+      setSubmitError("Usuario no autenticado.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const permit = await createPermission({
+      permissionType: formData.permissionType,
+      description: formData.description || null,
+      validFrom: new Date(formData.validFrom).toISOString(),
+      validTo: new Date(formData.validTo).toISOString(),
+      visitId,
+      userId,
+      orderId: isMaintenance ? formData.orderId : null,
+    });
+
+    if (permit.ok) setSubmitSuccess(true);
+    else setSubmitError(permit.error);
+    setIsSubmitting(false);
   };
 
   const inputBase =

@@ -28,9 +28,9 @@ const SECRET = env.AUTH_SECRET || env.JWT_SECRET;
 const COOKIE = "next-auth.session-token";
 
 const ROLES = {
-  Admin: { email: env.SMOKE_EMAIL_ADMIN || "admin@countrysecure.local", password: env.SMOKE_PASSWORD_ADMIN, pages: ["/admin", "/admin/users/residentes", "/admin/amenities", "/admin/orders", "/admin/lotes"] },
-  Resident: { email: env.SMOKE_EMAIL_RESIDENT || "residente@countrysecure.local", password: env.SMOKE_PASSWORD_RESIDENT, pages: ["/resident/dashboard", "/resident/profile", "/resident/reservations", "/resident/requests", "/resident/amenities"] },
-  Security: { email: env.SMOKE_EMAIL_SECURITY || "seguridad@countrysecure.local", password: env.SMOKE_PASSWORD_SECURITY, pages: ["/security/visit", "/security/logs", "/security/permissions", "/security/services", "/security/family-visits"] },
+  Admin: { email: env.SMOKE_EMAIL_ADMIN || "admin@countrysecure.local", password: env.SMOKE_PASSWORD_ADMIN, pages: ["/admin", "/admin/users/residentes", "/admin/amenities", "/admin/orders", "/admin/lotes"], all: ["/admin/users/seguridad", "/admin/propiedades", "/admin/amenities/solicitudes"] },
+  Resident: { email: env.SMOKE_EMAIL_RESIDENT || "residente@countrysecure.local", password: env.SMOKE_PASSWORD_RESIDENT, pages: ["/resident/dashboard", "/resident/profile", "/resident/reservations", "/resident/requests", "/resident/amenities"], all: ["/resident/permits", "/resident/profile/edit", "/resident/profile/password"] },
+  Security: { email: env.SMOKE_EMAIL_SECURITY || "seguridad@countrysecure.local", password: env.SMOKE_PASSWORD_SECURITY, pages: ["/security/visit", "/security/logs", "/security/permissions", "/security/services", "/security/family-visits"], all: ["/security/securityCameras"] },
 };
 
 // ---- Utilidades ----
@@ -135,6 +135,12 @@ async function main() {
     const statuses = [];
     for (const page of ROLES[role].pages) statuses.push((await get(jar, page)).res.status);
     check(statuses.every((s) => s === 200), `${role}: 5 páginas devuelven 200`, statuses.join(","));
+    const extra = [];
+    for (const page of ROLES[role].all) {
+      const { res } = await get(jar, page);
+      extra.push(res.status);
+    }
+    check(extra.every((s) => s === 200), `${role}: resto de páginas devuelven 200`, extra.join(","));
   }
 
   console.log("\n2) Access token vencido + refresh token válido: la sesión se renueva y persiste");

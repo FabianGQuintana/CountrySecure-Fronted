@@ -15,81 +15,61 @@ import {
   FiCheckCircle,
   FiLock,
 } from "react-icons/fi";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/UI/card";
-import {
-  getCurrentUser,
-  updateCurrentUser,
-  updateUser,
-} from "@/actions/usuariosActions";
+import { Card, CardContent } from "@/components/ui/card";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { fetchCurrentUser, updateCurrentUser } from "@/features/users/actions";
+import { profileSchema, type ProfileFormValues } from "@/features/users/schemas";
+import { FieldError } from "@/components/ui/FieldError";
 
 export default function EditResidentProfile() {
-  const [formData, setFormData] = useState({
-    name: "",
-    lastname: "",
-    phone: "",
-    email: "",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: { name: "", lastname: "", phone: "", email: "" },
   });
 
-  const [userId, setUserId] = useState<string | null>(null);
   const [dni, setDni] = useState<number | null>(null);
-
   const [loading, setLoading] = useState(true);
-
-  const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
-      try {
-        const user = await getCurrentUser();
-
-        setFormData({
-          name: user.name,
-          lastname: user.lastname,
-          phone: user.phone,
-          email: user.email,
-        });
-
-        setUserId(user.id);
+      const result = await fetchCurrentUser();
+      if (result.ok) {
+        const user = result.data;
+        reset({ name: user.name, lastname: user.lastname, phone: user.phone, email: user.email });
         setDni(user.dni);
-      } catch (error) {
-        console.error("Error cargando usuario", error);
-      } finally {
-        setLoading(false);
+      } else {
+        console.error("Error cargando usuario:", result.error);
       }
+      setLoading(false);
     };
 
     loadUser();
-  }, []);
+  }, [reset]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const onSubmit = async (values: ProfileFormValues) => {
+    setSaveSuccess(false);
+    const result = await updateCurrentUser(values);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSaving(true);
-
-    if (!userId) {
-      alert("No se pudo identificar al usuario");
-      setIsSaving(false);
+    if (!result.ok) {
+      setError("root", { message: result.error });
       return;
     }
 
-    try {
-      await updateUser(formData, userId);
-
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (error) {
-      console.error("Error al guardar cambios", error);
-      alert("Ocurrió un error al guardar los cambios");
-    } finally {
-      setIsSaving(false);
-    }
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 3000);
   };
+
+  const formData = watch();
 
   const initials = `${formData.name[0] || "U"}${formData.lastname[0] || "S"}`;
 
@@ -247,7 +227,7 @@ export default function EditResidentProfile() {
           transition={{ delay: 0.2 }}
           className="lg:col-span-3"
         >
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Card className="bg-white border border-slate-200 shadow-xl">
               <CardContent className="p-8">
                 <div className="border-b border-slate-200 pb-4 mb-6">
@@ -269,14 +249,13 @@ export default function EditResidentProfile() {
                       </label>
                       <input
                         type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
+                        {...register("name")}
                         className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
                                   focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                   transition duration-200 text-slate-800 font-medium"
                         placeholder="Tu nombre"
                       />
+                      <FieldError message={errors.name?.message} />
                     </div>
 
                     <div>
@@ -286,14 +265,13 @@ export default function EditResidentProfile() {
                       </label>
                       <input
                         type="text"
-                        name="lastname"
-                        value={formData.lastname}
-                        onChange={handleChange}
+                        {...register("lastname")}
                         className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
                                   focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                   transition duration-200 text-slate-800 font-medium"
                         placeholder="Tu apellido"
                       />
+                      <FieldError message={errors.lastname?.message} />
                     </div>
 
                     <div>
@@ -337,14 +315,13 @@ export default function EditResidentProfile() {
                     </label>
                     <input
                       type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      {...register("email")}
                       className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
                                 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                 transition duration-200 text-slate-800 font-medium"
                       placeholder="tu@email.com"
                     />
+                    <FieldError message={errors.email?.message} />
                     <p className="text-xs text-slate-500 mt-2">
                       Usaremos este email para notificaciones importantes
                     </p>
@@ -358,18 +335,23 @@ export default function EditResidentProfile() {
                     </label>
                     <input
                       type="text"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
+                      {...register("phone")}
                       className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50
                                 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                 transition duration-200 text-slate-800 font-medium"
                       placeholder="+54 379 4556677"
                     />
+                    <FieldError message={errors.phone?.message} />
                     <p className="text-xs text-slate-500 mt-2">
                       Incluí código de área para mejor contacto
                     </p>
                   </div>
+
+                  {errors.root?.message && (
+                    <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+                      {errors.root.message}
+                    </p>
+                  )}
 
                   {/* Botón Guardar */}
                   <div className="pt-4">
@@ -377,14 +359,14 @@ export default function EditResidentProfile() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="submit"
-                      disabled={isSaving}
+                      disabled={isSubmitting}
                       className="w-full flex items-center justify-center gap-3
                                 bg-linear-to-r from-purple-500 to-purple-600 text-white
                                 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl 
                                 transition duration-300 hover:from-purple-600 hover:to-purple-700
                                 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {isSaving ? (
+                      {isSubmitting ? (
                         <>
                           <motion.div
                             animate={{ rotate: 360 }}

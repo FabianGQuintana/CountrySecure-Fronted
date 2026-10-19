@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FiTool, FiMapPin, FiPlus, FiX } from "react-icons/fi";
-import { Card, CardContent } from "@/components/UI/card";
-import { Badge } from "@/components/UI/badge";
-import { altaBaja, createRequest, getMyRequests, type RequestResponse } from "@/actions/requestActions";
-import { getOrders } from "@/actions/orderActions";
-import type { OrderResponseDto } from "@/types/order";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cancelRequest, createRequest, listMyRequests } from "@/features/requests/actions";
+import { listOrders } from "@/features/orders/actions";
+import type { OrderDto, RequestDto } from "@/types/models";
 
 const STATUS: Record<string, { label: string; className: string }> = {
   Pending: { label: "Pendiente", className: "bg-amber-50 text-amber-700 border-amber-200" },
@@ -15,14 +15,14 @@ const STATUS: Record<string, { label: string; className: string }> = {
   Cancelled: { label: "Cancelada", className: "bg-slate-100 text-slate-500 border-slate-200" },
 };
 
-function statusOf(r: RequestResponse) {
+function statusOf(r: RequestDto) {
   if (r.baseEntityStatus === "Inactive") return STATUS.Cancelled;
   return STATUS[r.status] ?? STATUS.Pending;
 }
 
 export default function ResidentRequestsPage() {
-  const [requests, setRequests] = useState<RequestResponse[]>([]);
-  const [orders, setOrders] = useState<OrderResponseDto[]>([]);
+  const [requests, setRequests] = useState<RequestDto[]>([]);
+  const [orders, setOrders] = useState<OrderDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,19 +32,21 @@ export default function ResidentRequestsPage() {
   const [formError, setFormError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    try {
+    const [mine, services] = await Promise.all([listMyRequests(), listOrders()]);
+
+    if (mine.ok) {
+      setRequests(mine.data);
       setError(null);
-      const [mine, services] = await Promise.all([getMyRequests(), getOrders()]);
-      setRequests(mine);
-      setOrders(services.filter((o) => o.status === "Active"));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Error al cargar las solicitudes");
-    } finally {
-      setLoading(false);
+    } else {
+      setError(mine.error);
     }
+
+    if (services.ok) setOrders(services.data);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de datos
     load();
   }, [load]);
 
@@ -57,26 +59,27 @@ export default function ResidentRequestsPage() {
     if (!form.location.trim()) return setFormError("Indicá dónde hay que hacer el trabajo.");
 
     setSaving(true);
-    try {
-      await createRequest({ ...form, details: form.details.trim(), location: form.location.trim() });
-      setForm({ orderId: "", details: "", location: "" });
-      setShowForm(false);
-      await load();
-    } catch (err) {
-      setFormError(err instanceof Error ? err.message : "No se pudo crear la solicitud");
-    } finally {
-      setSaving(false);
+    const result = await createRequest({ ...form, details: form.details.trim(), location: form.location.trim() });
+    setSaving(false);
+
+    if (!result.ok) {
+      setFormError(result.error);
+      return;
     }
+
+    setForm({ orderId: "", details: "", location: "" });
+    setShowForm(false);
+    await load();
   };
 
   const handleCancel = async (id: string) => {
     if (!confirm("¿Cancelar esta solicitud?")) return;
-    try {
-      await altaBaja(id);
-      await load();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "No se pudo cancelar la solicitud");
+    const result = await cancelRequest(id);
+    if (!result.ok) {
+      alert(result.error);
+      return;
     }
+    await load();
   };
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import type { EntryPermissionDto } from "@/types/models";
 import {
   Calendar,
   User,
@@ -10,11 +11,11 @@ import {
   Package,
   Truck,
 } from "lucide-react";
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 interface VisitCardProps {
-  permission: any;
+  permission: EntryPermissionDto & { effectiveStatus?: string };
 }
 
 const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
@@ -49,7 +50,7 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
     }
   };
 
-  const formatDateTime = (dateString?: string) => {
+  const formatDateTime = (dateString?: string | null) => {
     if (!dateString) return "No registrado";
     try {
       const date = new Date(dateString);
@@ -71,8 +72,6 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
         return "border-l-purple-500";
       case "Maintenance":
         return "border-l-orange-500";
-      case "Delivery":
-        return "border-l-blue-500";
       default:
         return "border-l-gray-500";
     }
@@ -89,11 +88,6 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
         return {
           label: "MANTENIMIENTO",
           color: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-        };
-      case "Delivery":
-        return {
-          label: "DELIVERY",
-          color: "bg-blue-500/20 text-blue-300 border-blue-500/30",
         };
       default:
         return {

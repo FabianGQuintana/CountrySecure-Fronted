@@ -12,59 +12,47 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-import { changePassword } from "@/actions/usuariosActions";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { changePassword } from "@/features/users/actions";
+import { changePasswordSchema, type ChangePasswordFormValues } from "@/features/users/schemas";
+import { FieldError } from "@/components/ui/FieldError";
 
 export default function ChangePasswordPage() {
-  const [formData, setFormData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<ChangePasswordFormValues>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
   });
 
-  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const isSaving = isSubmitting;
+  const formData = watch();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: ChangePasswordFormValues) => {
     setError(null);
     setSuccess(false);
 
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError("Las contraseñas no coinciden");
+    const result = await changePassword({
+      currentPassword: values.currentPassword,
+      newPassword: values.newPassword,
+    });
+
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
 
-    if (formData.newPassword.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres");
-      return;
-    }
-
-    try {
-      setIsSaving(true);
-
-      await changePassword({
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      });
-
-      setSuccess(true);
-      setFormData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-    } catch (err: any) {
-      setError(err.message || "Error al cambiar la contraseña");
-    } finally {
-      setIsSaving(false);
-    }
+    setSuccess(true);
+    reset();
   };
 
   const passwordRequirements = [
@@ -178,7 +166,7 @@ export default function ChangePasswordPage() {
           transition={{ delay: 0.2 }}
           className="lg:col-span-3"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
             {/* Card principal del formulario */}
             <Card className="bg-white border border-slate-200 shadow-xl">
               <CardContent className="p-8 space-y-6">
@@ -211,9 +199,7 @@ export default function ChangePasswordPage() {
                   <div className="relative">
                     <input
                       type="password"
-                      name="currentPassword"
-                      value={formData.currentPassword}
-                      onChange={handleChange}
+                      {...register("currentPassword")}
                       className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
                                             focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                             transition duration-200 bg-slate-50 hover:bg-white"
@@ -224,6 +210,7 @@ export default function ChangePasswordPage() {
                       size={18}
                     />
                   </div>
+                  <FieldError message={errors.currentPassword?.message} />
                 </div>
 
                 {/* Nueva contraseña */}
@@ -234,9 +221,7 @@ export default function ChangePasswordPage() {
                   <div className="relative">
                     <input
                       type="password"
-                      name="newPassword"
-                      value={formData.newPassword}
-                      onChange={handleChange}
+                      {...register("newPassword")}
                       className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
                                             focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                             transition duration-200 bg-slate-50 hover:bg-white"
@@ -247,6 +232,7 @@ export default function ChangePasswordPage() {
                       size={18}
                     />
                   </div>
+                  <FieldError message={errors.newPassword?.message} />
                 </div>
 
                 {/* Confirmar contraseña */}
@@ -257,9 +243,7 @@ export default function ChangePasswordPage() {
                   <div className="relative">
                     <input
                       type="password"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
+                      {...register("confirmPassword")}
                       className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
                                             focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
                                             transition duration-200 bg-slate-50 hover:bg-white"
@@ -270,6 +254,7 @@ export default function ChangePasswordPage() {
                       size={18}
                     />
                   </div>
+                  <FieldError message={errors.confirmPassword?.message} />
                 </div>
 
                 {/* Botón de guardar */}

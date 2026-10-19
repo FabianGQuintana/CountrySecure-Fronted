@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import { useParams, notFound } from "next/navigation";
 import { EntryPermissionResponseDto } from "@/types/order";
 import Link from "next/link";
-import { getEntryPermissionById } from "@/actions/securityActions";
+import { orderTypeLabel } from "@/types/api";
+import { fetchPermission } from "@/features/entry-permissions/actions";
 import { ArrowLeft } from "lucide-react";
 
 export default function ServiceDetailPage() {
@@ -19,9 +20,9 @@ export default function ServiceDetailPage() {
   useEffect(() => {
     const fetchService = async () => {
       try {
-        const json = await getEntryPermissionById(id);
-        if (!json) return notFound();
-        setData(json);
+        const result = await fetchPermission(id);
+        if (!result.ok) return notFound();
+        setData(result.data as unknown as EntryPermissionResponseDto);
       } finally {
         setLoading(false);
       }
@@ -114,9 +115,9 @@ export default function ServiceDetailPage() {
             </Info>
 
             <Info label="DNI">{data.visitor.dniVisit}</Info>
-            <Info label="Servicio">{data.order.description}</Info>
-            <Info label="Proveedor">{data.order.supplierName}</Info>
-            <Info label="Tipo de servicio">{String(data.order.orderType)}</Info>
+            <Info label="Servicio">{data.order?.description}</Info>
+            <Info label="Proveedor">{data.order?.supplierName}</Info>
+            <Info label="Tipo de servicio">{orderTypeLabel(data.order?.orderType)}</Info>
           </div>
 
           {/* RESIDENTE */}

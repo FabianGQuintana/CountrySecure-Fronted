@@ -2,18 +2,9 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  Download,
-} from "lucide-react";
-import { Button } from "@/components/UI/button";
-
-interface LogViewProps {
-  session: any;
-}
+import { Search, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { listPermissionHistory } from "@/features/entry-permissions/actions";
 
 interface LogEntry {
   id: string;
@@ -52,7 +43,7 @@ interface LogEntry {
 
 const PAGE_SIZE = 10;
 
-const LogView: React.FC<LogViewProps> = ({ session }) => {
+const LogView: React.FC = () => {
   const searchParams = useSearchParams();
 
   // 🔒 Params desde Services
@@ -64,52 +55,40 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
   const [error, setError] = useState<string | null>(null);
 
   // 🔍 Filtros (NO SE TOCAN)
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState<string>(forcedType ?? "all");
-
   // 📄 Paginación frontend REAL
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [startDate, setStartDateState] = useState("");
+  const [endDate, setEndDateState] = useState("");
+  const [searchTerm, setSearchTermState] = useState("");
+  const [filterType, setFilterTypeState] = useState<string>(forcedType ?? "all");
+
+  // Cambiar un filtro vuelve a la primera página
+  const setStartDate = (v: string) => (setStartDateState(v), setCurrentPage(1));
+  const setEndDate = (v: string) => (setEndDateState(v), setCurrentPage(1));
+  const setSearchTerm = (v: string) => (setSearchTermState(v), setCurrentPage(1));
+  const setFilterType = (v: string) => (setFilterTypeState(v), setCurrentPage(1));
 
   /* 🔄 Fetch único */
   const fetchLogs = async () => {
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/history`,
-        {
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-        }
-      );
+    const result = await listPermissionHistory();
 
-      if (!response.ok) {
-        throw new Error("Error al obtener el historial");
-      }
+    if (result.ok) setLogs(result.data as unknown as LogEntry[]);
+    else setError(result.error || "Error al cargar historial");
 
-      const data = await response.json();
-      const logsData = Array.isArray(data) ? data : data.items ?? [];
-
-      setLogs(logsData);
-    } catch (err: any) {
-      setError(err.message || "Error al cargar historial");
-    } finally {
-      setLoading(false);
-    }
+    setLoading(false);
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de datos
     fetchLogs();
   }, []);
 
   /* 🧠 FILTRADO FRONTEND (CLAVE) */
   const filteredLogs = useMemo(() => {
-    setCurrentPage(1);
-
     return logs.filter((log) => {
       // 🔒 FORCED TYPE SIEMPRE MANDA
       const matchesType = forcedType

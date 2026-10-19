@@ -13,13 +13,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { createTurn } from "@/actions/turnosActions";
-import { getAmenities } from "@/actions/amenitiesActions";
+import type { AmenityDto } from "@/types/models";
+import { createTurn } from "@/features/turns/actions";
+import { listAmenities } from "@/features/amenities/actions";
 
-type Amenity = {
-  id: string;
-  amenityName: string;
-};
+type Amenity = Pick<AmenityDto, "id" | "amenityName">;
 
 type FormErrors = {
   [key: string]: string;
@@ -42,14 +40,10 @@ export default function ReserveAmenityPage() {
 
   useEffect(() => {
     async function loadAmenities() {
-      try {
-        const data = await getAmenities();
-        setAmenities(data);
-      } catch (error) {
-        console.error("Error cargando amenities", error);
-      } finally {
-        setIsLoadingAmenities(false);
-      }
+      const result = await listAmenities();
+      if (result.ok) setAmenities(result.data);
+      else console.error("Error cargando amenities:", result.error);
+      setIsLoadingAmenities(false);
     }
 
     loadAmenities();
@@ -90,18 +84,15 @@ export default function ReserveAmenityPage() {
       `${formData.date}T${formData.endTime}:00`
     ).toISOString();
 
-    try {
-      await createTurn({
-        amenityId: formData.amenityId,
-        startTime: start,
-        endTime: end,
-      });
-      setSubmitSuccess(true);
-    } catch (error: any) {
-      setErrors({ form: error.message });
-    } finally {
-      setIsSubmitting(false);
-    }
+    const result = await createTurn({
+      amenityId: formData.amenityId,
+      startTime: start,
+      endTime: end,
+    });
+
+    if (result.ok) setSubmitSuccess(true);
+    else setErrors({ form: result.error });
+    setIsSubmitting(false);
   };
 
   return (

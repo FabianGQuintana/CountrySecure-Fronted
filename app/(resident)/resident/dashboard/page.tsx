@@ -1,11 +1,11 @@
 "use client";
 
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FiUser, FiHome, FiKey, FiCalendar, FiTool } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { getResidentStats } from "@/actions/statsActions";
+import { fetchResidentStats } from "@/features/stats/actions";
 import type { ResidentStats } from "@/types/stats";
 
 export default function ResidentDashboard() {
@@ -13,9 +13,10 @@ export default function ResidentDashboard() {
   const [stats, setStats] = useState<ResidentStats | null>(null);
 
   useEffect(() => {
-    getResidentStats()
-      .then(setStats)
-      .catch((error) => console.error("Error al cargar estadísticas:", error));
+    fetchResidentStats().then((result) => {
+      if (result.ok) setStats(result.data);
+      else console.error("Error al cargar estadísticas:", result.error);
+    });
   }, []);
 
   if (status === "loading") {

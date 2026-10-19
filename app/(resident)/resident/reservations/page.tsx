@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Calendar, Clock, Home, Info } from "lucide-react";
-import { Card, CardContent } from "@/components/UI/card";
-import { Badge } from "@/components/UI/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useCallback, useEffect, useState } from "react";
-import { cancelTurn, getMyTurns, type TurnResponse } from "@/actions/turnosActions";
+import { cancelTurn, listMyTurns } from "@/features/turns/actions";
+import type { TurnDto } from "@/types/models";
 
 type ReservationStatus = "PENDING" | "COMPLETED" | "FINISHED" | "CANCELLED";
 
@@ -18,7 +19,7 @@ type Reservation = {
 };
 
 // Traduce el turno de la API al modelo de la vista
-function toReservation(turn: TurnResponse): Reservation {
+function toReservation(turn: TurnDto): Reservation {
   const start = new Date(turn.startTime);
   const end = new Date(turn.endTime);
 
@@ -63,34 +64,30 @@ export default function ResidentReservationsPage() {
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    try {
+    const result = await listMyTurns();
+
+    if (result.ok) {
+      // Las más recientes primero
+      setReservations(result.data.map(toReservation).sort((a, b) => b.start.getTime() - a.start.getTime()));
       setError(null);
-      const turns = await getMyTurns();
-      // Próximas primero, luego el historial
-      const items = turns.map(toReservation).sort((a, b) => b.start.getTime() - a.start.getTime());
-      setReservations(items);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Error al cargar las reservas");
-    } finally {
-      setLoading(false);
+    } else {
+      setError(result.error);
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de datos
     load();
   }, [load]);
 
   const handleCancel = async (id: string) => {
     if (!confirm("¿Cancelar esta reserva?")) return;
     setCancellingId(id);
-    try {
-      await cancelTurn(id);
-      await load();
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "No se pudo cancelar la reserva");
-    } finally {
-      setCancellingId(null);
-    }
+    const result = await cancelTurn(id);
+    if (!result.ok) alert(result.error);
+    else await load();
+    setCancellingId(null);
   };
 
   return (

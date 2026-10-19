@@ -1,36 +1,14 @@
 export const dynamic = "force-dynamic";
 
-import { auth } from "@/auth";
-import { FiAlertCircle } from "react-icons/fi";
-import { TablaAmenities } from "@/components/admin/amenities/tablaAmenities";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { AmenitiesTable } from "@/features/amenities/components/AmenitiesTable";
+import { getAmenities } from "@/features/amenities/queries";
+import { load } from "@/lib/load";
 
-export default async function Amenities() {
-  let amenities: any[] | null = null;
-  const session = await auth();
+export default async function AmenitiesPage() {
+  const { data, error } = await load(() => getAmenities({ includeInactive: true }));
 
-  try {
-    const response = await fetch(`${process.env.API_HOST}/api/Amenity`, {
-      method: "GET",
-      cache: "no-store",
-      headers: { Authorization: `Bearer ${session?.accessToken}` },
-    });
-    amenities = await response.json();
-  } catch (error) {
-    console.error("Error fetch usuarios:", error);
-  }
+  if (!data) return <ErrorState title="Error al cargar los amenities" message={error} />;
 
-  if (!amenities) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-red-700">
-        <FiAlertCircle size={48} className="mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Error, intentelo mas tarde</h2>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex-1 p-6">
-      <TablaAmenities params={amenities} />
-    </div>
-  );
+  return <AmenitiesTable initialAmenities={data} />;
 }

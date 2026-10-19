@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams, notFound } from "next/navigation";
 import { EntryPermissionResponseDto } from "@/types/order";
 import Link from "next/link";
-import { getEntryPermissionById } from "@/actions/securityActions";
+import { fetchPermission } from "@/features/entry-permissions/actions";
 import { ArrowLeft } from "lucide-react";
 
 export default function ServiceDetailPage() {
@@ -19,9 +19,9 @@ export default function ServiceDetailPage() {
   useEffect(() => {
     const fetchService = async () => {
       try {
-        const json = await getEntryPermissionById(id);
-        if (!json) return notFound();
-        setData(json);
+        const result = await fetchPermission(id);
+        if (!result.ok) return notFound();
+        setData(result.data as unknown as EntryPermissionResponseDto);
       } finally {
         setLoading(false);
       }

@@ -12,36 +12,28 @@ import {
   FiEdit,
 } from "react-icons/fi";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { getCurrentUser } from "@/actions/usuariosActions";
-import { getMyProperties } from "@/actions/propiedadLoteActions";
-import type { IPropiedadResidente } from "@/types";
+import { fetchCurrentUser } from "@/features/users/actions";
+import { listMyProperties } from "@/features/properties/actions";
+import type { PropertyDto, UserDto } from "@/types/models";
 
 export default function ResidentProfile() {
-  const [properties, setProperties] = useState<IPropiedadResidente[]>([]);
-
-  const [user, setUser] = useState<{
-    name: string;
-    lastname: string;
-    dni: number;
-    phone: string;
-    email: string;
-  } | null>(null);
-
+  const [properties, setProperties] = useState<PropertyDto[]>([]);
+  const [user, setUser] = useState<UserDto | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
-      try {
-        const [data, props] = await Promise.all([getCurrentUser(), getMyProperties()]);
-        setUser(data);
-        setProperties(props);
-      } catch (error) {
-        console.error("Error cargando usuario", error);
-      } finally {
-        setLoading(false);
-      }
+      const [userResult, propertiesResult] = await Promise.all([fetchCurrentUser(), listMyProperties()]);
+
+      if (userResult.ok) setUser(userResult.data);
+      else console.error("Error cargando usuario:", userResult.error);
+
+      if (propertiesResult.ok) setProperties(propertiesResult.data);
+      else console.error("Error cargando propiedades:", propertiesResult.error);
+
+      setLoading(false);
     };
 
     loadUser();

@@ -1,9 +1,5 @@
+import LogView from "@/components/Security/LogView";
 
-import { auth } from "@/auth"
-import LogView from "@/components/Security/LogView"
-
-export default async function LogsPage() {
-  const session = await auth()
-
-  return <LogView session={session} />
+export default function LogsPage() {
+  return <LogView />;
 }

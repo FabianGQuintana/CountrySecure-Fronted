@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 import { Clock, Settings, Bell, Shield, VideoOff } from "lucide-react";
 
 interface Camera {

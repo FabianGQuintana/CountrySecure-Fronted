@@ -1,6 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { login } from "@/actions/AuthActions";
+import { login } from "@/features/auth/api";
 
 // La sesión de NextAuth dura lo mismo que el refresh token del backend (7 días).
 export const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;

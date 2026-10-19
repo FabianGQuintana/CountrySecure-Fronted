@@ -1,25 +1,19 @@
 "use client";
+import type { EntryPermissionDto } from "@/types/models";
 
 import { useEffect, useMemo, useState } from "react";
 import { Eye, ChevronLeft, ChevronRight, Users, History } from "lucide-react";
 import Link from "next/link";
+import { listVisitPermissions } from "@/features/entry-permissions/actions";
 
 /* 🔴 EXPIRADO */
-const isExpired = (status: string, validTo?: string) => {
+const isExpired = (status: string, validTo?: string | null) => {
   if (status !== "Pending" || !validTo) return false;
   return new Date() > new Date(validTo);
 };
 
-interface Props {
-  initialToken: string | null;
-  apiHost: string;
-}
-
-export default function FamilyVisitsPageClient({
-  initialToken,
-  apiHost,
-}: Props) {
-  const [visits, setVisits] = useState<any[]>([]);
+export default function FamilyVisitsPageClient() {
+  const [visits, setVisits] = useState<EntryPermissionDto[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -30,29 +24,17 @@ export default function FamilyVisitsPageClient({
   /* 🔄 Fetch visitas familiares */
   useEffect(() => {
     const fetchVisits = async () => {
-      try {
-        const res = await fetch(`${apiHost}/api/entrypermissions/type/Visit`, {
-          headers: {
-            Authorization: `Bearer ${initialToken}`,
-          },
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-        setVisits(Array.isArray(data) ? data : data.items || []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+      const result = await listVisitPermissions();
+      if (result.ok) setVisits(result.data);
+      else console.error(result.error);
+      setLoading(false);
     };
 
     fetchVisits();
-  }, [apiHost, initialToken]);
+  }, []);
 
   /* 🔍 Filtro búsqueda */
   const filteredVisits = useMemo(() => {
-    setCurrentPage(1);
     return visits.filter((v) => {
       const visitorName = `${v.visitor?.nameVisit ?? ""} ${
         v.visitor?.lastNameVisit ?? ""
@@ -111,7 +93,10 @@ export default function FamilyVisitsPageClient({
           type="text"
           placeholder="Buscar por visitante o residente..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setCurrentPage(1);
+          }}
           className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
       </div>
