@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/layout/AppShell";
+import { MotionProvider } from "@/components/motion";
 
 export default async function ResidentLayout({ children }: { children: React.ReactNode }) {
   const user = await auth();
@@ -9,7 +10,7 @@ export default async function ResidentLayout({ children }: { children: React.Rea
 
   return (
     <AppShell role="Resident" className="p-4 sm:p-6 pt-16 lg:pt-6 bg-background overflow-x-hidden">
-      {children}
+      <MotionProvider>{children}</MotionProvider>
     </AppShell>
   );
 }

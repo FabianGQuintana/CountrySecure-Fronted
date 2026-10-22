@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { useCallback, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "@/components/motion";
 import { FiTool, FiMapPin, FiPlus, FiX } from "react-icons/fi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

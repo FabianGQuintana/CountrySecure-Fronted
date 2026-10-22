@@ -1,3 +1,5 @@
+import Image from "next/image";
+import heroImage from "@/public/images/countryHero.png";
 import { MapPin, ArrowDown } from "lucide-react";
 
 const Hero = () => {
@@ -7,12 +9,7 @@ const Hero = () => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
       {/* Imagen de fondo */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url(/images/countryHero.png)",
-        }}
-      />
+      <Image src={heroImage} alt="" fill priority placeholder="blur" sizes="100vw" quality={60} className="object-cover" />
 
       {/* Overlay glass + blur */}
       <div className="absolute inset-0 backdrop-blur-md bg-black/30" />

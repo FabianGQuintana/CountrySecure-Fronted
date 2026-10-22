@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { FiEye, FiPlus, FiRefreshCw, FiTruck } from "react-icons/fi";
 import { Estados } from "@/components/estados";
@@ -8,7 +9,9 @@ import { DataTable, type Column, type TableFilter } from "@/components/ui/DataTa
 import { orderTypeLabel } from "@/types/api";
 import type { OrderDto } from "@/types/models";
 import { listAllOrders } from "../actions";
-import { CreateOrderModal } from "./CreateOrderModal";
+
+// El modal (react-hook-form + zod) se descarga recién cuando se abre
+const CreateOrderModal = dynamic(() => import("./CreateOrderModal").then((m) => m.CreateOrderModal));
 
 const FILTERS: TableFilter<OrderDto>[] = [
   { value: "all", label: "Todos", predicate: () => true },

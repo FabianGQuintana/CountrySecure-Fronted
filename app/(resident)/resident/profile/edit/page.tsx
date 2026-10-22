@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import type React from "react";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "@/components/motion";
 import {
   FiUser,
   FiMail,

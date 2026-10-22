@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import type React from "react";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/components/motion";
 import { useEffect, useState } from "react";
 import {
   Building2,

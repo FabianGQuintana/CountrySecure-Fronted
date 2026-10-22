@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion } from "@/components/motion";
 import { Calendar, Clock, Home, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

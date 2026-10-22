@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { FiCalendar, FiEye, FiPlus, FiRefreshCw, FiUsers } from "react-icons/fi";
 import { Estados } from "@/components/estados";
@@ -8,7 +9,9 @@ import { DataTable, type Column, type TableFilter } from "@/components/ui/DataTa
 import { Modal } from "@/components/ui/Modal";
 import type { AmenityDto } from "@/types/models";
 import { createAmenity, listAllAmenities } from "../actions";
-import { AmenityForm } from "./AmenityForm";
+
+// El formulario (react-hook-form + zod) se descarga recién cuando se abre el modal
+const AmenityForm = dynamic(() => import("./AmenityForm").then((m) => m.AmenityForm));
 
 const FILTERS: TableFilter<AmenityDto>[] = [
   { value: "all", label: "Todos", predicate: () => true },

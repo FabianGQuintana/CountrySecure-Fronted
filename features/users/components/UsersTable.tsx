@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { FiCheckCircle, FiEye, FiRefreshCw, FiUserPlus, FiXCircle } from "react-icons/fi";
 import { Estados } from "@/components/estados";
@@ -9,7 +10,9 @@ import { DataTable, type Column, type TableFilter } from "@/components/ui/DataTa
 import type { Role } from "@/types/api";
 import type { UserDto } from "@/types/models";
 import { deactivateUser, listUsers, restoreUser } from "../actions";
-import { CreateUserModal } from "./CreateUserModal";
+
+// El modal (react-hook-form + zod) se descarga recién cuando se abre
+const CreateUserModal = dynamic(() => import("./CreateUserModal").then((m) => m.CreateUserModal));
 
 const FILTERS: TableFilter<UserDto>[] = [
   { value: "all", label: "Todos", predicate: () => true },
