@@ -34,6 +34,14 @@ function buildUrl(path: string, query?: Query) {
   return url.toString();
 }
 
+// Mensajes para respuestas sin cuerpo (p. ej. un 403 de una política de autorización)
+const STATUS_MESSAGES: Record<number, string> = {
+  400: "La solicitud no es válida.",
+  403: "No tenés permiso para esta acción.",
+  404: "No se encontró lo que buscabas.",
+  409: "Los datos entran en conflicto con un registro existente.",
+};
+
 async function toApiError(response: Response): Promise<ApiError> {
   let payload: Record<string, unknown> | null = null;
   try {
@@ -50,7 +58,8 @@ async function toApiError(response: Response): Promise<ApiError> {
     (typeof payload?.detail === "string" && payload.detail) ||
     firstFieldError ||
     (typeof payload?.title === "string" && payload.title) ||
-    `Error ${response.status}`;
+    STATUS_MESSAGES[response.status] ||
+    (response.status >= 500 ? "El servidor tuvo un problema. Intentá de nuevo en unos instantes." : `Error ${response.status}`);
 
   return new ApiError(message, response.status, fieldErrors);
 }

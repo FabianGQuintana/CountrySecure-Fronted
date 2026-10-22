@@ -19,7 +19,7 @@ import LiveClock from "./LiveClock";
 // Server Component: el nombre sale de la sesión del servidor (sin esperar a useSession) y las
 // métricas se transmiten por streaming; solo el reloj es un componente de cliente.
 
-const GRADIENT_TEXT = "bg-linear-to-r from-purple-500 via-violet-500 to-pink-500 bg-clip-text text-transparent";
+const GRADIENT_TEXT = "text-primary";
 
 const QUICK_ACTIONS = [
   {
@@ -27,42 +27,42 @@ const QUICK_ACTIONS = [
     desc: "Administrar permisos y usuarios",
     icon: <FiUsers size={32} />,
     href: "/admin/users/residentes",
-    color: "bg-linear-to-br from-purple-400/90 via-violet-400/80 to-fuchsia-300/90",
+    color: "bg-primary",
   },
   {
     title: "Amenities",
     desc: "Ver y administrar reservas",
     icon: <FiCalendar size={32} />,
     href: "/admin/amenities",
-    color: "bg-linear-to-br from-fuchsia-400/90 via-pink-400/80 to-rose-300/90",
+    color: "bg-primary",
   },
   {
     title: "Servicios",
     desc: "Configurar servicios disponibles",
     icon: <FiTool size={32} />,
     href: "/admin/orders",
-    color: "bg-linear-to-br from-violet-500/90 via-indigo-400/80 to-purple-400/90",
+    color: "bg-primary",
   },
   {
     title: "Lotes y Propiedades",
     desc: "Administrar lotes y viviendas",
     icon: <FiHome size={32} />,
     href: "/admin/propiedades",
-    color: "bg-linear-to-br from-purple-500/90 via-violet-500/80 to-indigo-400/90",
+    color: "bg-primary",
   },
   {
     title: "Personal de Seguridad",
     desc: "Control de acceso",
     icon: <FiShield size={32} />,
     href: "/admin/users/seguridad",
-    color: "bg-linear-to-br from-indigo-500/90 via-blue-400/80 to-violet-400/90",
+    color: "bg-primary",
   },
   {
     title: "Reservas de Amenities",
     desc: "Ver los turnos reservados",
     icon: <FiPackage size={32} />,
-    href: "/admin/amenities/solicitudes",
-    color: "bg-linear-to-br from-rose-500/90 via-pink-400/80 to-fuchsia-300/90",
+    href: "/admin/reservas",
+    color: "bg-danger",
   },
 ];
 
@@ -74,7 +74,7 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
       value: value(stats?.totalResidents),
       change: `${stats?.inactiveUsers ?? 0} inactivos`,
       icon: <FiUsers size={28} />,
-      color: "from-purple-400/90 via-violet-400/80 to-fuchsia-300/90",
+      color: "bg-primary",
       trend: "neutral",
     },
     {
@@ -82,7 +82,7 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
       value: value(stats?.upcomingReservations),
       change: `${stats?.reservationsToday ?? 0} hoy`,
       icon: <FiCalendar size={28} />,
-      color: "from-fuchsia-400/90 via-pink-400/80 to-rose-300/90",
+      color: "bg-primary",
       trend: "up",
     },
     {
@@ -90,7 +90,7 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
       value: value(stats?.activeOrders),
       change: `${stats?.pendingRequests ?? 0} solicitudes`,
       icon: <FiTool size={28} />,
-      color: "from-violet-500/90 via-indigo-400/80 to-purple-400/90",
+      color: "bg-primary",
       trend: "neutral",
     },
     {
@@ -98,7 +98,7 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
       value: value(stats?.occupiedProperties),
       change: `de ${stats?.totalProperties ?? 0}`,
       icon: <FiHome size={28} />,
-      color: "from-purple-500/90 via-violet-500/80 to-indigo-400/90",
+      color: "bg-primary",
       trend: "neutral",
     },
     {
@@ -106,7 +106,7 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
       value: value(stats?.permitsToday),
       change: `${stats?.visitorsInside ?? 0} adentro`,
       icon: <FiBarChart2 size={28} />,
-      color: "from-indigo-500/90 via-blue-400/80 to-violet-400/90",
+      color: "bg-primary",
       trend: "up",
     },
     {
@@ -114,7 +114,7 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
       value: value(stats?.totalSecurityStaff),
       change: `${stats?.totalAmenities ?? 0} amenities`,
       icon: <FiShield size={28} />,
-      color: "from-rose-500/90 via-pink-400/80 to-fuchsia-300/90",
+      color: "bg-danger",
       trend: "neutral",
     },
   ];
@@ -130,7 +130,7 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
           <div
             className={`absolute -inset-0.5 bg-linear-to-br ${item.color} rounded-2xl blur opacity-0 group-hover:opacity-25 transition duration-500`}
           ></div>
-          <Card className="relative bg-white/90 backdrop-blur-sm border border-purple-100/50 rounded-2xl overflow-hidden">
+          <Card className="relative bg-card/90 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden">
             <CardContent className="p-5">
               <div className="flex justify-between items-start mb-4">
                 <div className={`p-3 rounded-xl bg-linear-to-br ${item.color} bg-opacity-25 shadow-inner`}>
@@ -139,15 +139,15 @@ function Kpis({ stats }: { stats: AdminStats | null }) {
                 <div
                   className={`text-sm font-semibold px-2 py-1 rounded-full ${
                     item.trend === "up"
-                      ? "bg-linear-to-r from-purple-100 to-violet-100 text-purple-600"
-                      : "bg-linear-to-r from-gray-100 to-gray-200 text-gray-600"
+                      ? "text-primary bg-background"
+                      : "text-muted-foreground bg-muted"
                   }`}
                 >
                   {item.change}
                 </div>
               </div>
-              <h3 className="text-gray-500 text-sm font-medium mb-1">{item.title}</h3>
-              <div className="text-2xl font-bold text-gray-900">{item.value}</div>
+              <h3 className="text-muted-foreground text-sm font-medium mb-1">{item.title}</h3>
+              <div className="text-2xl font-bold text-foreground">{item.value}</div>
             </CardContent>
           </Card>
         </div>
@@ -160,7 +160,7 @@ async function LiveKpis() {
   const { data } = await load(() => api.get<AdminStats>("/api/stats/admin"));
   return (
     <>
-      {!data && <p className="-mt-4 mb-4 text-sm text-rose-500">No se pudieron cargar las métricas</p>}
+      {!data && <p className="-mt-4 mb-4 text-sm text-danger">No se pudieron cargar las métricas</p>}
       <Kpis stats={data ?? null} />
     </>
   );
@@ -172,7 +172,7 @@ export default async function AdminDashboard() {
   const fullName = `${user?.name || ""} ${user?.lastname || ""}`.trim() || "Usuario";
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50/90 via-white/95 to-pink-50/90 text-gray-900 p-4 md:p-8">
+    <div className="min-h-screen text-foreground p-4 md:p-8 bg-background">
       {/* Header */}
       <div className="mb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
@@ -180,10 +180,10 @@ export default async function AdminDashboard() {
             <h1 className="text-4xl md:text-5xl font-bold mb-2 animate-fade-down">
               Hola, <span className={GRADIENT_TEXT}>{fullName}</span>
             </h1>
-            <p className="text-gray-500 text-lg">Panel de Administración</p>
+            <p className="text-muted-foreground text-lg">Panel de Administración</p>
           </div>
           <div className="mt-4 md:mt-0 animate-pop" style={{ animationDelay: "0.3s" }}>
-            <div className="bg-white/80 backdrop-blur-sm border border-purple-100/50 rounded-2xl p-5 shadow-lg">
+            <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-5 shadow-lg">
               <LiveClock className={GRADIENT_TEXT} />
             </div>
           </div>
@@ -194,7 +194,7 @@ export default async function AdminDashboard() {
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center">
           <span className={GRADIENT_TEXT}>Métricas Principales</span>
-          <div className="ml-3 h-1 flex-1 bg-linear-to-r from-purple-100 via-violet-100 to-pink-100 rounded-full"></div>
+          <div className="ml-3 h-1 flex-1 rounded-full bg-background"></div>
         </h2>
         <Suspense fallback={<Kpis stats={null} />}>
           <LiveKpis />
@@ -205,7 +205,7 @@ export default async function AdminDashboard() {
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center">
           <span className={GRADIENT_TEXT}>Acciones Rápidas</span>
-          <div className="ml-3 h-1 flex-1 bg-linear-to-r from-purple-100 via-violet-100 to-pink-100 rounded-full"></div>
+          <div className="ml-3 h-1 flex-1 rounded-full bg-background"></div>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {QUICK_ACTIONS.map((item, i) => (
@@ -215,16 +215,16 @@ export default async function AdminDashboard() {
               className="relative group block animate-pop transition-[scale,translate] duration-200 hover:scale-[1.03] hover:-translate-y-1 active:scale-[0.98]"
               style={{ animationDelay: `${(i + 1) * 0.1}s` }}
             >
-              <div className="absolute -inset-0.5 bg-linear-to-br from-purple-200/40 via-violet-200/30 to-pink-200/40 rounded-2xl blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
-              <Card className="relative bg-white/90 backdrop-blur-sm border border-purple-100/50 rounded-2xl overflow-hidden h-full">
+              <div className="absolute -inset-0.5 rounded-2xl blur opacity-0 group-hover:opacity-40 transition duration-500 bg-primary-soft"></div>
+              <Card className="relative bg-card/90 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden h-full">
                 <CardContent className="p-6 h-full flex flex-col">
                   <div className="flex justify-between items-start mb-4">
                     <div className={`p-3 rounded-xl ${item.color} shadow-lg`}>{item.icon}</div>
-                    <div className="text-gray-400 group-hover:text-purple-500 transition group-hover:rotate-90">→</div>
+                    <div className="text-muted-foreground group-hover:text-primary transition group-hover:rotate-90">→</div>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-gray-500 text-sm grow">{item.desc}</p>
-                  <div className="mt-6 text-sm font-medium bg-linear-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent flex items-center transition-[translate] group-hover:translate-x-1">
+                  <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm grow">{item.desc}</p>
+                  <div className="mt-6 text-sm font-medium flex items-center transition-[translate] group-hover:translate-x-1 text-primary">
                     Acceder <span className="ml-2">↗</span>
                   </div>
                 </CardContent>

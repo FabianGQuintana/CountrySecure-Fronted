@@ -4,6 +4,7 @@ import {
   CalendarDays,
   ClipboardList,
   Home,
+  Inbox,
   KeyRound,
   LayoutDashboard,
   Map,
@@ -53,8 +54,20 @@ export const NAVIGATION: Record<Role, RoleNavigation> = {
           { label: "Personal de seguridad", href: "/admin/users/seguridad", icon: ShieldCheck },
         ],
       },
-      { title: "Amenities", items: [{ label: "Amenities", href: "/admin/amenities", icon: Star }] },
-      { title: "Servicios", items: [{ label: "Proveedores", href: "/admin/orders", icon: Wrench }] },
+      {
+        title: "Amenities",
+        items: [
+          { label: "Amenities", href: "/admin/amenities", icon: Star },
+          { label: "Reservas", href: "/admin/reservas", icon: CalendarDays },
+        ],
+      },
+      {
+        title: "Servicios",
+        items: [
+          { label: "Proveedores", href: "/admin/orders", icon: Wrench },
+          { label: "Solicitudes", href: "/admin/requests", icon: Inbox },
+        ],
+      },
       {
         title: "Propiedad",
         items: [
