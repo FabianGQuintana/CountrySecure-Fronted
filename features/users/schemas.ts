@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Mismas reglas que los validadores del backend (RegisterUserValidator / UpdateUserValidator / ChangePasswordValidator)
-const passwordRules = z
+export const passwordRules = z
   .string()
   .min(8, "Mínimo 8 caracteres")
   .regex(/[A-Z]/, "Debe incluir una mayúscula")

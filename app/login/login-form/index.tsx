@@ -4,6 +4,7 @@ import type React from "react";
 
 import { IconAvatar, IconLock, IconEye, IconLoading } from "@/app/assets/icon";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
 import { safeCallbackUrl } from "@/lib/routes";
@@ -143,20 +144,24 @@ export default function LoginFormulario() {
           )}
         </button>
 
-        <div className="flex items-center my-6">
-          <hr className="grow border-gray-200" />
-          <span className="mx-3 text-purple-500 text-xs font-medium">o</span>
-          <hr className="grow border-gray-200" />
-        </div>
-
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-2.5 mt-4">
+          <div role="alert" className="bg-red-50 border border-red-200 rounded-lg px-4 py-2.5 mt-4">
             <p className="text-red-600 text-sm text-center font-medium">
               {error}
             </p>
           </div>
         )}
       </form>
+
+      {/* Pie de la tarjeta: recuperación de contraseña */}
+      <div className="w-full mt-8 pt-5 border-t border-gray-200 text-center">
+        <Link
+          href="/forgot-password"
+          className="text-sm font-medium text-purple-700 hover:text-purple-900 hover:underline underline-offset-4"
+        >
+          ¿Olvidaste tu contraseña?
+        </Link>
+      </div>
     </div>
   );
 }
