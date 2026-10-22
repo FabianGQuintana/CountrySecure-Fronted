@@ -4,20 +4,17 @@ import { AlertCircle } from "lucide-react";
 export function ErrorState({
   title = "No se pudieron cargar los datos",
   message = "Inténtalo más tarde.",
-  tone = "light",
 }: {
   title?: string;
   message?: string;
+  /** @deprecated El color sigue al tema global (claro/oscuro). */
   tone?: "light" | "dark";
 }) {
   return (
-    <div
-      role="alert"
-      className={`flex flex-col items-center justify-center py-24 text-center ${tone === "dark" ? "text-rose-400" : "text-red-700"}`}
-    >
+    <div role="alert" className="flex flex-col items-center justify-center py-24 text-center text-danger">
       <AlertCircle size={48} className="mb-4" aria-hidden />
       <h2 className="text-2xl font-bold mb-2">{title}</h2>
-      <p className={tone === "dark" ? "text-slate-400" : "text-gray-600"}>{message}</p>
+      <p className="text-muted-foreground">{message}</p>
     </div>
   );
 }
