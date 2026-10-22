@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Artefactos de build copiados por error dentro de app/
+/app/static/
+
+# Plantilla de variables de entorno (sí se versiona)
+!.env.example

@@ -1,60 +1,19 @@
-import { auth } from "@/auth";
-import { FiAlertCircle } from "react-icons/fi";
+export const dynamic = "force-dynamic";
 
-export default async function Order() {
-  let lotes: any[] | null = null;
+import { ErrorState } from "@/components/ui/ErrorState";
+import { PropertiesTable } from "@/features/properties/components/PropertiesTable";
+import { getLots } from "@/features/lots/queries";
+import { getProperties } from "@/features/properties/queries";
+import { getUsersByRole } from "@/features/users/queries";
+import { load } from "@/lib/load";
 
-  const session = await auth();
+export default async function PropertiesPage() {
+  const { data, error } = await load(async () => {
+    const [properties, lots, residents] = await Promise.all([getProperties(), getLots(), getUsersByRole("Resident")]);
+    return { properties, lots, residents };
+  });
 
-  try {
-    const response = await fetch(`${process.env.API_HOST}/api/lot/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.accessToken}`,
-      },
-      cache: "no-store",
-    });
-    lotes = await response.json();
-  } catch (err) {
-    console.log("error", err);
-  }
+  if (!data) return <ErrorState title="Error al cargar las propiedades" message={error} />;
 
-  if (!lotes) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-red-700">
-        <FiAlertCircle size={48} className="mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Error al cargar órdenes</h2>
-        <p>Inténtelo más tarde</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex-1 p-6">
-      <h1 className="text-2xl font-bold mb-4">propiedades</h1>
-
-      <table className="w-full border border-gray-300 rounded-lg">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-2 text-left">Nombre</th>
-            <th className="p-2 text-left">Manzana</th>
-            <th className="p-2 text-left">Estado</th>
-            <th className="p-2 text-left">Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {lotes.map((lote) => (
-            <tr key={lote.lotId} className="border-t">
-              <td className="p-2">{lote.lotName}</td>
-              <td className="p-2">{lote.blockName}</td>
-              <td className="p-2">{lote.lotState}</td>
-              <td className="p-2">{lote.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  return <PropertiesTable initialProperties={data.properties} lots={data.lots} residents={data.residents} />;
 }

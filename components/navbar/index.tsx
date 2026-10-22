@@ -3,7 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { MenuIcon, X, HomeIcon } from "lucide-react";
 
-export default function Menu() {
+export default function Menu({ panelHref }: { panelHref?: string }) {
+  const accessHref = panelHref ?? "/login";
+  const accessLabel = panelHref ? "Ir a mi panel" : "Ingresar";
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -66,10 +68,10 @@ export default function Menu() {
 
         {/* Botón Ingresar (Desktop) */}
         <Link
-          href="/login"
+          href={accessHref}
           className="hidden md:flex items-center gap-2 text-slate-700 font-medium px-5 py-2.5 rounded-lg border border-slate-200 hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700 transition-all duration-300 shadow-sm hover:shadow-md"
         >
-          Ingresar
+          {accessLabel}
         </Link>
 
         {/* Botón hamburguesa */}
@@ -121,11 +123,11 @@ export default function Menu() {
           {/* Botón Ingresar (Mobile) */}
           <div className="pt-6 border-t border-slate-700/50">
             <Link
-              href="/login"
+              href={accessHref}
               className="flex items-center justify-center gap-2 text-white font-medium bg-linear-to-r from-purple-500 to-purple-600 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Ingresar
+              {accessLabel}
             </Link>
           </div>
         </div>

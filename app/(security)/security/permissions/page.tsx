@@ -1,15 +1,21 @@
-export default function PermissionsPage() {
+export const dynamic = "force-dynamic";
+
+import { ErrorState } from "@/components/ui/ErrorState";
+import PermissionsTable from "@/components/Security/PermissionsTable";
+import { getAllPermissions } from "@/features/entry-permissions/queries";
+import { load } from "@/lib/load";
+
+export default async function PermissionsPage() {
+  const { data, error } = await load(() => getAllPermissions());
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">Permisos de Ingreso</h1>
-
-      <p className="text-gray-600 mb-6">
-        Permisos creados por los residentes para autorizar el ingreso de visitantes o proveedores.
-      </p>
-
-      <div className="border rounded-lg p-4 bg-gray-50 text-gray-700">
-        <p>No hay permisos cargados aún.</p>
+    <div className="p-4 md:p-8 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Permisos de Ingreso</h1>
+        <p className="text-muted-foreground mt-1">Todos los permisos creados por los residentes para visitas y proveedores.</p>
       </div>
+
+      {data ? <PermissionsTable permissions={data} /> : <ErrorState tone="dark" title="No se pudieron cargar los permisos" message={error} />}
     </div>
   );
 }

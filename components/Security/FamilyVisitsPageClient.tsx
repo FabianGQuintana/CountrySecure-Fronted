@@ -1,25 +1,21 @@
 "use client";
+import { toast } from "sonner";
+import { permissionStatusToText } from "@/types/api";
+import type { EntryPermissionDto } from "@/types/models";
 
 import { useEffect, useMemo, useState } from "react";
 import { Eye, ChevronLeft, ChevronRight, Users, History } from "lucide-react";
 import Link from "next/link";
+import { listVisitPermissions } from "@/features/entry-permissions/actions";
 
 /* 🔴 EXPIRADO */
-const isExpired = (status: string, validTo?: string) => {
+const isExpired = (status: string, validTo?: string | null) => {
   if (status !== "Pending" || !validTo) return false;
   return new Date() > new Date(validTo);
 };
 
-interface Props {
-  initialToken: string | null;
-  apiHost: string;
-}
-
-export default function FamilyVisitsPageClient({
-  initialToken,
-  apiHost,
-}: Props) {
-  const [visits, setVisits] = useState<any[]>([]);
+export default function FamilyVisitsPageClient() {
+  const [visits, setVisits] = useState<EntryPermissionDto[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -30,29 +26,17 @@ export default function FamilyVisitsPageClient({
   /* 🔄 Fetch visitas familiares */
   useEffect(() => {
     const fetchVisits = async () => {
-      try {
-        const res = await fetch(`${apiHost}/api/entrypermissions/type/Visit`, {
-          headers: {
-            Authorization: `Bearer ${initialToken}`,
-          },
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-        setVisits(Array.isArray(data) ? data : data.items || []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+      const result = await listVisitPermissions();
+      if (result.ok) setVisits(result.data);
+      else toast.error(result.error);
+      setLoading(false);
     };
 
     fetchVisits();
-  }, [apiHost, initialToken]);
+  }, []);
 
   /* 🔍 Filtro búsqueda */
   const filteredVisits = useMemo(() => {
-    setCurrentPage(1);
     return visits.filter((v) => {
       const visitorName = `${v.visitor?.nameVisit ?? ""} ${
         v.visitor?.lastNameVisit ?? ""
@@ -77,20 +61,20 @@ export default function FamilyVisitsPageClient({
   );
 
   if (loading) {
-    return <p className="p-6 text-gray-300">Cargando visitas familiares...</p>;
+    return <p className="p-6 text-muted-foreground">Cargando visitas familiares...</p>;
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto text-gray-200">
+    <div className="p-6 max-w-7xl mx-auto text-foreground">
       {/* HEADER */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-            <Users className="text-purple-500" />
+          <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
+            <Users className="text-primary" />
             Visitas de Familiares
           </h1>
-          <p className="text-gray-300 text-lg">
-            <span className="font-semibold text-purple-400">
+          <p className="text-muted-foreground text-lg">
+            <span className="font-semibold text-primary">
               {filteredVisits.length}
             </span>{" "}
             visitas encontradas
@@ -98,7 +82,7 @@ export default function FamilyVisitsPageClient({
         </div>
         <Link
           href="/security/logs?type=Visit&hideTypeFilter=true"
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold"
+          className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold"
         >
           <History size={18} />
           Ver historial
@@ -106,13 +90,16 @@ export default function FamilyVisitsPageClient({
       </div>
 
       {/* FILTRO */}
-      <div className="bg-slate-800/70 border border-slate-700 rounded-xl p-4 shadow mb-8">
+      <div className="bg-card/70 border border-border rounded-xl p-4 shadow mb-8">
         <input
           type="text"
           placeholder="Buscar por visitante o residente..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="w-full px-4 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>
 
@@ -121,22 +108,22 @@ export default function FamilyVisitsPageClient({
         {paginatedVisits.map((v) => (
           <div
             key={v.id}
-            className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all"
+            className="rounded-2xl border border-primary/20 shadow-lg hover:shadow-primary/20 transition-all bg-background"
           >
-            <div className="h-2 bg-linear-to-r from-indigo-600 to-purple-700" />
+            <div className="h-2 bg-primary" />
 
             <div className="p-5 flex flex-col h-full">
               {/* VISITANTE */}
               <div>
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold text-foreground">
                   {v.visitor?.nameVisit} {v.visitor?.lastNameVisit}
                 </h3>
-                <p className="text-sm text-gray-400">Visitante</p>
+                <p className="text-sm text-muted-foreground">Visitante</p>
               </div>
 
               {/* RESIDENTE */}
               <div className="mt-3">
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Residente:{" "}
                   <b>
                     {v.resident?.name} {v.resident?.lastname}
@@ -145,7 +132,7 @@ export default function FamilyVisitsPageClient({
               </div>
 
               {/* FECHA */}
-              <div className="mt-2 text-sm text-gray-500">
+              <div className="mt-2 text-sm text-muted-foreground">
                 Válido desde {new Date(v.validFrom).toLocaleDateString("es-AR")}
               </div>
 
@@ -157,16 +144,16 @@ export default function FamilyVisitsPageClient({
                     className={`self-start mt-3 px-3 py-1 text-xs font-bold rounded-lg border
                       ${
                         expired
-                          ? "bg-red-600/30 text-red-300 border-red-500"
+                          ? "bg-danger/30 text-danger border-danger"
                           : String(v.status) === "Pending"
-                          ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
+                          ? "bg-warning/20 text-warning border-warning/50"
                           : String(v.status) === "Completed"
-                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50"
-                          : "bg-red-500/20 text-red-300 border-red-500/50"
+                          ? "bg-success/20 text-success border-success/50"
+                          : "bg-danger/20 text-danger border-danger/50"
                       }
                     `}
                   >
-                    {expired ? "Expired" : String(v.status)}
+                    {expired ? "Vencido" : permissionStatusToText(v.status)}
                   </span>
                 );
               })()}
@@ -174,10 +161,7 @@ export default function FamilyVisitsPageClient({
               {/* DETALLE */}
               <Link
                 href={`/security/family-visits/${v.id}`}
-                className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2
-                                bg-linear-to-r from-purple-600 to-purple-800
-                                hover:from-purple-500 hover:to-purple-700
-                                text-white rounded-lg font-semibold transition-all"
+                className="mt-auto w-full flex justify-center items-center gap-2 px-4 py-2 bg-linear-to-r from-primary to-primary hover:from-primary hover:to-primary text-foreground rounded-lg font-semibold transition-all"
               >
                 <Eye className="w-4 h-4" />
                 Ver detalle
@@ -189,9 +173,9 @@ export default function FamilyVisitsPageClient({
 
       {/* PAGINACIÓN */}
       {totalPages > 1 && (
-        <div className="mt-8 bg-slate-800/70 border border-slate-700 rounded-xl p-5 shadow">
+        <div className="mt-8 bg-card/70 border border-border rounded-xl p-5 shadow">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-gray-400 text-sm">
+            <div className="text-muted-foreground text-sm">
               Página {currentPage} de {totalPages}
             </div>
 
@@ -199,7 +183,7 @@ export default function FamilyVisitsPageClient({
               <button
                 onClick={() => setCurrentPage((p) => p - 1)}
                 disabled={currentPage === 1}
-                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 hover:bg-slate-700 disabled:opacity-50"
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Anterior
@@ -208,14 +192,14 @@ export default function FamilyVisitsPageClient({
               <button
                 onClick={() => setCurrentPage((p) => p + 1)}
                 disabled={currentPage === totalPages}
-                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-gray-200 hover:bg-slate-700 disabled:opacity-50"
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
               >
                 Siguiente
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="text-gray-500 text-sm">
+            <div className="text-muted-foreground text-sm">
               {pageSize} visitas por página
             </div>
           </div>
@@ -223,7 +207,7 @@ export default function FamilyVisitsPageClient({
       )}
 
       {filteredVisits.length === 0 && (
-        <div className="text-center py-16 text-gray-500">
+        <div className="text-center py-16 text-muted-foreground">
           No se encontraron visitas familiares
         </div>
       )}

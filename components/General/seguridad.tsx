@@ -1,4 +1,5 @@
-import { Card, CardContent } from "@/components/UI/card";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Camera, Lock, Eye, Clock, UserCheck } from "lucide-react";
 import camerasImage from "@/public/images/camera.png";
 import gateImage from "@/public/images/gate.png";
@@ -70,10 +71,13 @@ const Security = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           <Card className="overflow-hidden group hover:shadow-2xl transition-all duration-500 animate-scale-in border border-gray-200 hover:border-purple-300 bg-white/80 backdrop-blur-sm hover:-translate-y-2">
             <div className="relative h-64 overflow-hidden">
-              <img
-                src={gateImage.src || "/placeholder.svg"}
+              <Image
+                src={gateImage}
                 alt="Garita de seguridad"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                fill
+                placeholder="blur"
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -97,10 +101,13 @@ const Security = () => {
             style={{ animationDelay: "0.1s" }}
           >
             <div className="relative h-64 overflow-hidden">
-              <img
-                src={camerasImage.src || "/placeholder.svg"}
+              <Image
+                src={camerasImage}
                 alt="Cámaras de seguridad"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                fill
+                placeholder="blur"
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -122,10 +129,13 @@ const Security = () => {
             style={{ animationDelay: "0.2s" }}
           >
             <div className="relative h-64 overflow-hidden">
-              <img
-                src={guardImage.src || "/placeholder.svg"}
+              <Image
+                src={guardImage}
                 alt="Guardia de seguridad"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                fill
+                placeholder="blur"
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">

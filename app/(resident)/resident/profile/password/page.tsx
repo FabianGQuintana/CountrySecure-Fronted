@@ -1,331 +1,134 @@
 "use client";
 
-import type React from "react";
-
-import { motion } from "framer-motion";
-import {
-  FiLock,
-  FiArrowLeft,
-  FiSave,
-  FiShield,
-  FiCheckCircle,
-  FiAlertCircle,
-} from "react-icons/fi";
-import Link from "next/link";
-import { Card, CardContent } from "@/components/UI/card";
 import { useState } from "react";
-import { changePassword } from "@/actions/usuariosActions";
+import Link from "next/link";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, Check, CheckCircle2, Eye, EyeOff, KeyRound, X } from "lucide-react";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { Field, FormError, Input, Spinner, primaryButtonClass, secondaryButtonClass } from "@/components/ui/form";
+import { changePassword } from "@/features/users/actions";
+import { changePasswordSchema, type ChangePasswordFormValues } from "@/features/users/schemas";
+import { cn } from "@/lib/utils";
+
+type PasswordField = "currentPassword" | "newPassword" | "confirmPassword";
+
+const LABELS: Record<PasswordField, string> = {
+  currentPassword: "Contraseña actual",
+  newPassword: "Nueva contraseña",
+  confirmPassword: "Repetí la nueva contraseña",
+};
+
+const AUTOCOMPLETE: Record<PasswordField, string> = {
+  currentPassword: "current-password",
+  newPassword: "new-password",
+  confirmPassword: "new-password",
+};
 
 export default function ChangePasswordPage() {
-  const [formData, setFormData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<ChangePasswordFormValues>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
   });
 
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [visible, setVisible] = useState<Record<PasswordField, boolean>>({ currentPassword: false, newPassword: false, confirmPassword: false });
   const [success, setSuccess] = useState(false);
+  const [newPassword, confirmPassword] = useWatch({ control, name: ["newPassword", "confirmPassword"] });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  const onSubmit = async (values: ChangePasswordFormValues) => {
     setSuccess(false);
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError("Las contraseñas no coinciden");
+    const result = await changePassword({ currentPassword: values.currentPassword, newPassword: values.newPassword });
+    if (!result.ok) {
+      setError("root", { message: result.error });
       return;
     }
-
-    if (formData.newPassword.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres");
-      return;
-    }
-
-    try {
-      setIsSaving(true);
-
-      await changePassword({
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      });
-
-      setSuccess(true);
-      setFormData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-    } catch (err: any) {
-      setError(err.message || "Error al cambiar la contraseña");
-    } finally {
-      setIsSaving(false);
-    }
+    setSuccess(true);
+    reset();
   };
 
-  const passwordRequirements = [
-    { text: "Mínimo 8 caracteres", met: formData.newPassword.length >= 8 },
-    { text: "Al menos una mayúscula", met: /[A-Z]/.test(formData.newPassword) },
-    { text: "Al menos un número", met: /[0-9]/.test(formData.newPassword) },
-    {
-      text: "Las contraseñas coinciden",
-      met:
-        formData.newPassword === formData.confirmPassword &&
-        formData.newPassword.length > 0,
-    },
+  // Mismas reglas que el backend (ChangePasswordValidator)
+  const requirements = [
+    { text: "Mínimo 8 caracteres", met: newPassword.length >= 8 },
+    { text: "Una mayúscula y una minúscula", met: /[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) },
+    { text: "Al menos un número", met: /[0-9]/.test(newPassword) },
+    { text: "Las contraseñas coinciden", met: newPassword.length > 0 && newPassword === confirmPassword },
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50/30 to-purple-50/20 p-4 sm:p-6 lg:p-10">
-      <div className="max-w-7xl mx-auto mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
-        >
-          <div>
-            <h1 className="text-4xl font-bold bg-linear-to-r from-slate-800 to-purple-600 bg-clip-text text-transparent mb-2">
-              Seguridad de la Cuenta
-            </h1>
-            <p className="text-slate-600 text-lg">
-              Mantené tu cuenta protegida con una contraseña segura
-            </p>
-          </div>
+    <PageContainer size="narrow">
+      <PageHeader
+        icon={<KeyRound size={24} aria-hidden />}
+        title="Cambiar contraseña"
+        description="Por seguridad, te pedimos tu contraseña actual."
+        actions={
+          <Link href="/resident/profile" className={secondaryButtonClass}>
+            <ArrowLeft size={18} aria-hidden /> Volver
+          </Link>
+        }
+      />
 
-          <motion.div whileHover={{ x: -5 }} whileTap={{ scale: 0.95 }}>
-            <Link
-              href="/resident/profile"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-medium hover:text-purple-600 hover:border-purple-300 transition shadow-sm"
-            >
-              <FiArrowLeft /> Volver
-            </Link>
-          </motion.div>
-        </motion.div>
-      </div>
+      {success && (
+        <div role="status" className="mb-6 flex items-start gap-3 rounded-xl border border-success/30 bg-success-soft p-4 text-sm text-success animate-fade-in">
+          <CheckCircle2 size={18} className="mt-0.5 shrink-0" aria-hidden />
+          <p>Tu contraseña se actualizó. La próxima vez que inicies sesión usá la nueva.</p>
+        </div>
+      )}
 
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-8">
-        {/* COLUMNA IZQUIERDA - Información de seguridad */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="lg:col-span-2 space-y-6"
-        >
-          {/* Card de seguridad */}
-          <Card className="bg-linear-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
-            <CardContent className="p-6 text-white">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                  <FiShield size={28} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Protegé tu cuenta</h3>
-                  <p className="text-purple-50 leading-relaxed">
-                    Una contraseña fuerte es tu primera línea de defensa contra
-                    accesos no autorizados.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tips de seguridad */}
-          <Card className="bg-white border border-slate-200 shadow-lg">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <FiAlertCircle className="text-amber-500" />
-                Consejos de seguridad
-              </h3>
-              <ul className="space-y-3 text-slate-600">
-                <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0" />
-                  <span>
-                    Usá una combinación única de letras, números y símbolos
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0" />
-                  <span>Evitá usar información personal obvia</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0" />
-                  <span>No reutilices contraseñas de otras cuentas</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0" />
-                  <span>Cambiá tu contraseña regularmente</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Badge de última actualización */}
-          {/* <div className="px-4 py-3 bg-slate-100 rounded-xl border border-slate-200">
-            <p className="text-sm text-slate-600">
-              <span className="font-semibold">Última actualización:</span> 15 de enero, 2025
-            </p>
-          </div> */}
-        </motion.div>
-
-        {/* COLUMNA DERECHA - Formulario */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="lg:col-span-3"
-        >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Card principal del formulario */}
-            <Card className="bg-white border border-slate-200 shadow-xl">
-              <CardContent className="p-8 space-y-6">
-                <div className="border-b border-slate-200 pb-4 mb-2">
-                  <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <FiLock className="text-purple-600" size={24} />
-                    </div>
-                    Cambiar Contraseña
-                  </h2>
-                </div>
-
-                {error && (
-                  <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
-                    {error}
-                  </div>
-                )}
-
-                {success && (
-                  <div className="p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm">
-                    Contraseña actualizada correctamente
-                  </div>
-                )}
-
-                {/* Contraseña actual */}
-                <div>
-                  <label className="text-sm font-semibold text-slate-700 mb-2 block">
-                    Contraseña actual
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      name="currentPassword"
-                      value={formData.currentPassword}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
-                                            focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
-                                            transition duration-200 bg-slate-50 hover:bg-white"
-                      placeholder="Ingresá tu contraseña actual"
-                    />
-                    <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      size={18}
-                    />
-                  </div>
-                </div>
-
-                {/* Nueva contraseña */}
-                <div>
-                  <label className="text-sm font-semibold text-slate-700 mb-2 block">
-                    Nueva contraseña
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      name="newPassword"
-                      value={formData.newPassword}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
-                                            focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
-                                            transition duration-200 bg-slate-50 hover:bg-white"
-                      placeholder="Creá una contraseña segura"
-                    />
-                    <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      size={18}
-                    />
-                  </div>
-                </div>
-
-                {/* Confirmar contraseña */}
-                <div>
-                  <label className="text-sm font-semibold text-slate-700 mb-2 block">
-                    Confirmar nueva contraseña
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3.5 pl-11 rounded-xl border-2 border-slate-200
-                                            focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent
-                                            transition duration-200 bg-slate-50 hover:bg-white"
-                      placeholder="Confirmá tu nueva contraseña"
-                    />
-                    <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      size={18}
-                    />
-                  </div>
-                </div>
-
-                {/* Botón de guardar */}
-                <motion.button
-                  whileHover={{ scale: isSaving ? 1 : 1.02 }}
-                  whileTap={{ scale: isSaving ? 1 : 0.98 }}
-                  type="submit"
-                  disabled={isSaving}
-                  className={`w-full mt-4 flex items-center justify-center gap-3
-    py-4 rounded-xl font-semibold shadow-lg transition duration-300
-    ${
-      isSaving
-        ? "bg-slate-400 cursor-not-allowed"
-        : "bg-linear-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700"
-    }`}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5 rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
+        {(Object.keys(LABELS) as PasswordField[]).map((name) => (
+          <Field key={name} label={LABELS[name]} required error={errors[name]?.message}>
+            {({ id, describedBy, invalid }) => (
+              <div className="relative">
+                <Input
+                  id={id}
+                  type={visible[name] ? "text" : "password"}
+                  aria-describedby={describedBy}
+                  invalid={invalid}
+                  autoComplete={AUTOCOMPLETE[name]}
+                  className="pr-11"
+                  {...register(name)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisible((v) => ({ ...v, [name]: !v[name] }))}
+                  aria-label={visible[name] ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
-                  <FiSave size={20} />
-                  {isSaving ? "Actualizando..." : "Actualizar contraseña"}
-                </motion.button>
-              </CardContent>
-            </Card>
+                  {visible[name] ? <EyeOff size={18} aria-hidden /> : <Eye size={18} aria-hidden />}
+                </button>
+              </div>
+            )}
+          </Field>
+        ))}
 
-            {/* Requisitos de contraseña */}
-            <Card className="bg-white border border-slate-200 shadow-lg">
-              <CardContent className="p-6">
-                <h3 className="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wide">
-                  Requisitos de contraseña
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {passwordRequirements.map((req, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + index * 0.05 }}
-                      className={`flex items-center gap-2 text-sm p-3 rounded-lg transition ${
-                        req.met
-                          ? "bg-green-50 text-green-700"
-                          : "bg-slate-50 text-slate-600"
-                      }`}
-                    >
-                      <FiCheckCircle
-                        className={
-                          req.met ? "text-green-500" : "text-slate-300"
-                        }
-                        size={16}
-                      />
-                      <span className="font-medium">{req.text}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </form>
-        </motion.div>
-      </div>
-    </div>
+        <ul className="grid gap-2 rounded-2xl bg-muted/60 p-4 text-sm sm:grid-cols-2" aria-label="Requisitos de la nueva contraseña">
+          {requirements.map((r) => (
+            <li key={r.text} className={cn("flex items-center gap-2", r.met ? "text-success" : "text-muted-foreground")}>
+              {r.met ? <Check size={16} aria-hidden /> : <X size={16} aria-hidden />}
+              {r.text}
+            </li>
+          ))}
+        </ul>
+
+        <FormError message={errors.root?.message} />
+
+        <button type="submit" disabled={isSubmitting} className={`${primaryButtonClass} w-full`}>
+          {isSubmitting ? (
+            <>
+              <Spinner /> Actualizando…
+            </>
+          ) : (
+            "Actualizar contraseña"
+          )}
+        </button>
+      </form>
+    </PageContainer>
   );
 }

@@ -2,18 +2,13 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  Download,
-} from "lucide-react";
-import { Button } from "@/components/UI/button";
-
-interface LogViewProps {
-  session: any;
-}
+import { Search, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { DateInput, Field, Input, Select, primaryButtonClass, secondaryButtonClass } from "@/components/ui/form";
+import { localDateOf } from "@/lib/datetime";
+import { StatusBadge, type StatusTone } from "@/components/ui/StatusBadge";
+import { permissionStatusToText } from "@/types/api";
+import { Button } from "@/components/ui/button";
+import { listPermissionHistory } from "@/features/entry-permissions/actions";
 
 interface LogEntry {
   id: string;
@@ -52,7 +47,7 @@ interface LogEntry {
 
 const PAGE_SIZE = 10;
 
-const LogView: React.FC<LogViewProps> = ({ session }) => {
+const LogView: React.FC = () => {
   const searchParams = useSearchParams();
 
   // 🔒 Params desde Services
@@ -64,52 +59,41 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
   const [error, setError] = useState<string | null>(null);
 
   // 🔍 Filtros (NO SE TOCAN)
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState<string>(forcedType ?? "all");
-
   // 📄 Paginación frontend REAL
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [startDate, setStartDateState] = useState("");
+  const [endDate, setEndDateState] = useState("");
+  const [searchTerm, setSearchTermState] = useState("");
+  const [filterType, setFilterTypeState] = useState<string>(forcedType ?? "all");
+
+  // Cambiar un filtro vuelve a la primera página
+  const setStartDate = (v: string) => (setStartDateState(v), setCurrentPage(1));
+  const setEndDate = (v: string) => (setEndDateState(v), setCurrentPage(1));
+  const dateRangeError = startDate && endDate && endDate < startDate ? "Tiene que ser igual o posterior a la fecha desde." : undefined;
+  const setSearchTerm = (v: string) => (setSearchTermState(v), setCurrentPage(1));
+  const setFilterType = (v: string) => (setFilterTypeState(v), setCurrentPage(1));
 
   /* 🔄 Fetch único */
   const fetchLogs = async () => {
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/entrypermissions/history`,
-        {
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-        }
-      );
+    const result = await listPermissionHistory();
 
-      if (!response.ok) {
-        throw new Error("Error al obtener el historial");
-      }
+    if (result.ok) setLogs(result.data as unknown as LogEntry[]);
+    else setError(result.error || "Error al cargar historial");
 
-      const data = await response.json();
-      const logsData = Array.isArray(data) ? data : data.items ?? [];
-
-      setLogs(logsData);
-    } catch (err: any) {
-      setError(err.message || "Error al cargar historial");
-    } finally {
-      setLoading(false);
-    }
+    setLoading(false);
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de datos
     fetchLogs();
   }, []);
 
   /* 🧠 FILTRADO FRONTEND (CLAVE) */
   const filteredLogs = useMemo(() => {
-    setCurrentPage(1);
-
     return logs.filter((log) => {
       // 🔒 FORCED TYPE SIEMPRE MANDA
       const matchesType = forcedType
@@ -128,9 +112,8 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
 
-      const entryDate = log.entryTime
-        ? new Date(log.entryTime).toISOString().split("T")[0]
-        : null;
+      // Fecha LOCAL del ingreso (con toISOString un ingreso a las 22 h caía en el día siguiente)
+      const entryDate = localDateOf(log.entryTime);
 
       const matchesStart = !startDate || (entryDate && entryDate >= startDate);
 
@@ -163,14 +146,14 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
 
   const getTypeBadge = (type: string) => {
     const styles: Record<string, string> = {
-      Visit: "bg-purple-500/20 text-purple-300",
-      Maintenance: "bg-orange-500/20 text-orange-300",
+      Visit: "bg-primary/20 text-primary",
+      Maintenance: "bg-warning/20 text-warning",
     };
 
     return (
       <span
         className={`px-2 py-1 rounded text-xs font-semibold ${
-          styles[type] ?? "bg-gray-500/20 text-gray-300"
+          styles[type] ?? "bg-muted-foreground/20 text-muted-foreground"
         }`}
       >
         {type}
@@ -179,129 +162,88 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
   };
 
   const getStatusBadge = (status: string) => {
-    const styles: Record<string, string> = {
-      Pending: "bg-amber-500/20 text-amber-300",
-      Completed: "bg-emerald-500/20 text-emerald-300",
-      Cancelled: "bg-red-500/20 text-red-300",
-      Expired: "bg-gray-500/20 text-gray-300",
-    };
-
-    return (
-      <span
-        className={`px-2 py-1 rounded text-xs font-semibold ${
-          styles[status] ?? "bg-gray-500/20 text-gray-300"
-        }`}
-      >
-        {status}
-      </span>
-    );
+    const tones: Record<string, StatusTone> = { Pending: "warning", Completed: "success", Cancelled: "danger", Expired: "neutral" };
+    return <StatusBadge tone={tones[status] ?? "neutral"}>{permissionStatusToText(status)}</StatusBadge>;
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
+    <div className="min-h-screen p-8 bg-background">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* HEADER */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               {forcedType === "Maintenance"
                 ? "Historial de Servicios"
                 : "Registro de Entradas"}
             </h1>
-            <p className="text-gray-400">Historial completo de movimientos</p>
+            <p className="text-muted-foreground">Historial completo de movimientos</p>
           </div>
         </div>
 
         {/* FILTROS */}
-        <div className="bg-slate-800/50 rounded-xl p-6 border border-purple-500/20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">Buscar</label>
-              <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-                <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Nombre / Proveedor"
-                  className="w-full pl-10 pr-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-                />
-              </div>
-            </div>
+        <div className="bg-card rounded-2xl p-6 border border-border shadow-sm">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Field label="Buscar">
+              {({ id }) => (
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden />
+                  <Input id={id} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Nombre / Proveedor" className="pl-10" />
+                </div>
+              )}
+            </Field>
 
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">
-                Fecha desde
-              </label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-              />
-            </div>
+            <Field label="Fecha desde">
+              {({ id }) => <DateInput id={id} value={startDate} max={endDate || undefined} onChange={(e) => setStartDate(e.target.value)} />}
+            </Field>
 
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">
-                Fecha hasta
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-              />
-            </div>
+            <Field label="Fecha hasta" error={dateRangeError}>
+              {({ id, describedBy, invalid }) => (
+                <DateInput id={id} aria-describedby={describedBy} invalid={invalid} value={endDate} min={startDate || undefined} onChange={(e) => setEndDate(e.target.value)} />
+              )}
+            </Field>
 
             {!hideTypeFilter && (
-              <div>
-                <label className="text-sm text-gray-400 mb-2 block">Tipo</label>
-                <select
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-                >
-                  <option value="all">Todos</option>
-                  <option value="Visit">Visitas</option>
-                  <option value="Maintenance">Mantenimiento</option>
-                </select>
-              </div>
+              <Field label="Tipo">
+                {({ id }) => (
+                  <Select id={id} value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                    <option value="all">Todos</option>
+                    <option value="Visit">Visitas</option>
+                    <option value="Maintenance">Mantenimiento</option>
+                  </Select>
+                )}
+              </Field>
             )}
           </div>
 
           <div className="flex gap-3 mt-4">
-            <Button onClick={handleSearch} className="bg-purple-600 text-white">
-              <Filter size={18} className="mr-2" />
+            <button type="button" onClick={handleSearch} className={primaryButtonClass}>
+              <Filter size={18} aria-hidden />
               Aplicar filtros
-            </Button>
-            <Button
-              onClick={handleClearFilters}
-              className="bg-slate-700 text-white"
-            >
+            </button>
+            <button type="button" onClick={handleClearFilters} className={secondaryButtonClass}>
               Limpiar
-            </Button>
+            </button>
           </div>
         </div>
 
         {/* TABLA */}
-        <div className="bg-slate-800/50 rounded-xl border border-purple-500/20 overflow-hidden">
+        <div className="bg-card/50 rounded-xl border border-primary/20 overflow-hidden">
           {loading ? (
-            <div className="p-12 text-center text-gray-400">
+            <div className="p-12 text-center text-muted-foreground">
               Cargando historial...
             </div>
           ) : error ? (
-            <div className="p-12 text-center text-red-400">{error}</div>
+            <div className="p-12 text-center text-danger">{error}</div>
           ) : logs.length === 0 ? (
-            <div className="p-12 text-center text-gray-400">
+            <div className="p-12 text-center text-muted-foreground">
               No se encontraron registros
             </div>
           ) : (
             <>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-700/50">
+                  <thead className="bg-muted/50">
                     <tr>
                       {[
                         "Tipo",
@@ -313,7 +255,7 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
                       ].map((h) => (
                         <th
                           key={h}
-                          className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase"
+                          className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"
                         >
                           {h}
                         </th>
@@ -321,28 +263,28 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-slate-700">
+                  <tbody className="divide-y divide-border">
                     {paginatedLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-slate-700/30">
+                      <tr key={log.id} className="hover:bg-muted/30">
                         <td className="px-4 py-4">{getTypeBadge(log.type)}</td>
 
-                        <td className="px-4 py-4 text-white">
+                        <td className="px-4 py-4 text-foreground">
                           {log.visitor
                             ? `${log.visitor.nameVisit} ${log.visitor.lastNameVisit}`
                             : log.order?.supplierName ?? "N/A"}
                         </td>
 
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {log.resident
                             ? `${log.resident.name} ${log.resident.lastname}`
                             : "-"}
                         </td>
 
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {formatDateTime(log.entryTime)}
                         </td>
 
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {formatDateTime(log.departureTime)}
                         </td>
 
@@ -356,8 +298,8 @@ const LogView: React.FC<LogViewProps> = ({ session }) => {
               </div>
 
               {/* PAGINACIÓN */}
-              <div className="px-6 py-4 flex justify-between items-center border-t border-slate-700">
-                <span className="text-sm text-gray-400">
+              <div className="px-6 py-4 flex justify-between items-center border-t border-border">
+                <span className="text-sm text-muted-foreground">
                   Página {currentPage} de {totalPages}
                 </span>
 

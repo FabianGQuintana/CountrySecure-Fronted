@@ -1,16 +1,16 @@
-// import type { NextConfig } from "next";
-
-// const nextConfig: NextConfig = {
-//   /* config options here */
-// };
-
-// export default nextConfig;
-
 import type { NextConfig } from "next";
 
+import path from "node:path";
+
 const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
+  // Evita el aviso de "multiple lockfiles" y fija la raíz del proyecto
+  turbopack: { root: path.resolve(__dirname) },
+  outputFileTracingRoot: path.resolve(__dirname),
+
+  // Las fotos de /public/images pesan ~700 KB en PNG: next/image las sirve en AVIF/WebP al tamaño justo
+  images: {
+    formats: ["image/avif", "image/webp"],
+    qualities: [60, 75],
   },
 };
 

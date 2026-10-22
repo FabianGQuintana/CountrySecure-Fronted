@@ -1,27 +1,167 @@
 @import "tailwindcss";
 
+/* El modo oscuro se activa con la clase `dark` en <html> (ver lib/theme.ts), no con la preferencia del sistema */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================================================
+   Paleta universal de CountrySecure (la misma para Admin, Residente y Seguridad).
+   Los componentes usan SOLO estos tokens (bg-card, text-muted-foreground, bg-primary,
+   bg-success-soft…), así cada pantalla se adapta sola al modo claro u oscuro.
+   ========================================================================= */
 :root {
-  --background: #ffffff;
-  /* --foreground: #171717; */
+  color-scheme: light;
+
+  --background: #f6f7fb;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --muted: #eef0f6;
+  --muted-foreground: #5b6478;
+  --border: #e2e6ef;
+  --input: #d5dae6;
+  --ring: #7c3aed;
+
+  --primary: #6d28d9;
+  --primary-foreground: #ffffff;
+  --primary-soft: #ede9fe;
+  --primary-soft-foreground: #5b21b6;
+
+  --success: #059669;
+  --success-soft: #d1fae5;
+  --warning: #b45309;
+  --warning-soft: #fef3c7;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
+  --info: #0284c7;
+  --info-soft: #e0f2fe;
+  /* Texto sobre un relleno sólido de estado (bg-success, bg-danger…) */
+  --on-status: #ffffff;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #334155;
+  --overlay: rgb(15 23 42 / 0.5);
 }
 
-/* @theme inline {
+.dark {
+  color-scheme: dark;
+
+  --background: #0b0f1a;
+  --foreground: #e6e9f2;
+  --card: #121826;
+  --card-foreground: #e6e9f2;
+  --muted: #1a2233;
+  --muted-foreground: #9aa3b8;
+  --border: #263049;
+  --input: #33405e;
+  --ring: #a78bfa;
+
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --primary-soft: #2a1f4d;
+  --primary-soft-foreground: #ddd6fe;
+
+  --success: #34d399;
+  --success-soft: #0f2e25;
+  --warning: #fbbf24;
+  --warning-soft: #33270b;
+  --danger: #f87171;
+  --danger-soft: #3a1518;
+  --info: #38bdf8;
+  --info-soft: #0c2a3d;
+  --on-status: #0b0f1a;
+
+  --sidebar: #0f1422;
+  --sidebar-foreground: #cbd2e1;
+  --overlay: rgb(0 0 0 / 0.65);
+}
+
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-} */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary: var(--muted);
+  --color-secondary-foreground: var(--foreground);
+  --color-accent: var(--muted);
+  --color-accent-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #171717;
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: #ffffff;
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-on-status: var(--on-status);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-overlay: var(--overlay);
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
   }
-} */
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica,
-    sans-serif;
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  /* Ícono del selector de fecha/hora: con color-scheme el navegador ya lo pinta claro u oscuro */
+  input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.75;
+  }
+  input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+}
+
+/* Animaciones de entrada: solo desplazan, NUNCA ocultan. Si el navegador las demora o las pausa
+   (pestaña en segundo plano, equipo lento), el contenido igual se ve completo desde el primer cuadro. */
+@keyframes cs-fade-up {
+  from { transform: translateY(10px); }
+  to { transform: none; }
+}
+@keyframes cs-fade-down {
+  from { transform: translateY(-10px); }
+  to { transform: none; }
+}
+@keyframes cs-pop {
+  from { transform: scale(0.97); }
+  to { transform: none; }
+}
+@keyframes cs-fade-in {
+  from { transform: translateY(4px); }
+  to { transform: none; }
+}
+.animate-fade-up { animation: cs-fade-up 0.35s ease-out both; }
+.animate-fade-down { animation: cs-fade-down 0.35s ease-out both; }
+.animate-pop { animation: cs-pop 0.25s ease-out both; }
+.animate-fade-in { animation: cs-fade-in 0.25s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-down,
+  .animate-pop,
+  .animate-fade-in { animation: none; }
 }

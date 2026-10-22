@@ -4,13 +4,21 @@ import type React from "react";
 
 import { IconAvatar, IconLock, IconEye, IconLoading } from "@/app/assets/icon";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
+import { safeCallbackUrl } from "@/lib/routes";
+
+// Motivo por el que el proxy mandó al login (`?reason=`)
+const REASON_MESSAGES: Record<string, string> = {
+  expired: "Tu sesión expiró. Iniciá sesión nuevamente.",
+  unavailable: "No pudimos validar tu sesión porque el servidor no respondió. Iniciá sesión nuevamente.",
+};
 
 export default function LoginFormulario() {
   const [verContraseña, setVerContraseña] = useState(false);
   const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState("");
+  const searchParams = useSearchParams();
+  const [error, setError] = useState(REASON_MESSAGES[searchParams.get("reason") ?? ""] ?? "");
 
   const router = useRouter();
 
@@ -37,19 +45,9 @@ export default function LoginFormulario() {
 
     const session = await getSession();
 
-    const rol = session?.user?.role;
-
-    // ⬇️ Redirección según el rol
-    if (rol === "Admin") {
-      router.replace("/admin/");
-    } else if (rol === "Resident") {
-      router.replace("/resident/dashboard");
-    } else if (rol === "Security") {
-      router.replace("/security");
-    } else {
-      router.replace("/"); // fallback
-    }
-
+    // Redirección según el rol (o a la página que se intentaba abrir, si es del mismo rol)
+    // Sin router.refresh(): refrescaría /login?reason=… y el proxy descartaría la cookie recién creada
+    router.replace(safeCallbackUrl(searchParams.get("callbackUrl"), session?.user?.role));
     setCargando(false);
   }
   return (

@@ -1,13 +1,16 @@
 "use client";
 
+import { toast } from "sonner";
 import React, { useState, useEffect, useCallback } from "react";
 import { Clock, CheckCircle, AlertTriangle } from "lucide-react";
+import type { EntryPermissionDto } from "@/types/models";
 import VisitCard from "@/components/Security/VisitCard";
+import { fetchTodayPermissions } from "@/features/entry-permissions/actions";
 
 // ===============================================
 // Helpers
 // ===============================================
-const isExpired = (validTo?: string) => {
+const isExpired = (validTo?: string | null) => {
   if (!validTo) return false;
   return new Date(validTo).getTime() < Date.now();
 };
@@ -15,11 +18,6 @@ const isExpired = (validTo?: string) => {
 // ===============================================
 // Props
 // ===============================================
-interface VisitsPageClientProps {
-  initialToken: string | null;
-  initialApiHost: string | null;
-}
-
 // ===============================================
 // KPI Card
 // ===============================================
@@ -30,23 +28,17 @@ interface KpiCardProps {
   colorClass: string;
 }
 
-const KpiCard: React.FC<KpiCardProps> = ({
-  title,
-  value,
-  icon: Icon,
-  colorClass,
-}) => (
-  <div
-    className={`p-6 rounded-xl shadow-lg ${colorClass} transition-all hover:shadow-2xl hover:scale-105 duration-300`}
-  >
-    <div className="flex items-center justify-between">
+// Tarjeta neutra con el ícono en el color del indicador: legible en claro y en oscuro
+const KpiCard: React.FC<KpiCardProps> = ({ title, value, icon: Icon, colorClass }) => (
+  <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div className="flex items-center justify-between gap-4">
       <div>
-        <h3 className="text-sm font-semibold text-white/90 uppercase tracking-wide">
-          {title}
-        </h3>
-        <p className="text-4xl font-bold text-white mt-2">{value}</p>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+        <p className="mt-2 text-4xl font-bold text-foreground">{value}</p>
       </div>
-      <Icon className="h-12 w-12 text-white/80" />
+      <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${colorClass}`}>
+        <Icon className="h-7 w-7" />
+      </div>
     </div>
   </div>
 );
@@ -70,19 +62,17 @@ const PaginatorUI: React.FC<PaginatorUIProps> = ({
   if (totalPaginas <= 1) return null;
 
   return (
-    <div className="mt-6 rounded-xl border border-purple-500/30 bg-slate-900/60 backdrop-blur px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-      <span className="text-sm text-gray-300">
-        Página <span className="font-semibold text-white">{paginaActual}</span>{" "}
-        de <span className="font-semibold text-white">{totalPaginas}</span>
+    <div className="mt-6 rounded-xl border border-primary/30 bg-background/60 backdrop-blur px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <span className="text-sm text-muted-foreground">
+        Página <span className="font-semibold text-foreground">{paginaActual}</span>{" "}
+        de <span className="font-semibold text-foreground">{totalPaginas}</span>
       </span>
 
       <div className="flex items-center gap-3">
         <button
           onClick={() => cambiarPagina(paginaActual - 1)}
           disabled={paginaActual === 1}
-          className="px-4 py-2 rounded-lg text-sm font-medium border border-purple-500/30
-                     text-gray-300 hover:bg-purple-600/20 hover:text-white
-                     disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="px-4 py-2 rounded-lg text-sm font-medium border border-primary/30 text-muted-foreground hover:bg-primary/20 hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           ← Anterior
         </button>
@@ -90,77 +80,63 @@ const PaginatorUI: React.FC<PaginatorUIProps> = ({
         <button
           onClick={() => cambiarPagina(paginaActual + 1)}
           disabled={paginaActual === totalPaginas}
-          className="px-4 py-2 rounded-lg text-sm font-medium border border-purple-500/30
-                     text-gray-300 hover:bg-purple-600/20 hover:text-white
-                     disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="px-4 py-2 rounded-lg text-sm font-medium border border-primary/30 text-muted-foreground hover:bg-primary/20 hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           Siguiente →
         </button>
       </div>
 
-      <span className="text-sm text-gray-400">
+      <span className="text-sm text-muted-foreground">
         {pageSize} visitas por página
       </span>
     </div>
   );
 };
 
+type VisitPermission = EntryPermissionDto & { isExpired: boolean; effectiveStatus: string };
+
 // ===============================================
 // Main Component
 // ===============================================
-export default function VisitsPageClient({
-  initialToken,
-  initialApiHost,
-}: VisitsPageClientProps) {
-  const [visitPermissions, setVisitPermissions] = useState<any[]>([]);
+export default function VisitsPageClient() {
+  const [visitPermissions, setVisitPermissions] = useState<VisitPermission[]>([]);
   const [totalPermissions, setTotalPermissions] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [paginaActual, setPaginaActual] = useState(1);
 
   const uiPageSize = 6;
-  const accessToken = initialToken;
-  const apiHost = initialApiHost;
 
-  const fetchCurrentPagePermissions = useCallback(
-    async (targetPage: number) => {
-      if (!accessToken || !apiHost) return;
+  const fetchCurrentPagePermissions = useCallback(async (targetPage: number) => {
+    const result = await fetchTodayPermissions(targetPage, uiPageSize);
 
-      setIsLoading(true);
+    if (result.ok) {
+      // 🔴 NORMALIZACIÓN DE ESTADO (FRONT)
+      const normalizedItems = result.data.items.map((p) => {
+        const expired = isExpired(p.validTo);
 
-      try {
-        const url = `${apiHost}/api/entrypermissions/today?pageNumber=${targetPage}&pageSize=${uiPageSize}`;
-        const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        return {
+          ...p,
+          isExpired: expired,
+          effectiveStatus:
+            expired && !p.entryTime
+              ? "Expired"
+              : p.entryTime && !p.departureTime
+              ? "Active"
+              : "Pending",
+        };
+      });
 
-        const data = await response.json();
+      setVisitPermissions(normalizedItems);
+      setTotalPermissions(result.data.totalCount);
+    } else {
+      toast.error(result.error);
+    }
 
-        // 🔴 NORMALIZACIÓN DE ESTADO (FRONT)
-        const normalizedItems = (data.items || []).map((p: any) => {
-          const expired = isExpired(p.validTo);
-
-          return {
-            ...p,
-            isExpired: expired,
-            effectiveStatus:
-              expired && !p.entryTime
-                ? "Expired"
-                : p.entryTime && !p.departureTime
-                ? "Active"
-                : "Pending",
-          };
-        });
-
-        setVisitPermissions(normalizedItems);
-        setTotalPermissions(data.totalCount || 0);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [accessToken, apiHost]
-  );
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de datos
     fetchCurrentPagePermissions(1);
   }, [fetchCurrentPagePermissions]);
 
@@ -172,6 +148,7 @@ export default function VisitsPageClient({
       if (newPage === paginaActual) return;
 
       setPaginaActual(newPage);
+      setIsLoading(true);
       fetchCurrentPagePermissions(newPage);
     },
     [paginaActual, totalPages, fetchCurrentPagePermissions]
@@ -188,16 +165,16 @@ export default function VisitsPageClient({
 
   if (totalPermissions === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
+      <div className="min-h-screen flex items-center justify-center text-foreground">
         No hay permisos para hoy.
       </div>
     );
   }
 
   return (
-    <div className="min--screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
+    <div className="min--screen py-8 px-4 bg-background">
       <div className="max-w-7xl mx-auto space-y-10">
-        <h1 className="text-5xl font-bold text-white text-center">
+        <h1 className="text-5xl font-bold text-foreground text-center">
           Visitas programadas para hoy
         </h1>
 
@@ -207,24 +184,24 @@ export default function VisitsPageClient({
             title="Permisos Hoy (Total)"
             value={totalPermissions}
             icon={Clock}
-            colorClass="bg-linear-to-br from-purple-600 to-purple-800"
+            colorClass="bg-primary-soft text-primary"
           />
           <KpiCard
             title="Visitas Activas (Pág.)"
             value={activeVisits}
             icon={CheckCircle}
-            colorClass="bg-linear-to-br from-emerald-600 to-teal-700"
+            colorClass="bg-success-soft text-success"
           />
           <KpiCard
             title="Próximas Entradas (Pág.)"
             value={pendingVisits}
             icon={AlertTriangle}
-            colorClass="bg-linear-to-br from-amber-500 to-orange-600"
+            colorClass="bg-warning-soft text-warning"
           />
         </div>
 
         {/* Cards */}
-        <div className="relative bg-slate-800/50 rounded-xl border border-purple-500/20 p-6 space-y-6">
+        <div className="relative bg-card/50 rounded-xl border border-primary/20 p-6 space-y-6">
           <div
             className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300 ${
               isLoading ? "opacity-50 pointer-events-none" : "opacity-100"
@@ -237,7 +214,7 @@ export default function VisitsPageClient({
 
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-purple-300 text-sm animate-pulse">
+              <span className="text-primary text-sm animate-pulse">
                 Actualizando página…
               </span>
             </div>

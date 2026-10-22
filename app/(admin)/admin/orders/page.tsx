@@ -1,38 +1,14 @@
-import { auth } from "@/auth";
-import { FiAlertCircle } from "react-icons/fi";
-import TablaOrders from "@/components/admin/order";
-export default async function Order() {
-  let orders: any[] | null = null;
+export const dynamic = "force-dynamic";
 
-  const session = await auth();
+import { ErrorState } from "@/components/ui/ErrorState";
+import { OrdersTable } from "@/features/orders/components/OrdersTable";
+import { getOrders } from "@/features/orders/queries";
+import { load } from "@/lib/load";
 
-  try {
-    const response = await fetch(`${process.env.API_HOST}/api/order/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.accessToken}`,
-      },
-      cache: "no-store",
-    });
-    orders = await response.json();
-  } catch (err) {
-    console.log("error", err);
-  }
+export default async function OrdersPage() {
+  const { data, error } = await load(() => getOrders({ includeInactive: true }));
 
-  if (!orders) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-red-700">
-        <FiAlertCircle size={48} className="mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Error al cargar órdenes</h2>
-        <p>Inténtelo más tarde</p>
-      </div>
-    );
-  }
+  if (!data) return <ErrorState title="Error al cargar los servicios" message={error} />;
 
-  return (
-    <div className="flex-1 p-6">
-      <TablaOrders />
-    </div>
-  );
+  return <OrdersTable initialOrders={data} />;
 }

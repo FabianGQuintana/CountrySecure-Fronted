@@ -1,4 +1,5 @@
-import { Card, CardContent } from "@/components/UI/card";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
 import { Waves, Dumbbell, Trees, Baby, Sparkles } from "lucide-react";
 import poolImage from "@/public/images/pool.png";
 import gymImage from "@/public/images/gym.png";
@@ -71,10 +72,13 @@ const Amenities = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="relative h-56 overflow-hidden">
-                <img
-                  src={amenity.image.src || "/placeholder.svg"}
+                <Image
+                  src={amenity.image}
                   alt={amenity.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  fill
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent" />

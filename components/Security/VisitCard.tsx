@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import type { EntryPermissionDto } from "@/types/models";
 import {
   Calendar,
   User,
@@ -10,11 +11,11 @@ import {
   Package,
   Truck,
 } from "lucide-react";
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 interface VisitCardProps {
-  permission: any;
+  permission: EntryPermissionDto & { effectiveStatus?: string };
 }
 
 const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
@@ -25,21 +26,21 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
     switch (permission.effectiveStatus) {
       case "Pending":
         return (
-          <span className="flex items-center gap-1 text-xs px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full font-medium border border-amber-500/30">
+          <span className="flex items-center gap-1 text-xs px-3 py-1 bg-warning/20 text-warning rounded-full font-medium border border-warning/30">
             <Clock size={14} />
             Pendiente
           </span>
         );
       case "Active":
         return (
-          <span className="flex items-center gap-1 text-xs px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full font-medium border border-emerald-500/30">
+          <span className="flex items-center gap-1 text-xs px-3 py-1 bg-success/20 text-success rounded-full font-medium border border-success/30">
             <CheckCircle size={14} />
             Activo
           </span>
         );
       case "Expired":
         return (
-          <span className="flex items-center gap-1 text-xs px-3 py-1 bg-red-500/20 text-amber-300 rounded-full font-medium border border-amber-500/30">
+          <span className="flex items-center gap-1 text-xs px-3 py-1 bg-danger/20 text-warning rounded-full font-medium border border-warning/30">
             <Clock size={14} />
             Expirado
           </span>
@@ -49,7 +50,7 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
     }
   };
 
-  const formatDateTime = (dateString?: string) => {
+  const formatDateTime = (dateString?: string | null) => {
     if (!dateString) return "No registrado";
     try {
       const date = new Date(dateString);
@@ -68,13 +69,11 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
   const getCardBorderColor = () => {
     switch (permission.type) {
       case "Visit":
-        return "border-l-purple-500";
+        return "border-l-primary";
       case "Maintenance":
-        return "border-l-orange-500";
-      case "Delivery":
-        return "border-l-blue-500";
+        return "border-l-warning";
       default:
-        return "border-l-gray-500";
+        return "border-l-border";
     }
   };
 
@@ -83,22 +82,17 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
       case "Visit":
         return {
           label: "VISITANTE",
-          color: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+          color: "bg-primary/20 text-primary border-primary/30",
         };
       case "Maintenance":
         return {
           label: "MANTENIMIENTO",
-          color: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-        };
-      case "Delivery":
-        return {
-          label: "DELIVERY",
-          color: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+          color: "bg-warning/20 text-warning border-warning/30",
         };
       default:
         return {
           label: "OTRO",
-          color: "bg-gray-500/20 text-gray-300 border-gray-500/30",
+          color: "bg-muted-foreground/20 text-muted-foreground border-border/30",
         };
     }
   };
@@ -113,7 +107,7 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
 
   return (
     <div
-      className={`bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 border-l-4 ${getCardBorderColor()} border border-slate-700/50 hover:border-purple-500/50 hover:scale-105`}
+      className={`bg-card/50 backdrop-blur-sm rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 border-l-4 ${getCardBorderColor()} border border-border/50 hover:border-primary/50 hover:scale-105`}
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-5">
@@ -129,7 +123,7 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
       <div className="space-y-4 mb-5">
         {/* Validación de datos obligatorios */}
         {(!permission.resident || !permission.visitor) && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-300 text-xs">
+          <div className="bg-danger/20 border border-danger/50 rounded-lg p-3 text-danger text-xs">
             ⚠️ Error: Faltan datos obligatorios
             {!permission.resident && <div>• Sin información del residente</div>}
             {!permission.visitor && <div>• Sin información del visitante</div>}
@@ -139,47 +133,47 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
         {/* Visitante o Proveedor */}
         {permission.type === "Visit" ? (
           <div className="flex items-start gap-3">
-            <User size={18} className="text-purple-400 mt-0.5 shrink-0" />
+            <User size={18} className="text-primary mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-foreground">
                 {permission.visitor?.nameVisit}{" "}
                 {permission.visitor?.lastNameVisit}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 DNI: {permission.visitor?.dniVisit || "N/A"}
               </p>
             </div>
           </div>
         ) : permission.order ? (
           <div className="flex items-start gap-3">
-            <Truck size={18} className="text-orange-400 mt-0.5 shrink-0" />
+            <Truck size={18} className="text-warning mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-foreground">
                 {permission.order.supplierName}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 {permission.order.orderType}
               </p>
             </div>
           </div>
         ) : (
           <div className="flex items-start gap-3">
-            <Package size={18} className="text-gray-400 mt-0.5 shrink-0" />
+            <Package size={18} className="text-muted-foreground mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-foreground">
                 Servicio sin detalles
               </p>
-              <p className="text-xs text-gray-400">Información no disponible</p>
+              <p className="text-xs text-muted-foreground">Información no disponible</p>
             </div>
           </div>
         )}
 
         {/* Residente */}
         <div className="flex items-start gap-3">
-          <User size={18} className="text-gray-400 mt-0.5 shrink-0" />
+          <User size={18} className="text-muted-foreground mt-0.5 shrink-0" />
           <div>
-            <p className="text-xs text-gray-500">Residente</p>
-            <p className="text-sm text-gray-300">
+            <p className="text-xs text-muted-foreground">Residente</p>
+            <p className="text-sm text-muted-foreground">
               {permission.resident?.name && permission.resident?.lastname
                 ? `${permission.resident.name} ${permission.resident.lastname}`
                 : "No especificado"}
@@ -189,14 +183,14 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
 
         {/* Horario */}
         <div className="flex items-start gap-3">
-          <Calendar size={18} className="text-gray-400 mt-0.5 shrink-0" />
+          <Calendar size={18} className="text-muted-foreground mt-0.5 shrink-0" />
           <div>
-            <p className="text-xs text-gray-500">Horario programado</p>
-            <p className="text-sm text-gray-300">
+            <p className="text-xs text-muted-foreground">Horario programado</p>
+            <p className="text-sm text-muted-foreground">
               {formatDateTime(permission.validFrom)}
             </p>
-            <p className="text-xs text-gray-400">hasta</p>
-            <p className="text-sm text-gray-300">
+            <p className="text-xs text-muted-foreground">hasta</p>
+            <p className="text-sm text-muted-foreground">
               {formatDateTime(permission.validTo)}
             </p>
           </div>
@@ -204,9 +198,9 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
 
         {/* Entrada registrada */}
         {permission.entryTime && (
-          <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2">
-            <Clock size={16} className="text-emerald-400" />
-            <p className="text-sm text-emerald-300">
+          <div className="flex items-center gap-2 bg-success/10 border border-success/30 rounded-lg px-3 py-2">
+            <Clock size={16} className="text-success" />
+            <p className="text-sm text-success">
               Entrada: {formatDateTime(permission.entryTime)}
             </p>
           </div>
@@ -214,9 +208,9 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
 
         {/* Salida registrada */}
         {permission.departureTime && (
-          <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
-            <Clock size={16} className="text-red-400" />
-            <p className="text-sm text-red-300">
+          <div className="flex items-center gap-2 bg-danger/10 border border-danger/30 rounded-lg px-3 py-2">
+            <Clock size={16} className="text-danger" />
+            <p className="text-sm text-danger">
               Salida: {formatDateTime(permission.departureTime)}
             </p>
           </div>
@@ -226,7 +220,7 @@ const VisitCard: React.FC<VisitCardProps> = ({ permission }) => {
       {/* Button */}
       <Button
         onClick={handleViewMore}
-        className="w-full bg-linear-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
+        className="w-full bg-linear-to-r from-primary to-primary hover:from-primary hover:to-primary text-foreground font-semibold transition-all duration-300 shadow-lg hover:shadow-primary/50"
       >
         Ver más
       </Button>
