@@ -24,6 +24,10 @@ export const updateUser = async (id: string, data: UpdateUserInput) =>
 export const updateCurrentUser = async (data: UpdateUserInput) =>
   runAction(() => api.put<UserDto>("/api/users/me", data));
 
+/** Avatar del usuario logueado: una de las claves predefinidas o null (iniciales). */
+export const updateMyAvatar = async (avatar: string | null) =>
+  runAction(() => api.put<UserDto>("/api/users/me/avatar", { avatar }));
+
 export const deactivateUser = async (id: string) => runAction(() => api.delete<UserDto>(`/api/users/${id}`));
 
 export const restoreUser = async (id: string) => runAction(() => api.post<UserDto>(`/api/users/${id}/restore`));

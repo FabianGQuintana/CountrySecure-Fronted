@@ -4,7 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { LogOut, Menu, ShieldCheck, X } from "lucide-react";
+import { LogOut, Menu, Pencil, X } from "lucide-react";
+import { AvatarPicker } from "@/components/avatar/AvatarPicker";
+import { UserAvatar } from "@/components/avatar/avatars";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { NAVIGATION, isActivePath } from "@/lib/navigation";
 import { ROLE_PREFIX, type Role } from "@/lib/routes";
@@ -13,13 +15,14 @@ import { cn } from "@/lib/utils";
 /**
  * Menú lateral único para los tres roles. Lo que cambia entre ellos vive en `lib/navigation.ts`.
  * En escritorio es una columna fija; en móvil es un panel que se abre con el botón de menú.
- * Incluye el interruptor de tema Claro/Oscuro.
+ * Incluye el interruptor de tema Claro/Oscuro y el selector de avatar (al tocar el avatar).
  */
 export default function Sidebar({ role }: { role: Role }) {
   const nav = NAVIGATION[role];
   const pathname = usePathname();
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const fullName = [session?.user?.name, session?.user?.lastname].filter(Boolean).join(" ");
 
@@ -52,19 +55,35 @@ export default function Sidebar({ role }: { role: Role }) {
           <X size={20} />
         </button>
 
-        <Link
-          href={nav.homeHref}
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-3 p-6 border-b border-border hover:bg-muted/60 transition-colors"
-        >
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-            <ShieldCheck size={20} className="text-primary-foreground" />
-          </div>
-          <div className="min-w-0 leading-tight">
+        <div className="flex items-center gap-3 p-6 border-b border-border">
+          {/* El avatar abre el selector: disponible para los tres roles */}
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            disabled={!session}
+            className="group relative rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Cambiar avatar"
+            title="Cambiar avatar"
+          >
+            <UserAvatar
+              avatar={session?.user?.avatar}
+              name={session?.user?.name}
+              lastname={session?.user?.lastname}
+              className="shadow-lg shadow-primary/20"
+            />
+            <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm group-hover:text-primary">
+              <Pencil size={11} aria-hidden />
+            </span>
+          </button>
+          <Link
+            href={nav.homeHref}
+            onClick={() => setOpen(false)}
+            className="min-w-0 leading-tight rounded-lg hover:opacity-80 transition-opacity"
+          >
             <p className="text-foreground font-semibold truncate">{fullName || "Country Secure"}</p>
             <p className="text-xs text-primary">{nav.subtitle}</p>
-          </div>
-        </Link>
+          </Link>
+        </div>
 
         <nav className="flex-1 overflow-y-auto p-4 space-y-5">
           {nav.sections.map((section, i) => (
@@ -111,6 +130,15 @@ export default function Sidebar({ role }: { role: Role }) {
           </button>
         </div>
       </aside>
+
+      {pickerOpen && (
+        <AvatarPicker
+          current={session?.user?.avatar}
+          name={session?.user?.name}
+          lastname={session?.user?.lastname}
+          onClose={() => setPickerOpen(false)}
+        />
+      )}
     </>
   );
 }

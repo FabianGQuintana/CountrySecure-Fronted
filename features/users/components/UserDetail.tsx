@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UserAvatar } from "@/components/avatar/avatars";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,13 +70,16 @@ export function UserDetail({ user: initialUser }: { user: UserDto }) {
         </button>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-primary">
-              {user.name} {user.lastname}
-            </h1>
-            <p className="text-muted-foreground flex items-center gap-2 mt-1">
-              <FiMail aria-hidden /> {user.email} <FiPhone className="ml-2" aria-hidden /> {user.phone || "Sin teléfono"}
-            </p>
+          <div className="flex items-center gap-4">
+            <UserAvatar avatar={user.avatar} name={user.name} lastname={user.lastname} size="lg" />
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-primary">
+                {user.name} {user.lastname}
+              </h1>
+              <p className="text-muted-foreground flex items-center gap-2 mt-1">
+                <FiMail aria-hidden /> {user.email} <FiPhone className="ml-2" aria-hidden /> {user.phone || "Sin teléfono"}
+              </p>
+            </div>
           </div>
           <span
             className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-sm ${

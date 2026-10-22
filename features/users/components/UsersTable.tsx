@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { FiCheckCircle, FiEye, FiRefreshCw, FiUserPlus, FiXCircle } from "react-icons/fi";
+import { UserAvatar } from "@/components/avatar/avatars";
 import { Estados } from "@/components/estados";
 import { Roles } from "@/components/roles";
 import { DataTable, type Column, type TableFilter } from "@/components/ui/DataTable";
@@ -56,9 +57,7 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
       sortValue: (u) => u.name,
       cell: (u) => (
         <div className="flex items-center gap-3">
-          <div className="shrink-0 h-10 w-10 rounded-full flex items-center justify-center shadow-md bg-primary" aria-hidden>
-            <span className="text-white font-semibold text-sm">{u.name.charAt(0).toUpperCase()}</span>
-          </div>
+          <UserAvatar avatar={u.avatar} name={u.name} lastname={u.lastname} className="rounded-full shadow-md" />
           <div>
             <div className="font-semibold text-foreground">{u.name}</div>
             <div className="text-xs text-muted-foreground">DNI {u.dni}</div>

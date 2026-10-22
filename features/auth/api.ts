@@ -8,6 +8,7 @@ export interface LoginResponse {
   name: string;
   lastname: string;
   role: "Admin" | "Resident" | "Security";
+  avatar?: string | null;
   accessToken: string;
   refreshToken: string;
   expiration: string;

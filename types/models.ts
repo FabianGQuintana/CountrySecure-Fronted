@@ -27,6 +27,8 @@ export interface UserDto {
   isBlocked?: boolean;
   blockReason?: string | null;
   role: Role;
+  /** Clave del avatar predefinido (avatar-1 … avatar-5) o null = iniciales */
+  avatar?: string | null;
 }
 
 // ---- Amenities y reservas ----

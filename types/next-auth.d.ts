@@ -12,6 +12,7 @@ declare module "next-auth" {
     lastname?: string | null;
     email: string;
     role?: Role;
+    avatar?: string | null;
     accessToken: string;
     refreshToken: string;
     accessTokenExpires: number;
@@ -25,6 +26,7 @@ declare module "next-auth" {
       lastname?: string | null;
       email?: string | null;
       role?: Role;
+      avatar?: string | null;
       accessToken: string;
     } & DefaultSession["user"];
     error?: "RefreshAccessTokenError";
@@ -39,6 +41,7 @@ declare module "next-auth/jwt" {
     lastname?: string | null;
     email?: string | null;
     role?: Role;
+    avatar?: string | null;
     accessToken: string;
     refreshToken: string;
     accessTokenExpires: number;

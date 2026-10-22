@@ -1,5 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { isAvatarId } from "@/components/avatar/avatars";
 import { login } from "@/features/auth/api";
 
 // La sesión de NextAuth dura lo mismo que el refresh token del backend (7 días).
@@ -75,6 +76,7 @@ export const authOptions: NextAuthOptions = {
             lastname: result.lastname || null,
             email: result.email,
             role: result.role,
+            avatar: result.avatar ?? null,
             accessToken: result.accessToken,
             refreshToken: result.refreshToken,
             accessTokenExpires: parseExpiration(result.expiration),
@@ -88,7 +90,7 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       // Primer login: copiamos los datos del usuario al JWT (cookie httpOnly cifrada)
       if (user) {
         return {
@@ -98,11 +100,18 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           lastname: user.lastname,
           role: user.role,
+          avatar: user.avatar ?? null,
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
           accessTokenExpires: user.accessTokenExpires,
           error: undefined,
         };
+      }
+
+      // `useSession().update({ avatar })` tras elegir un avatar (la API ya lo guardó)
+      if (trigger === "update" && session && "avatar" in session) {
+        const avatar = session.avatar;
+        return { ...token, avatar: isAvatarId(avatar) ? avatar : null };
       }
 
       return token;
@@ -117,6 +126,7 @@ export const authOptions: NextAuthOptions = {
         name: token.name,
         lastname: token.lastname,
         role: token.role,
+        avatar: token.avatar ?? null,
         accessToken: token.accessToken,
       };
 

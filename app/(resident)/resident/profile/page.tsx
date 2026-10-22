@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Home, KeyRound, Mail, Pencil, Phone, ShieldCheck, UserCircle } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { ProfileAvatar } from "@/components/avatar/ProfileAvatar";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { primaryButtonClass, secondaryButtonClass } from "@/components/ui/form";
@@ -25,7 +26,6 @@ export default async function ResidentProfile() {
   if (!user) return <ErrorState title="No se pudo cargar tu perfil" message={userResult.error} />;
 
   const properties = propertiesResult.data ?? [];
-  const initials = `${user.name?.[0] ?? ""}${user.lastname?.[0] ?? ""}`.toUpperCase();
 
   const info = [
     { label: "Email", value: user.email, icon: Mail },
@@ -54,9 +54,7 @@ export default async function ResidentProfile() {
       <div className="grid gap-6 lg:grid-cols-5">
         <section className="rounded-3xl border border-border bg-card p-6 shadow-sm lg:col-span-2">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary text-xl font-bold text-primary-foreground">
-              {initials || "?"}
-            </div>
+            <ProfileAvatar avatar={user.avatar} name={user.name} lastname={user.lastname} />
             <div className="min-w-0">
               <p className="truncate text-xl font-semibold text-foreground">
                 {user.name} {user.lastname}
