@@ -2,23 +2,37 @@
 
 import { toast } from "sonner";
 import { useCallback, useEffect, useState } from "react";
-import { motion } from "@/components/motion";
-import { FiTool, FiMapPin, FiPlus, FiX } from "react-icons/fi";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { MapPin, Plus, Wrench, X } from "lucide-react";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { Field, FormError, Input, Select, Spinner, Textarea, primaryButtonClass, secondaryButtonClass } from "@/components/ui/form";
 import { cancelRequest, createRequest, listMyRequests } from "@/features/requests/actions";
+import { requestStatusOf } from "@/features/requests/status";
 import { listOrders } from "@/features/orders/actions";
+import { orderTypeLabel } from "@/types/api";
 import type { OrderDto, RequestDto } from "@/types/models";
 
-const STATUS: Record<string, { label: string; className: string }> = {
-  Pending: { label: "Pendiente", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  Completed: { label: "Resuelta", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  Cancelled: { label: "Cancelada", className: "bg-slate-100 text-slate-500 border-slate-200" },
-};
+interface FormState {
+  orderId: string;
+  details: string;
+  location: string;
+}
+type Errors = Partial<Record<keyof FormState, string>>;
 
-function statusOf(r: RequestDto) {
-  if (r.baseEntityStatus === "Inactive") return STATUS.Cancelled;
-  return STATUS[r.status] ?? STATUS.Pending;
+const EMPTY: FormState = { orderId: "", details: "", location: "" };
+
+// Mismas reglas que CreateRequestValidator del backend
+function validate(form: FormState): Errors {
+  const errors: Errors = {};
+  if (!form.orderId) errors.orderId = "Elegí el servicio que necesitás.";
+  const details = form.details.trim();
+  if (details.length < 5) errors.details = "Contanos un poco más del problema (mínimo 5 caracteres).";
+  else if (details.length > 500) errors.details = "Máximo 500 caracteres.";
+  if (!form.location.trim()) errors.location = "Indicá dónde hay que hacer el trabajo.";
+  return errors;
 }
 
 export default function ResidentRequestsPage() {
@@ -28,15 +42,18 @@ export default function ResidentRequestsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ orderId: "", details: "", location: "" });
+  const [form, setForm] = useState<FormState>(EMPTY);
+  const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [confirm, confirmDialog] = useConfirm();
 
   const load = useCallback(async () => {
     const [mine, services] = await Promise.all([listMyRequests(), listOrders()]);
 
     if (mine.ok) {
-      setRequests(mine.data);
+      // Las más recientes primero
+      setRequests([...mine.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
       setError(null);
     } else {
       setError(mine.error);
@@ -51,31 +68,48 @@ export default function ResidentRequestsPage() {
     load();
   }, [load]);
 
+  const setField = (key: keyof FormState, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: undefined }));
+    setSubmitError(null);
+  };
+
+  const closeForm = () => {
+    setShowForm(false);
+    setForm(EMPTY);
+    setErrors({});
+    setSubmitError(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(null);
-
-    if (!form.orderId) return setFormError("Elegí el servicio que necesitás.");
-    if (form.details.trim().length < 5) return setFormError("Contanos un poco más del problema (mínimo 5 caracteres).");
-    if (!form.location.trim()) return setFormError("Indicá dónde hay que hacer el trabajo.");
+    const found = validate(form);
+    setErrors(found);
+    if (Object.keys(found).length > 0) return;
 
     setSaving(true);
-    const result = await createRequest({ ...form, details: form.details.trim(), location: form.location.trim() });
+    const result = await createRequest({ orderId: form.orderId, details: form.details.trim(), location: form.location.trim() });
     setSaving(false);
 
     if (!result.ok) {
-      setFormError(result.error);
+      setSubmitError(result.error);
       return;
     }
 
-    setForm({ orderId: "", details: "", location: "" });
-    setShowForm(false);
+    toast.success("Solicitud enviada. La administración la va a revisar.");
+    closeForm();
     await load();
   };
 
-  const handleCancel = async (id: string) => {
-    if (!confirm("¿Cancelar esta solicitud?")) return;
-    const result = await cancelRequest(id);
+  const handleCancel = async (r: RequestDto) => {
+    const ok = await confirm({
+      title: "¿Cancelar la solicitud?",
+      message: `${r.order?.supplierName ?? "Servicio"}: “${r.details}”`,
+      confirmLabel: "Cancelar solicitud",
+      danger: true,
+    });
+    if (!ok) return;
+    const result = await cancelRequest(r.id);
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -85,122 +119,114 @@ export default function ResidentRequestsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50/30 to-purple-100/20 p-4 sm:p-6 lg:p-10">
-      <div className="max-w-5xl mx-auto space-y-8">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold text-purple-600">Solicitudes</h1>
-            <p className="text-slate-500 mt-2">Pedí servicios de mantenimiento y seguí su estado.</p>
-          </div>
-          <button
-            onClick={() => setShowForm((v) => !v)}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-600 text-white font-medium shadow hover:bg-purple-700 transition"
-          >
-            {showForm ? <FiX /> : <FiPlus />} {showForm ? "Cerrar" : "Nueva solicitud"}
+    <PageContainer>
+      {confirmDialog}
+      <PageHeader
+        icon={<Wrench size={24} aria-hidden />}
+        title="Solicitudes"
+        description="Pedí servicios de mantenimiento y seguí su estado."
+        actions={
+          <button type="button" onClick={() => (showForm ? closeForm() : setShowForm(true))} className={showForm ? secondaryButtonClass : primaryButtonClass}>
+            {showForm ? <X size={18} aria-hidden /> : <Plus size={18} aria-hidden />}
+            {showForm ? "Cerrar" : "Nueva solicitud"}
           </button>
-        </motion.div>
+        }
+      />
 
-        {/* Formulario */}
-        {showForm && (
-          <Card className="bg-white border border-purple-100 shadow-lg">
-            <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="grid gap-4">
-                <label className="grid gap-1 text-sm font-medium text-slate-700">
-                  Servicio
-                  <select
-                    value={form.orderId}
-                    onChange={(e) => setForm({ ...form, orderId: e.target.value })}
-                    className="px-4 py-2.5 rounded-lg border border-slate-300 bg-white"
-                  >
-                    <option value="">Seleccioná un servicio...</option>
-                    {orders.map((o) => (
-                      <option key={o.id} value={o.id}>
-                        {o.supplierName} · {o.description}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="grid gap-1 text-sm font-medium text-slate-700">
-                  Detalle
-                  <textarea
-                    value={form.details}
-                    onChange={(e) => setForm({ ...form, details: e.target.value })}
-                    rows={3}
-                    placeholder="Ej.: pérdida de agua en la cocina"
-                    className="px-4 py-2.5 rounded-lg border border-slate-300"
-                  />
-                </label>
-                <label className="grid gap-1 text-sm font-medium text-slate-700">
-                  Ubicación
-                  <input
-                    value={form.location}
-                    onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    placeholder="Ej.: Lote 12, cocina"
-                    className="px-4 py-2.5 rounded-lg border border-slate-300"
-                  />
-                </label>
-                {formError && <p className="text-sm text-red-600">{formError}</p>}
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="justify-self-start px-5 py-2.5 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 disabled:opacity-50"
-                >
-                  {saving ? "Enviando..." : "Enviar solicitud"}
-                </button>
-              </form>
-            </CardContent>
-          </Card>
-        )}
+      {showForm && (
+        <form onSubmit={handleSubmit} noValidate className="mb-8 space-y-5 rounded-3xl border border-border bg-card p-6 shadow-sm animate-fade-in">
+          <Field label="Servicio" required error={errors.orderId}>
+            {({ id, describedBy, invalid }) => (
+              <Select id={id} aria-describedby={describedBy} invalid={invalid} value={form.orderId} onChange={(e) => setField("orderId", e.target.value)}>
+                <option value="">Seleccioná un servicio…</option>
+                {orders.map((o) => (
+                  <option key={o.id} value={o.id}>
+                    {orderTypeLabel(o.orderType)} · {o.supplierName}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Field>
+          <Field label="Detalle" required error={errors.details} hint={`${form.details.trim().length}/500`}>
+            {({ id, describedBy, invalid }) => (
+              <Textarea
+                id={id}
+                aria-describedby={describedBy}
+                invalid={invalid}
+                rows={3}
+                maxLength={500}
+                placeholder="Ej.: pérdida de agua en la cocina"
+                value={form.details}
+                onChange={(e) => setField("details", e.target.value)}
+              />
+            )}
+          </Field>
+          <Field label="Ubicación" required error={errors.location}>
+            {({ id, describedBy, invalid }) => (
+              <Input
+                id={id}
+                aria-describedby={describedBy}
+                invalid={invalid}
+                maxLength={300}
+                placeholder="Ej.: Lote 12, cocina"
+                value={form.location}
+                onChange={(e) => setField("location", e.target.value)}
+              />
+            )}
+          </Field>
+          <FormError message={submitError} />
+          <button type="submit" disabled={saving} className={primaryButtonClass}>
+            {saving ? (
+              <>
+                <Spinner /> Enviando…
+              </>
+            ) : (
+              "Enviar solicitud"
+            )}
+          </button>
+        </form>
+      )}
 
-        {/* Listado */}
-        {loading && <p className="text-slate-500 animate-pulse">Cargando solicitudes...</p>}
-        {error && <p className="text-red-600">{error}</p>}
+      {loading && <p className="animate-pulse text-muted-foreground">Cargando solicitudes…</p>}
+      {error && <ErrorState title="No se pudieron cargar tus solicitudes" message={error} />}
 
-        {!loading && !error && requests.length === 0 && (
-          <Card className="border-dashed border-2 bg-white/60">
-            <CardContent className="p-12 text-center text-slate-500">
-              Todavía no hiciste ninguna solicitud.
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="grid gap-4">
-          {requests.map((r, i) => {
-            const status = statusOf(r);
-            const canCancel = r.baseEntityStatus !== "Inactive" && r.status === "Pending";
-            return (
-              <motion.div key={r.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                <Card className="bg-white border border-slate-200 shadow-sm">
-                  <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-xl bg-purple-100 text-purple-600">
-                        <FiTool size={20} />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-slate-800">{r.order?.supplierName ?? "Servicio"}</p>
-                        <p className="text-slate-600 text-sm">{r.details}</p>
-                        <p className="text-slate-400 text-xs mt-1 flex items-center gap-1">
-                          <FiMapPin size={12} /> {r.location} ·{" "}
-                          {new Date(r.createdAt).toLocaleDateString("es-AR", { day: "numeric", month: "short", year: "numeric" })}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Badge className={status.className}>{status.label}</Badge>
-                      {canCancel && (
-                        <button onClick={() => handleCancel(r.id)} className="text-sm text-red-600 hover:underline">
-                          Cancelar
-                        </button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
+      {!loading && !error && requests.length === 0 && (
+        <div className="rounded-3xl border-2 border-dashed border-border bg-card">
+          <EmptyState message="Todavía no hiciste ninguna solicitud." />
         </div>
-      </div>
-    </div>
+      )}
+
+      <ul className="grid gap-4">
+        {requests.map((r) => {
+          const status = requestStatusOf(r);
+          const canCancel = r.baseEntityStatus !== "Inactive" && r.status === "Pending";
+          return (
+            <li key={r.id} className="flex flex-col justify-between gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm sm:flex-row sm:items-center animate-fade-in">
+              <div className="flex min-w-0 items-start gap-4">
+                <div className="rounded-xl bg-primary-soft p-3 text-primary">
+                  <Wrench size={20} aria-hidden />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-semibold text-foreground">{r.order?.supplierName ?? "Servicio"}</p>
+                  <p className="break-words text-sm text-muted-foreground">{r.details}</p>
+                  <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                    <MapPin size={12} aria-hidden /> {r.location} ·{" "}
+                    {new Date(r.createdAt).toLocaleDateString("es-AR", { day: "numeric", month: "short", year: "numeric" })}
+                  </p>
+                </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-3">
+                <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
+                {canCancel && (
+                  <button type="button" onClick={() => handleCancel(r)} className="text-sm font-medium text-danger hover:underline">
+                    Cancelar
+                  </button>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </PageContainer>
   );
 }

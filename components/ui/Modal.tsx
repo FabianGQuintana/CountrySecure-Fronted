@@ -2,6 +2,7 @@
 
 import { useEffect, useId, type ReactNode } from "react";
 import { FiX } from "react-icons/fi";
+import { controlClass, primaryButtonClass as kitPrimary, secondaryButtonClass as kitSecondary } from "@/components/ui/form";
 
 /** Modal accesible: cierra con Escape y con el botón, y enfoca el diálogo al abrir. */
 export function Modal({
@@ -25,17 +26,24 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 backdrop-blur-sm p-4"
+      className="fixed inset-0 flex items-center justify-center bg-overlay z-50 backdrop-blur-sm p-4 animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className={`bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full ${maxWidth} relative max-h-[90vh] overflow-y-auto`}>
-        <button type="button" onClick={onClose} aria-label="Cerrar" className="absolute top-4 right-4 text-gray-600 hover:text-gray-800">
-          <FiX size={24} />
+      <div
+        className={`bg-card text-card-foreground border border-border rounded-2xl shadow-2xl p-6 sm:p-8 w-full ${maxWidth} relative max-h-[90vh] overflow-y-auto animate-pop`}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Cerrar"
+          className="absolute top-4 right-4 rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+        >
+          <FiX size={22} />
         </button>
-        <h2 id={titleId} className="text-2xl font-bold text-gray-800 mb-6">
+        <h2 id={titleId} className="text-2xl font-bold text-foreground mb-6 pr-8">
           {title}
         </h2>
         {children}
@@ -44,9 +52,8 @@ export function Modal({
   );
 }
 
-export const formInputClass =
-  "w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed";
-export const formLabelClass = "block text-sm font-medium text-gray-700 mb-1";
-export const primaryButtonClass =
-  "px-5 py-2.5 rounded-lg text-white font-medium bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 hover:shadow-lg disabled:opacity-50";
-export const secondaryButtonClass = "px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50";
+// Clases compartidas por los formularios de los modales (mismo estilo que components/ui/form.tsx)
+export const formInputClass = controlClass(false);
+export const formLabelClass = "block text-sm font-medium text-foreground mb-1.5";
+export const primaryButtonClass = kitPrimary;
+export const secondaryButtonClass = kitSecondary;

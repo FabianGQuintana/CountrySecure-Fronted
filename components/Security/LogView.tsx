@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { DateInput, Field, Input, Select, primaryButtonClass, secondaryButtonClass } from "@/components/ui/form";
+import { localDateOf } from "@/lib/datetime";
 import { Button } from "@/components/ui/button";
 import { listPermissionHistory } from "@/features/entry-permissions/actions";
 
@@ -66,6 +68,7 @@ const LogView: React.FC = () => {
   // Cambiar un filtro vuelve a la primera página
   const setStartDate = (v: string) => (setStartDateState(v), setCurrentPage(1));
   const setEndDate = (v: string) => (setEndDateState(v), setCurrentPage(1));
+  const dateRangeError = startDate && endDate && endDate < startDate ? "Tiene que ser igual o posterior a la fecha desde." : undefined;
   const setSearchTerm = (v: string) => (setSearchTermState(v), setCurrentPage(1));
   const setFilterType = (v: string) => (setFilterTypeState(v), setCurrentPage(1));
 
@@ -107,9 +110,8 @@ const LogView: React.FC = () => {
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
 
-      const entryDate = log.entryTime
-        ? new Date(log.entryTime).toISOString().split("T")[0]
-        : null;
+      // Fecha LOCAL del ingreso (con toISOString un ingreso a las 22 h caía en el día siguiente)
+      const entryDate = localDateOf(log.entryTime);
 
       const matchesStart = !startDate || (entryDate && entryDate >= startDate);
 
@@ -192,75 +194,48 @@ const LogView: React.FC = () => {
         </div>
 
         {/* FILTROS */}
-        <div className="bg-slate-800/50 rounded-xl p-6 border border-purple-500/20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">Buscar</label>
-              <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-                <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Nombre / Proveedor"
-                  className="w-full pl-10 pr-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-                />
-              </div>
-            </div>
+        <div className="bg-card rounded-2xl p-6 border border-border shadow-sm">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Field label="Buscar">
+              {({ id }) => (
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} aria-hidden />
+                  <Input id={id} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Nombre / Proveedor" className="pl-10" />
+                </div>
+              )}
+            </Field>
 
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">
-                Fecha desde
-              </label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-              />
-            </div>
+            <Field label="Fecha desde">
+              {({ id }) => <DateInput id={id} value={startDate} max={endDate || undefined} onChange={(e) => setStartDate(e.target.value)} />}
+            </Field>
 
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">
-                Fecha hasta
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-              />
-            </div>
+            <Field label="Fecha hasta" error={dateRangeError}>
+              {({ id, describedBy, invalid }) => (
+                <DateInput id={id} aria-describedby={describedBy} invalid={invalid} value={endDate} min={startDate || undefined} onChange={(e) => setEndDate(e.target.value)} />
+              )}
+            </Field>
 
             {!hideTypeFilter && (
-              <div>
-                <label className="text-sm text-gray-400 mb-2 block">Tipo</label>
-                <select
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-purple-500"
-                >
-                  <option value="all">Todos</option>
-                  <option value="Visit">Visitas</option>
-                  <option value="Maintenance">Mantenimiento</option>
-                </select>
-              </div>
+              <Field label="Tipo">
+                {({ id }) => (
+                  <Select id={id} value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                    <option value="all">Todos</option>
+                    <option value="Visit">Visitas</option>
+                    <option value="Maintenance">Mantenimiento</option>
+                  </Select>
+                )}
+              </Field>
             )}
           </div>
 
           <div className="flex gap-3 mt-4">
-            <Button onClick={handleSearch} className="bg-purple-600 text-white">
-              <Filter size={18} className="mr-2" />
+            <button type="button" onClick={handleSearch} className={primaryButtonClass}>
+              <Filter size={18} aria-hidden />
               Aplicar filtros
-            </Button>
-            <Button
-              onClick={handleClearFilters}
-              className="bg-slate-700 text-white"
-            >
+            </button>
+            <button type="button" onClick={handleClearFilters} className={secondaryButtonClass}>
               Limpiar
-            </Button>
+            </button>
           </div>
         </div>
 

@@ -2,7 +2,6 @@
 
 import type React from "react";
 
-import { motion } from "@/components/motion";
 import {
   FiLock,
   FiArrowLeft,
@@ -70,11 +69,7 @@ export default function ChangePasswordPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50/30 to-purple-50/20 p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
-        >
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold bg-linear-to-r from-slate-800 to-purple-600 bg-clip-text text-transparent mb-2">
               Seguridad de la Cuenta
@@ -84,25 +79,20 @@ export default function ChangePasswordPage() {
             </p>
           </div>
 
-          <motion.div whileHover={{ x: -5 }} whileTap={{ scale: 0.95 }}>
+          <div>
             <Link
               href="/resident/profile"
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-medium hover:text-purple-600 hover:border-purple-300 transition shadow-sm"
             >
               <FiArrowLeft /> Volver
             </Link>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-8">
         {/* COLUMNA IZQUIERDA - Información de seguridad */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="lg:col-span-2 space-y-6"
-        >
+        <div className="lg:col-span-2 space-y-6">
           {/* Card de seguridad */}
           <Card className="bg-linear-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
             <CardContent className="p-6 text-white">
@@ -157,15 +147,10 @@ export default function ChangePasswordPage() {
               <span className="font-semibold">Última actualización:</span> 15 de enero, 2025
             </p>
           </div> */}
-        </motion.div>
+        </div>
 
         {/* COLUMNA DERECHA - Formulario */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="lg:col-span-3"
-        >
+        <div className="lg:col-span-3">
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
             {/* Card principal del formulario */}
             <Card className="bg-white border border-slate-200 shadow-xl">
@@ -205,8 +190,7 @@ export default function ChangePasswordPage() {
                                             transition duration-200 bg-slate-50 hover:bg-white"
                       placeholder="Ingresá tu contraseña actual"
                     />
-                    <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                    <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                       size={18}
                     />
                   </div>
@@ -227,8 +211,7 @@ export default function ChangePasswordPage() {
                                             transition duration-200 bg-slate-50 hover:bg-white"
                       placeholder="Creá una contraseña segura"
                     />
-                    <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                    <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                       size={18}
                     />
                   </div>
@@ -249,8 +232,7 @@ export default function ChangePasswordPage() {
                                             transition duration-200 bg-slate-50 hover:bg-white"
                       placeholder="Confirmá tu nueva contraseña"
                     />
-                    <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                    <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                       size={18}
                     />
                   </div>
@@ -258,9 +240,7 @@ export default function ChangePasswordPage() {
                 </div>
 
                 {/* Botón de guardar */}
-                <motion.button
-                  whileHover={{ scale: isSaving ? 1 : 1.02 }}
-                  whileTap={{ scale: isSaving ? 1 : 0.98 }}
+                <button
                   type="submit"
                   disabled={isSaving}
                   className={`w-full mt-4 flex items-center justify-center gap-3
@@ -273,7 +253,7 @@ export default function ChangePasswordPage() {
                 >
                   <FiSave size={20} />
                   {isSaving ? "Actualizando..." : "Actualizar contraseña"}
-                </motion.button>
+                </button>
               </CardContent>
             </Card>
 
@@ -285,31 +265,27 @@ export default function ChangePasswordPage() {
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {passwordRequirements.map((req, index) => (
-                    <motion.div
+                    <div
                       key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + index * 0.05 }}
                       className={`flex items-center gap-2 text-sm p-3 rounded-lg transition ${
                         req.met
                           ? "bg-green-50 text-green-700"
                           : "bg-slate-50 text-slate-600"
                       }`}
                     >
-                      <FiCheckCircle
-                        className={
+                      <FiCheckCircle className={
                           req.met ? "text-green-500" : "text-slate-300"
                         }
                         size={16}
                       />
                       <span className="font-medium">{req.text}</span>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
           </form>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

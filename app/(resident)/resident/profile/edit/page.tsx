@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import type React from "react";
 
 import { useEffect, useState } from "react";
-import { motion } from "@/components/motion";
 import {
   FiUser,
   FiMail,
@@ -86,11 +85,7 @@ export default function EditResidentProfile() {
     <div className="w-full bg-linear-to-br from-slate-50 via-purple-50/30 to-purple-50/20 p-4 sm:p-6 lg:p-10">
       {/* HEADER */}
       <div className="max-w-7xl mx-auto mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
-        >
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div>
             <h1 className="text-4xl font-bold bg-linear-to-r from-slate-800 to-purple-600 bg-clip-text text-transparent mb-2">
               Editar Perfil
@@ -100,7 +95,7 @@ export default function EditResidentProfile() {
             </p>
           </div>
 
-          <motion.div whileHover={{ x: -5 }}>
+          <div>
             <Link
               href="/resident/profile"
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-slate-600 
@@ -110,26 +105,19 @@ export default function EditResidentProfile() {
               <FiArrowLeft size={18} />
               Volver al perfil
             </Link>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-8">
         {/* COLUMNA IZQUIERDA - Vista previa y consejos */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="lg:col-span-2 space-y-6"
-        >
+        <div className="lg:col-span-2 space-y-6">
           {/* Avatar Preview */}
           <Card className="bg-linear-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
             <CardContent className="p-8">
               <div className="flex flex-col items-center text-center">
-                <div
-                  className="w-32 h-32 rounded-full flex items-center justify-center text-4xl font-bold
-                                    bg-white/20 backdrop-blur-sm text-white shadow-2xl mb-4 border-4 border-white/30"
-                >
+                <div className="w-32 h-32 rounded-full flex items-center justify-center text-4xl font-bold
+                                    bg-white/20 backdrop-blur-sm text-white shadow-2xl mb-4 border-4 border-white/30">
                   {initials}
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-1">
@@ -161,22 +149,19 @@ export default function EditResidentProfile() {
 
               <div className="space-y-3 text-sm text-slate-600">
                 <div className="flex items-center gap-2">
-                  <FiCheckCircle
-                    className="text-green-500 shrink-0"
+                  <FiCheckCircle className="text-green-500 shrink-0"
                     size={16}
                   />
                   <span>Todos los datos están encriptados</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FiCheckCircle
-                    className="text-green-500 shrink-0"
+                  <FiCheckCircle className="text-green-500 shrink-0"
                     size={16}
                   />
                   <span>Solo vos podés ver esta información</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FiCheckCircle
-                    className="text-green-500 shrink-0"
+                  <FiCheckCircle className="text-green-500 shrink-0"
                     size={16}
                   />
                   <span>Cumplimos con normativas de privacidad</span>
@@ -208,26 +193,17 @@ export default function EditResidentProfile() {
 
           {/* Success message */}
           {saveSuccess && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="p-4 bg-green-50 border border-green-200 rounded-xl"
-            >
+            <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
               <p className="text-sm text-green-700 flex items-center gap-2 font-medium">
                 <FiCheckCircle className="text-green-500" size={18} />
                 Cambios guardados exitosamente
               </p>
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
 
         {/* COLUMNA DERECHA - Formulario */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="lg:col-span-3"
-        >
+        <div className="lg:col-span-3">
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Card className="bg-white border border-slate-200 shadow-xl">
               <CardContent className="p-8">
@@ -356,9 +332,7 @@ export default function EditResidentProfile() {
 
                   {/* Botón Guardar */}
                   <div className="pt-4">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <button
                       type="submit"
                       disabled={isSubmitting}
                       className="w-full flex items-center justify-center gap-3
@@ -369,16 +343,10 @@ export default function EditResidentProfile() {
                     >
                       {isSubmitting ? (
                         <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{
-                              duration: 1,
-                              repeat: Number.POSITIVE_INFINITY,
-                              ease: "linear",
-                            }}
+                          <div
                           >
                             <FiSave size={20} />
-                          </motion.div>
+                          </div>
                           Guardando...
                         </>
                       ) : (
@@ -387,19 +355,14 @@ export default function EditResidentProfile() {
                           Guardar Cambios
                         </>
                       )}
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Información adicional */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mt-6 p-4 bg-white border border-slate-200 rounded-xl shadow-sm"
-            >
+            <div className="mt-6 p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
               <p className="text-sm text-slate-600 text-center">
                 ¿Necesitás cambiar tu contraseña?{" "}
                 <Link
@@ -409,9 +372,9 @@ export default function EditResidentProfile() {
                   Cambiar contraseña
                 </Link>
               </p>
-            </motion.div>
+            </div>
           </form>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

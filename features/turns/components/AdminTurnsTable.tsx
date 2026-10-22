@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { FiRefreshCw, FiXCircle } from "react-icons/fi";
 import { DataTable, type Column, type TableFilter } from "@/components/ui/DataTable";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import type { TurnDto } from "@/types/models";
 import { cancelTurn, listAllTurns } from "../actions";
 
@@ -28,6 +29,8 @@ export function AdminTurnsTable({ initialTurns }: { initialTurns: TurnDto[] }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [confirm, confirmDialog] = useConfirm();
+
   const refresh = useCallback(async () => {
     setIsRefreshing(true);
     const result = await listAllTurns();
@@ -42,12 +45,12 @@ export function AdminTurnsTable({ initialTurns }: { initialTurns: TurnDto[] }) {
 
   const cancel = useCallback(
     async (turn: TurnDto) => {
-      if (!confirm("¿Cancelar esta reserva?")) return;
+      if (!(await confirm({ title: "¿Cancelar esta reserva?", message: `${turn.amenity?.name ?? "Amenity"} · ${turn.user?.fullName ?? ""}`, confirmLabel: "Cancelar reserva", danger: true }))) return;
       const result = await cancelTurn(turn.id);
       if (!result.ok) setError(result.error);
       await refresh();
     },
-    [refresh]
+    [confirm, refresh]
   );
 
   const columns: Column<TurnDto>[] = [
@@ -91,6 +94,7 @@ export function AdminTurnsTable({ initialTurns }: { initialTurns: TurnDto[] }) {
         </button>
       </div>
 
+      {confirmDialog}
       {error && <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
 
       <DataTable

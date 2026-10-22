@@ -1,7 +1,6 @@
 "use client";
 
 import { toast } from "sonner";
-import { motion } from "@/components/motion";
 import {
   FiUser,
   FiMail,
@@ -45,11 +44,7 @@ export default function ResidentProfile() {
   return (
     <div className="bg-linear-to-br from-slate-50 via-purple-50/30 to-purple-100/20 p-4 sm:p-6 lg:p-10">
       <div className="max-w-7xl mx-auto mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
-        >
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-purple-600 mb-2">
               Mi Perfil
@@ -59,7 +54,7 @@ export default function ResidentProfile() {
             </p>
           </div>
 
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <div>
             <Link
               href="/resident/profile/edit"
               className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white 
@@ -69,25 +64,18 @@ export default function ResidentProfile() {
               <FiEdit size={18} />
               Editar Perfil
             </Link>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-8">
         {/* COLUMNA IZQUIERDA - Avatar y acciones rápidas */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="lg:col-span-2 space-y-6"
-        >
+        <div className="lg:col-span-2 space-y-6">
           <Card className="bg-linear-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
             <CardContent className="p-8">
               <div className="flex flex-col items-center text-center">
-                <div
-                  className="w-32 h-32 rounded-full flex items-center justify-center text-4xl font-bold
-                                    bg-white/20 backdrop-blur-sm text-white shadow-2xl mb-4 border-4 border-white/30"
-                >
+                <div className="w-32 h-32 rounded-full flex items-center justify-center text-4xl font-bold
+                                    bg-white/20 backdrop-blur-sm text-white shadow-2xl mb-4 border-4 border-white/30">
                   {initials}
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-1">
@@ -112,7 +100,7 @@ export default function ResidentProfile() {
                 </div>
               </div>
 
-              <motion.div whileHover={{ x: 5 }}>
+              <div>
                 <Link
                   href="/resident/profile/password"
                   className="flex items-center justify-between p-4 rounded-lg 
@@ -122,7 +110,7 @@ export default function ResidentProfile() {
                   <span>Cambiar contraseña</span>
                   <FiArrowRight className="group-hover:translate-x-1 transition" />
                 </Link>
-              </motion.div>
+              </div>
             </CardContent>
           </Card>
 
@@ -132,15 +120,10 @@ export default function ResidentProfile() {
               <span className="font-semibold">Cuenta activa</span>
             </p>
           </div>
-        </motion.div>
+        </div>
 
         {/* COLUMNA DERECHA - Información detallada */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="lg:col-span-3 space-y-6"
-        >
+        <div className="lg:col-span-3 space-y-6">
           <Card className="bg-white border border-slate-200 shadow-xl">
             <CardContent className="p-8">
               <div className="border-b border-slate-200 pb-4 mb-6">
@@ -244,11 +227,8 @@ export default function ResidentProfile() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {properties.map((prop, index) => (
-                    <motion.div
+                    <div
                       key={prop.propertyId}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + index * 0.1 }}
                     >
                       <Card className="border border-slate-200 shadow-sm hover:shadow-md transition">
                         <CardContent className="p-5">
@@ -260,13 +240,13 @@ export default function ResidentProfile() {
                           </span> */}
                         </CardContent>
                       </Card>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

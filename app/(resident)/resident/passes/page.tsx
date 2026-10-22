@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Plus, QrCode, XCircle } from "lucide-react";
 import { DataTable, type Column, type TableFilter } from "@/components/ui/DataTable";
 import { Modal } from "@/components/ui/Modal";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { PassCard } from "@/components/pass/PassCard";
 import { cancelPermission, fetchPass, listMyPermissions } from "@/features/entry-permissions/actions";
 import { PASS_TYPE_LABELS } from "@/types/api";
@@ -38,6 +39,7 @@ export default function MyPassesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [openPass, setOpenPass] = useState<PassDto | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [confirm, confirmDialog] = useConfirm();
 
   const load = useCallback(async () => {
     const result = await listMyPermissions();
@@ -60,7 +62,7 @@ export default function MyPassesPage() {
   };
 
   const cancel = async (id: string) => {
-    if (!confirm("¿Cancelar este pase? El código QR dejará de funcionar.")) return;
+    if (!(await confirm({ title: "¿Cancelar este pase?", message: "El código QR dejará de funcionar y la visita no podrá ingresar con él.", confirmLabel: "Cancelar pase", danger: true }))) return;
     setBusyId(id);
     const result = await cancelPermission(id);
     setBusyId(null);
@@ -174,6 +176,7 @@ export default function MyPassesPage() {
         </Link>
       </header>
 
+      {confirmDialog}
       <DataTable
         data={permissions}
         columns={columns}
