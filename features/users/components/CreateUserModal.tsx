@@ -9,8 +9,8 @@ import { createUser } from "../actions";
 import { ROLE_OPTIONS, createUserSchema, type CreateUserFormValues, type CreateUserInput } from "../schemas";
 
 const inputClass =
-  "w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent";
-const labelClass = "block text-sm font-medium text-gray-700 mb-1";
+  "w-full border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent";
+const labelClass = "block text-sm font-medium text-foreground mb-1";
 
 interface Props {
   onClose: () => void;
@@ -50,13 +50,13 @@ export function CreateUserModal({ onClose, onSuccess }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="create-user-title">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-xl relative max-h-[90vh] overflow-y-auto">
-        <button type="button" onClick={onClose} aria-label="Cerrar" className="absolute top-4 right-4 text-gray-600 hover:text-gray-800">
+    <div className="fixed inset-0 flex items-center justify-center bg-overlay z-50 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="create-user-title">
+      <div className="bg-card rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-xl relative max-h-[90vh] overflow-y-auto">
+        <button type="button" onClick={onClose} aria-label="Cerrar" className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
           <FiX size={26} />
         </button>
 
-        <h2 id="create-user-title" className="text-2xl font-bold text-gray-800 mb-6">
+        <h2 id="create-user-title" className="text-2xl font-bold text-foreground mb-6">
           Nuevo usuario
         </h2>
 
@@ -107,13 +107,13 @@ export function CreateUserModal({ onClose, onSuccess }: Props) {
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
             <FieldError message={errors.password?.message} />
-            <p className="text-xs text-gray-500 mt-1">Mínimo 8 caracteres, con mayúscula, minúscula y número.</p>
+            <p className="text-xs text-muted-foreground mt-1">Mínimo 8 caracteres, con mayúscula, minúscula y número.</p>
           </div>
 
           <div>
@@ -127,19 +127,19 @@ export function CreateUserModal({ onClose, onSuccess }: Props) {
           </div>
 
           {errors.root?.message && (
-            <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+            <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">
               {errors.root.message}
             </p>
           )}
 
           <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+            <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-lg border border-border text-foreground hover:bg-muted">
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-lg text-white font-medium bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 hover:shadow-lg disabled:opacity-50"
+              className="px-5 py-2.5 rounded-lg text-white font-medium hover:shadow-lg disabled:opacity-50 bg-primary"
             >
               {isSubmitting ? "Creando..." : "Crear usuario"}
             </button>

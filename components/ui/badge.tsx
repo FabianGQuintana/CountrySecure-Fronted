@@ -9,9 +9,9 @@ type BadgeProps = {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: "border-transparent bg-slate-900 text-white",
+  default: "border-transparent bg-background text-white",
   outline: "bg-transparent",
-  secondary: "border-transparent bg-slate-100 text-slate-900",
+  secondary: "border-transparent bg-muted text-foreground",
 }
 
 export function Badge({ children, className, variant = "outline" }: BadgeProps) {

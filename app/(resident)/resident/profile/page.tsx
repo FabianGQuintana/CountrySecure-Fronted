@@ -1,253 +1,107 @@
-"use client";
-
-import { toast } from "sonner";
-import {
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiHome,
-  FiSettings,
-  FiArrowRight,
-  FiShield,
-  FiEdit,
-} from "react-icons/fi";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { fetchCurrentUser } from "@/features/users/actions";
-import { listMyProperties } from "@/features/properties/actions";
-import type { PropertyDto, UserDto } from "@/types/models";
+import { Home, KeyRound, Mail, Pencil, Phone, ShieldCheck, UserCircle } from "lucide-react";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { primaryButtonClass, secondaryButtonClass } from "@/components/ui/form";
+import { getMyProperties } from "@/features/properties/queries";
+import { getCurrentUserProfile } from "@/features/users/queries";
+import { load } from "@/lib/load";
 
-export default function ResidentProfile() {
-  const [properties, setProperties] = useState<PropertyDto[]>([]);
-  const [user, setUser] = useState<UserDto | null>(null);
-  const [loading, setLoading] = useState(true);
+export const dynamic = "force-dynamic";
 
-  useEffect(() => {
-    const loadUser = async () => {
-      const [userResult, propertiesResult] = await Promise.all([fetchCurrentUser(), listMyProperties()]);
+const PROPERTY_STATUS: Record<string, string> = {
+  Occupied: "Ocupada",
+  Available: "Disponible",
+  Maintenance: "Mantenimiento",
+  Inactive: "Inactiva",
+};
 
-      if (userResult.ok) setUser(userResult.data);
-      else toast.error(userResult.error);
+export default async function ResidentProfile() {
+  // Usuario y propiedades en paralelo, en el servidor
+  const [userResult, propertiesResult] = await Promise.all([load(getCurrentUserProfile), load(getMyProperties)]);
+  const user = userResult.data;
 
-      if (propertiesResult.ok) setProperties(propertiesResult.data);
-      else toast.error(propertiesResult.error);
+  if (!user) return <ErrorState title="No se pudo cargar tu perfil" message={userResult.error} />;
 
-      setLoading(false);
-    };
+  const properties = propertiesResult.data ?? [];
+  const initials = `${user.name?.[0] ?? ""}${user.lastname?.[0] ?? ""}`.toUpperCase();
 
-    loadUser();
-  }, []);
-
-  const initials = `${user?.name[0] || ""}${user?.lastname[0] || ""}`;
+  const info = [
+    { label: "Email", value: user.email, icon: Mail },
+    { label: "Teléfono", value: user.phone, icon: Phone },
+    { label: "DNI", value: String(user.dni), icon: ShieldCheck },
+  ];
 
   return (
-    <div className="bg-linear-to-br from-slate-50 via-purple-50/30 to-purple-100/20 p-4 sm:p-6 lg:p-10">
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold text-purple-600 mb-2">
-              Mi Perfil
-            </h1>
-            <p className="text-slate-600 text-lg">
-              Información personal y de residencia
-            </p>
-          </div>
-
-          <div>
-            <Link
-              href="/resident/profile/edit"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white 
-                            bg-linear-to-r from-purple-500 to-purple-600 shadow-lg hover:shadow-xl 
-                            transition duration-300 hover:from-purple-600 hover:to-purple-700"
-            >
-              <FiEdit size={18} />
-              Editar Perfil
+    <PageContainer size="wide">
+      <PageHeader
+        icon={<UserCircle size={24} aria-hidden />}
+        title="Mi perfil"
+        description="Tus datos personales y de residencia."
+        actions={
+          <>
+            <Link href="/resident/profile/password" className={secondaryButtonClass}>
+              <KeyRound size={18} aria-hidden /> Cambiar contraseña
             </Link>
+            <Link href="/resident/profile/edit" className={primaryButtonClass}>
+              <Pencil size={18} aria-hidden /> Editar perfil
+            </Link>
+          </>
+        }
+      />
+
+      <div className="grid gap-6 lg:grid-cols-5">
+        <section className="rounded-3xl border border-border bg-card p-6 shadow-sm lg:col-span-2">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary text-xl font-bold text-primary-foreground">
+              {initials || "?"}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-xl font-semibold text-foreground">
+                {user.name} {user.lastname}
+              </p>
+              <StatusBadge tone="info">Residente</StatusBadge>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-5 gap-8">
-        {/* COLUMNA IZQUIERDA - Avatar y acciones rápidas */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="bg-linear-to-br from-purple-500 to-purple-600 border-0 shadow-xl">
-            <CardContent className="p-8">
-              <div className="flex flex-col items-center text-center">
-                <div className="w-32 h-32 rounded-full flex items-center justify-center text-4xl font-bold
-                                    bg-white/20 backdrop-blur-sm text-white shadow-2xl mb-4 border-4 border-white/30">
-                  {initials}
+          <dl className="mt-6 space-y-4">
+            {info.map(({ label, value, icon: Icon }) => (
+              <div key={label} className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                  <Icon size={18} aria-hidden />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-1">
-                  {user?.name} {user?.lastname}
-                </h2>
-                <p className="text-purple-100 text-sm">DNI: {user?.dni}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white border border-slate-200 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="p-3 bg-purple-100 rounded-xl">
-                  <FiShield className="text-purple-600" size={24} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-800 mb-1">
-                    Seguridad
-                  </h3>
-                  <p className="text-sm text-slate-600">Protegé tu cuenta</p>
+                <div className="min-w-0">
+                  <dt className="text-xs text-muted-foreground">{label}</dt>
+                  <dd className="truncate font-medium text-foreground">{value || "—"}</dd>
                 </div>
               </div>
+            ))}
+          </dl>
+        </section>
 
-              <div>
-                <Link
-                  href="/resident/profile/password"
-                  className="flex items-center justify-between p-4 rounded-lg 
-                                    bg-slate-50 hover:bg-purple-50 border border-slate-200 hover:border-purple-300
-                                    text-slate-700 hover:text-purple-600 font-medium transition duration-200 group"
-                >
-                  <span>Cambiar contraseña</span>
-                  <FiArrowRight className="group-hover:translate-x-1 transition" />
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="px-4 py-3 bg-green-50 rounded-xl border border-green-200">
-            <p className="text-sm text-green-700 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="font-semibold">Cuenta activa</span>
-            </p>
-          </div>
-        </div>
-
-        {/* COLUMNA DERECHA - Información detallada */}
-        <div className="lg:col-span-3 space-y-6">
-          <Card className="bg-white border border-slate-200 shadow-xl">
-            <CardContent className="p-8">
-              <div className="border-b border-slate-200 pb-4 mb-6">
-                <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <FiUser className="text-purple-600" size={24} />
-                  </div>
-                  Datos Personales
-                </h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                  <p className="text-sm font-semibold text-slate-500 mb-1">
-                    Nombre completo
-                  </p>
-                  <p className="text-lg text-slate-800 font-medium">
-                    {user?.name} {user?.lastname}
-                  </p>
-                </div>
-                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                  <p className="text-sm font-semibold text-slate-500 mb-1">
-                    DNI
-                  </p>
-                  <p className="text-lg text-slate-800 font-medium">
-                    {user?.dni}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white border border-slate-200 shadow-xl">
-            <CardContent className="p-8">
-              <div className="border-b border-slate-200 pb-4 mb-6">
-                <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <FiSettings className="text-green-600" size={24} />
-                  </div>
-                  Contacto y Acceso
-                </h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex items-center gap-4">
-                  <div className="p-3 bg-purple-100 rounded-lg shrink-0">
-                    <FiMail className="text-purple-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-500">
-                      Email
-                    </p>
-                    <p className="text-slate-800 font-medium">{user?.email}</p>
-                  </div>
-                </div>
-                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex items-center gap-4">
-                  <div className="p-3 bg-green-100 rounded-lg shrink-0">
-                    <FiPhone className="text-green-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-500">
-                      Teléfono
-                    </p>
-                    <p className="text-slate-800 font-medium">{user?.phone}</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white border border-slate-200 shadow-xl">
-            <CardContent className="p-8">
-              <div className="border-b border-slate-200 pb-4 mb-6">
-                <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <FiHome className="text-purple-600" size={24} />
-                  </div>
-                  Mis Propiedades
-                </h2>
-              </div>
-
-              {properties.length === 0 ? (
-                <p className="text-slate-500">
-                  {loading ? "Cargando propiedades..." : "No tenés propiedades asignadas. Consultá con la administración."}
+        <section className="rounded-3xl border border-border bg-card p-6 shadow-sm lg:col-span-3">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+            <Home size={20} className="text-primary" aria-hidden /> Mis propiedades
+          </h2>
+          {propertiesResult.error && <p className="text-sm text-danger">{propertiesResult.error}</p>}
+          {!propertiesResult.error && properties.length === 0 && (
+            <p className="text-sm text-muted-foreground">No tenés propiedades asignadas. Si es un error, consultá con la administración.</p>
+          )}
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {properties.map((p) => (
+              <li key={p.propertyId} className="rounded-2xl border border-border bg-muted/40 p-4">
+                <p className="font-semibold text-foreground">
+                  {p.street} {p.propertyNumber}
                 </p>
-              ) : properties.length === 1 ? (
-                <div className="p-6 rounded-xl bg-linear-to-br from-purple-50 to-purple-50 border border-purple-200">
-                  <p className="text-sm font-semibold text-slate-500 mb-1">
-                    Dirección
-                  </p>
-                  <p className="text-xl text-slate-800 font-bold mb-3">
-                    {properties[0].street} {properties[0].propertyNumber}
-                  </p>
-                  {properties[0].lotName && (
-                    <p className="text-sm text-slate-500">Lote: {properties[0].lotName}</p>
-                  )}
-                  {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                    {properties[0].status}
-                  </span> */}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {properties.map((prop, index) => (
-                    <div
-                      key={prop.propertyId}
-                    >
-                      <Card className="border border-slate-200 shadow-sm hover:shadow-md transition">
-                        <CardContent className="p-5">
-                          <p className="font-bold text-slate-800 text-lg mb-2">
-                            {prop.street} {prop.propertyNumber}
-                          </p>
-                          {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                            {prop.status}
-                          </span> */}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                <p className="text-sm text-muted-foreground">{p.lotName ? `Lote: ${p.lotName}` : "Sin lote"}</p>
+                <StatusBadge tone={p.propertyStatus === "Occupied" ? "success" : "neutral"} className="mt-2">
+                  {PROPERTY_STATUS[p.propertyStatus] ?? p.propertyStatus}
+                </StatusBadge>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
-    </div>
+    </PageContainer>
   );
 }

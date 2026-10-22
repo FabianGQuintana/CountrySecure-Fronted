@@ -6,11 +6,11 @@ import type { EntryPermissionDto } from "@/types/models";
 type DisplayStatus = "Pendiente" | "Adentro" | "Completado" | "Vencido" | "Cancelado";
 
 const STATUS_STYLES: Record<DisplayStatus, string> = {
-  Pendiente: "bg-amber-500/15 text-amber-300 border-amber-500/30",
-  Adentro: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-  Completado: "bg-blue-500/15 text-blue-300 border-blue-500/30",
-  Vencido: "bg-slate-500/15 text-slate-300 border-slate-500/30",
-  Cancelado: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+  Pendiente: "bg-warning/15 text-warning border-warning/30",
+  Adentro: "bg-success/15 text-success border-success/30",
+  Completado: "bg-info/15 text-info border-info/30",
+  Vencido: "bg-muted-foreground/15 text-muted-foreground border-border/30",
+  Cancelado: "bg-danger/15 text-danger border-danger/30",
 };
 
 // Estado "de negocio" que ve el guardia, derivado del estado, las marcas de ingreso/egreso y la vigencia
@@ -44,7 +44,7 @@ const columns: Column<EntryPermissionDto>[] = [
         <p className="font-medium">
           {p.visitor.nameVisit} {p.visitor.lastNameVisit}
         </p>
-        <p className="text-xs text-slate-400">{p.order?.supplierName ?? `DNI ${p.visitor.dniVisit}`}</p>
+        <p className="text-xs text-muted-foreground">{p.order?.supplierName ?? `DNI ${p.visitor.dniVisit}`}</p>
       </>
     ),
   },
@@ -55,7 +55,7 @@ const columns: Column<EntryPermissionDto>[] = [
     header: "Vigencia",
     sortValue: (p) => new Date(p.validFrom).getTime(),
     cell: (p) => (
-      <span className="text-xs text-slate-300">
+      <span className="text-xs text-muted-foreground">
         {formatDateTime(p.validFrom)}
         <br />
         hasta {formatDateTime(p.validTo)}

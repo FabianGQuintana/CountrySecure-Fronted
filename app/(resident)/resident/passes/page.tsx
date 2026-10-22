@@ -7,6 +7,8 @@ import { Plus, QrCode, XCircle } from "lucide-react";
 import { DataTable, type Column, type TableFilter } from "@/components/ui/DataTable";
 import { Modal } from "@/components/ui/Modal";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { PageContainer, PageHeader } from "@/components/layout/PageHeader";
+import { primaryButtonClass } from "@/components/ui/form";
 import { PassCard } from "@/components/pass/PassCard";
 import { cancelPermission, fetchPass, listMyPermissions } from "@/features/entry-permissions/actions";
 import { PASS_TYPE_LABELS } from "@/types/api";
@@ -15,11 +17,11 @@ import type { EntryPermissionDto, PassDto } from "@/types/models";
 type DisplayStatus = "Vigente" | "Dentro" | "Utilizado" | "Vencido" | "Cancelado";
 
 const STATUS_STYLES: Record<DisplayStatus, string> = {
-  Vigente: "bg-emerald-100 text-emerald-700",
-  Dentro: "bg-blue-100 text-blue-700",
-  Utilizado: "bg-gray-100 text-gray-700",
-  Vencido: "bg-gray-100 text-gray-600",
-  Cancelado: "bg-red-100 text-red-700",
+  Vigente: "bg-success-soft text-success",
+  Dentro: "bg-info-soft text-info",
+  Utilizado: "bg-muted text-foreground",
+  Vencido: "bg-muted text-muted-foreground",
+  Cancelado: "bg-danger-soft text-danger",
 };
 
 // Un pase de varios ingresos sigue vigente después de usarse, mientras no venza
@@ -84,10 +86,10 @@ export default function MyPassesPage() {
       sortValue: (p) => `${p.visitor.lastNameVisit} ${p.visitor.nameVisit}`,
       cell: (p) => (
         <>
-          <p className="font-medium text-gray-900">
+          <p className="font-medium text-foreground">
             {p.visitor.nameVisit} {p.visitor.lastNameVisit}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground">
             DNI {p.visitor.dniVisit}
             {p.companionsCount > 0 ? ` · +${p.companionsCount}` : ""}
             {p.vehiclePlate ? ` · ${p.vehiclePlate}` : ""}
@@ -101,7 +103,7 @@ export default function MyPassesPage() {
       header: "Vigencia",
       sortValue: (p) => new Date(p.validFrom).getTime(),
       cell: (p) => (
-        <span className="text-xs text-gray-600">
+        <span className="text-xs text-muted-foreground">
           {formatDateTime(p.validFrom)}
           <br />
           hasta {formatDateTime(p.validTo)}
@@ -131,7 +133,7 @@ export default function MyPassesPage() {
                 type="button"
                 onClick={() => showPass(p.id)}
                 disabled={busyId === p.id}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-purple-200 px-3 py-1.5 text-sm font-medium text-purple-700 hover:bg-purple-50 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary-soft disabled:opacity-50"
               >
                 <QrCode size={16} aria-hidden /> Ver pase
               </button>
@@ -141,7 +143,7 @@ export default function MyPassesPage() {
                 type="button"
                 onClick={() => cancel(p.id)}
                 disabled={busyId === p.id}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-danger/30 px-3 py-1.5 text-sm font-medium text-danger hover:bg-danger-soft disabled:opacity-50"
               >
                 <XCircle size={16} aria-hidden /> Cancelar
               </button>
@@ -162,19 +164,17 @@ export default function MyPassesPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mis pases</h1>
-          <p className="text-gray-600">Pases de ingreso que generaste para tus visitas. Descargalos o compartilos otra vez cuando quieras.</p>
-        </div>
-        <Link
-          href="/resident/permits"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-violet-600 to-purple-600 px-5 py-3 font-semibold text-white shadow-lg"
-        >
-          <Plus size={18} aria-hidden /> Nuevo pase
-        </Link>
-      </header>
+    <PageContainer size="wide">
+      <PageHeader
+        icon={<QrCode size={24} aria-hidden />}
+        title="Mis pases"
+        description="Pases de ingreso que generaste para tus visitas. Descargalos o compartilos otra vez cuando quieras."
+        actions={
+          <Link href="/resident/permits" className={primaryButtonClass}>
+            <Plus size={18} aria-hidden /> Nuevo pase
+          </Link>
+        }
+      />
 
       {confirmDialog}
       <DataTable
@@ -195,6 +195,6 @@ export default function MyPassesPage() {
           <PassCard pass={openPass} />
         </Modal>
       )}
-    </div>
+    </PageContainer>
   );
 }

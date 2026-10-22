@@ -30,15 +30,15 @@ export default function ServiceDetailPage() {
     fetchService();
   }, [id]);
 
-  if (loading) return <p className="p-6 text-gray-400">Cargando...</p>;
+  if (loading) return <p className="p-6 text-muted-foreground">Cargando...</p>;
   if (!data) return notFound();
 
   return (
-    <div className="in-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
+    <div className="in-h-screen p-8 bg-background">
       {/* CARD PRINCIPAL */}
-      <section className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-purple-500/20 shadow-xl">
+      <section className="rounded-2xl border border-primary/20 shadow-xl bg-background">
         {/* BARRA SUPERIOR */}
-        <div className="h-2 bg-linear-to-r from-purple-600 to-purple-800 rounded-t-2xl" />
+        <div className="h-2 rounded-t-2xl bg-primary" />
 
         <div className="p-6">
           {/* HEADER + QR */}
@@ -47,16 +47,16 @@ export default function ServiceDetailPage() {
             <div className="flex items-start gap-4">
               <Link
                 href={`/security/family-visits/`}
-                className="mt-1 inline-flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-gray-300 hover:bg-slate-700 hover:text-white transition"
+                className="mt-1 inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
                 <ArrowLeft className="w-9 h-9" />
               </Link>
 
               <div>
-                <h1 className="text-3xl font-bold text-white">
+                <h1 className="text-3xl font-bold text-foreground">
                   Permiso #{data.id.slice(0, 8)}
                 </h1>
-                <p className="text-gray-400 mt-1">
+                <p className="text-muted-foreground mt-1">
                   Detalle del permiso de acceso
                 </p>
               </div>
@@ -64,7 +64,7 @@ export default function ServiceDetailPage() {
 
             {/* QR */}
             <div className="flex flex-col items-center">
-              <div className="p-3 bg-slate-900 border border-slate-700 rounded-xl">
+              <div className="p-3 bg-background border border-border rounded-xl">
                 <QRCodeCanvas
                   value={data.qrCodeValue}
                   size={160}
@@ -72,7 +72,7 @@ export default function ServiceDetailPage() {
                   includeMargin
                 />
               </div>
-              <p className="mt-2 text-xs text-gray-500 text-center break-all max-w-[160px]">
+              <p className="mt-2 text-xs text-muted-foreground text-center break-all max-w-[160px]">
                 {data.qrCodeValue}
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function ServiceDetailPage() {
 /* TITULO DE SECCION */
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-2xl font-bold text-white mt-10 mb-6 pb-3 border-b border-purple-500/30">
+    <h2 className="text-2xl font-bold text-foreground mt-10 mb-6 pb-3 border-b border-primary/30">
       {children}
     </h2>
   );
@@ -151,10 +151,10 @@ function Info({
 }) {
   return (
     <div>
-      <p className="text-xs font-semibold text-purple-400 uppercase tracking-wide">
+      <p className="text-xs font-semibold text-primary uppercase tracking-wide">
         {label}
       </p>
-      <p className="text-base font-medium text-gray-200">{children}</p>
+      <p className="text-base font-medium text-foreground">{children}</p>
     </div>
   );
 }

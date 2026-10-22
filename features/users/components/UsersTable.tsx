@@ -20,7 +20,7 @@ const FILTERS: TableFilter<UserDto>[] = [
   { value: "inactive", label: "Inactivos", predicate: (u) => !u.active },
 ];
 
-const iconButton = "p-2 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition disabled:opacity-50";
+const iconButton = "p-2 rounded-lg bg-primary-soft text-primary hover:bg-primary-soft transition disabled:opacity-50";
 
 export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: UserDto[] }) {
   const [users, setUsers] = useState(initialUsers);
@@ -56,25 +56,25 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
       sortValue: (u) => u.name,
       cell: (u) => (
         <div className="flex items-center gap-3">
-          <div className="shrink-0 h-10 w-10 rounded-full bg-linear-to-br from-purple-500 to-violet-400 flex items-center justify-center shadow-md" aria-hidden>
+          <div className="shrink-0 h-10 w-10 rounded-full flex items-center justify-center shadow-md bg-primary" aria-hidden>
             <span className="text-white font-semibold text-sm">{u.name.charAt(0).toUpperCase()}</span>
           </div>
           <div>
-            <div className="font-semibold text-gray-800">{u.name}</div>
-            <div className="text-xs text-gray-500">DNI {u.dni}</div>
+            <div className="font-semibold text-foreground">{u.name}</div>
+            <div className="text-xs text-muted-foreground">DNI {u.dni}</div>
           </div>
         </div>
       ),
     },
-    { key: "lastname", header: "Apellido", sortValue: (u) => u.lastname, cell: (u) => <span className="font-medium text-gray-900">{u.lastname}</span> },
+    { key: "lastname", header: "Apellido", sortValue: (u) => u.lastname, cell: (u) => <span className="font-medium text-foreground">{u.lastname}</span> },
     {
       key: "contact",
       header: "Contacto",
       sortValue: (u) => u.email,
       cell: (u) => (
         <>
-          <div className="text-gray-900">{u.email}</div>
-          <div className="text-xs text-gray-500">{u.phone || "Sin teléfono"}</div>
+          <div className="text-foreground">{u.email}</div>
+          <div className="text-xs text-muted-foreground">{u.phone || "Sin teléfono"}</div>
         </>
       ),
     },
@@ -99,7 +99,7 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
               await refresh();
             }}
           >
-            {u.active ? <FiXCircle className="w-4 h-4 text-rose-500" /> : <FiCheckCircle className="w-4 h-4 text-emerald-500" />}
+            {u.active ? <FiXCircle className="w-4 h-4 text-danger" /> : <FiCheckCircle className="w-4 h-4 text-success" />}
           </button>
         </div>
       ),
@@ -107,20 +107,20 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
   ];
 
   return (
-    <div className="w-full min-h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-6 space-y-6">
+    <div className="w-full min-h-screen p-4 md:p-6 space-y-6 bg-background">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-1">
+          <h1 className="text-3xl md:text-4xl font-bold mb-1 text-primary">
             {role === "Security" ? "Personal de Seguridad" : "Gestión de Residentes"}
           </h1>
-          <p className="text-gray-500">{users.length} usuario{users.length !== 1 ? "s" : ""} en el sistema</p>
+          <p className="text-muted-foreground">{users.length} usuario{users.length !== 1 ? "s" : ""} en el sistema</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={refresh}
             disabled={isRefreshing}
-            className="flex items-center px-4 py-2 bg-purple-100/80 text-purple-700 rounded-xl hover:bg-purple-200 transition disabled:opacity-50"
+            className="flex items-center px-4 py-2 bg-primary-soft/80 text-primary rounded-xl hover:bg-primary-soft transition disabled:opacity-50"
           >
             <FiRefreshCw className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
             {isRefreshing ? "Actualizando..." : "Actualizar"}
@@ -128,7 +128,7 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 hover:shadow-lg transition"
+            className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium hover:shadow-lg transition bg-primary"
           >
             <FiUserPlus className="mr-2" />
             Nuevo usuario
@@ -137,7 +137,7 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
+        <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">
           {error}
         </p>
       )}
@@ -160,7 +160,7 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
           <>
             <button
               type="button"
-              className="flex items-center px-4 py-2 bg-emerald-500 text-white rounded-lg hover:shadow-lg"
+              className="flex items-center px-4 py-2 bg-success text-on-status rounded-lg hover:shadow-lg"
               onClick={async () => {
                 await Promise.all(selected.map((u) => setActive(u, true)));
                 clear();
@@ -171,7 +171,7 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
             </button>
             <button
               type="button"
-              className="flex items-center px-4 py-2 bg-rose-500 text-white rounded-lg hover:shadow-lg"
+              className="flex items-center px-4 py-2 bg-danger text-on-status rounded-lg hover:shadow-lg"
               onClick={async () => {
                 await Promise.all(selected.map((u) => setActive(u, false)));
                 clear();
@@ -180,7 +180,7 @@ export function UsersTable({ role, initialUsers }: { role: Role; initialUsers: U
             >
               <FiXCircle className="mr-2" /> Desactivar
             </button>
-            <button type="button" className="px-4 py-2 border border-purple-300 rounded-lg text-purple-700" onClick={clear}>
+            <button type="button" className="px-4 py-2 border border-primary/40 rounded-lg text-primary" onClick={clear}>
               Limpiar
             </button>
           </>

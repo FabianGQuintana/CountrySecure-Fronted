@@ -12,12 +12,12 @@ const formatDate = (iso: string) => dateFormat.format(new Date(iso));
 
 /** Estado visible del pase para quien lo recibe. */
 function passState(pass: PassDto, now: number): { label: string; className: string } {
-  if (pass.status === "Cancelled") return { label: "Cancelado", className: "bg-red-100 text-red-700" };
+  if (pass.status === "Cancelled") return { label: "Cancelado", className: "bg-danger-soft text-danger" };
   if (pass.status === "Completed" && pass.passType === "SingleEntry")
-    return { label: "Utilizado", className: "bg-gray-100 text-gray-700" };
-  if (pass.validTo && now > new Date(pass.validTo).getTime()) return { label: "Vencido", className: "bg-gray-100 text-gray-700" };
-  if (now < new Date(pass.validFrom).getTime()) return { label: "Todavía no vigente", className: "bg-amber-100 text-amber-800" };
-  return { label: "Vigente", className: "bg-emerald-100 text-emerald-700" };
+    return { label: "Utilizado", className: "bg-muted text-foreground" };
+  if (pass.validTo && now > new Date(pass.validTo).getTime()) return { label: "Vencido", className: "bg-muted text-foreground" };
+  if (now < new Date(pass.validFrom).getTime()) return { label: "Todavía no vigente", className: "bg-warning-soft text-warning" };
+  return { label: "Vigente", className: "bg-success-soft text-success" };
 }
 
 /** Enlace público del pase: lo puede abrir la visita sin iniciar sesión. */
@@ -32,10 +32,10 @@ function shareText(pass: PassDto, url: string) {
 function Row({ icon: Icon, label, children }: { icon: typeof User; label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
-      <Icon size={18} className="mt-0.5 shrink-0 text-purple-600" aria-hidden />
+      <Icon size={18} className="mt-0.5 shrink-0 text-primary" aria-hidden />
       <div className="min-w-0">
-        <p className="text-xs uppercase tracking-wide text-gray-500">{label}</p>
-        <p className="font-medium text-gray-900 break-words">{children}</p>
+        <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
+        <p className="font-medium text-foreground break-words">{children}</p>
       </div>
     </div>
   );
@@ -90,21 +90,21 @@ export function PassCard({ pass, showActions = true }: { pass: PassDto; showActi
   const canShareNatively = typeof navigator !== "undefined" && typeof navigator.share === "function";
 
   const baseAction = "inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition";
-  const actionClass = `${baseAction} border-gray-200 bg-white text-gray-700 hover:border-purple-300 hover:bg-purple-50`;
-  const primaryClass = `${baseAction} sm:col-span-2 border-purple-600 bg-purple-600 text-white hover:bg-purple-700`;
+  const actionClass = `${baseAction} border-border bg-card text-foreground hover:border-primary/40 hover:bg-primary-soft`;
+  const primaryClass = `${baseAction} sm:col-span-2 border-primary bg-primary text-white hover:bg-primary/90`;
 
   return (
-    <article className="w-full max-w-2xl rounded-3xl border border-violet-100 bg-white p-6 shadow-xl sm:p-8">
+    <article className="w-full max-w-2xl rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-8">
       {/* Encabezado: QR arriba a la izquierda */}
       <header className="flex flex-col gap-5 sm:flex-row sm:items-start">
-        <div className="shrink-0 self-center rounded-2xl border border-gray-200 bg-white p-3 sm:self-start">
+        <div className="shrink-0 self-center rounded-2xl border border-border bg-card p-3 sm:self-start">
           <QRCodeSVG value={pass.token} size={168} level="Q" marginSize={0} aria-label="Código QR del pase" role="img" />
         </div>
 
         <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
-          <p className="text-xs font-semibold uppercase tracking-widest text-purple-600">Pase de ingreso</p>
-          <h2 className="text-2xl font-bold text-gray-900 break-words">{pass.visitorName}</h2>
-          <p className="text-sm text-gray-500">{PASS_TYPE_LABELS[pass.passType]}</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary">Pase de ingreso</p>
+          <h2 className="text-2xl font-bold text-foreground break-words">{pass.visitorName}</h2>
+          <p className="text-sm text-muted-foreground">{PASS_TYPE_LABELS[pass.passType]}</p>
           <span
             suppressHydrationWarning
             className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${state.className}`}
@@ -114,7 +114,7 @@ export function PassCard({ pass, showActions = true }: { pass: PassDto; showActi
         </div>
       </header>
 
-      <hr className="my-6 border-gray-100" />
+      <hr className="my-6 border-border" />
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Row icon={User} label="Residente anfitrión">
@@ -138,7 +138,7 @@ export function PassCard({ pass, showActions = true }: { pass: PassDto; showActi
         </div>
       </div>
 
-      <p className="mt-6 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
+      <p className="mt-6 rounded-xl bg-muted p-4 text-sm text-muted-foreground">
         Presentá este código QR en la guardia, desde el celular o impreso, junto con tu documento. Solo es válido dentro del
         horario autorizado.
       </p>

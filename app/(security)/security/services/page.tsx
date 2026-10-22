@@ -5,7 +5,7 @@ import ServicesCardsPage from "@/components/Security/services/index";
 // (getMaintenancePermissions), por eso la página ya no hace su propio fetch.
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
+    <div className="min-h-screen p-8 bg-background">
       <ServicesCardsPage />
     </div>
   );

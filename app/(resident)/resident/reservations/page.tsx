@@ -125,21 +125,21 @@ export default function ResidentReservationsPage() {
                 key={r.id}
                 className={`flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-colors hover:border-primary/40 animate-fade-in ${r.status === "CANCELLED" ? "opacity-70" : ""}`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                      <Star size={20} aria-hidden />
-                    </div>
-                    <p className="truncate font-semibold text-foreground">{r.amenityName}</p>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                    <Star size={20} aria-hidden />
                   </div>
-                  <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <p className="break-words font-semibold leading-tight text-foreground">{r.amenityName}</p>
+                    <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
+                  </div>
                 </div>
 
                 <dl className="space-y-2 text-sm">
                   <div className="flex items-center gap-3">
                     <Calendar size={16} className="shrink-0 text-muted-foreground" aria-hidden />
                     <dt className="sr-only">Fecha</dt>
-                    <dd className="font-medium capitalize text-foreground">{formatDate(r.start)}</dd>
+                    <dd className="font-medium text-foreground first-letter:uppercase">{formatDate(r.start)}</dd>
                   </div>
                   <div className="flex items-center gap-3">
                     <Clock size={16} className="shrink-0 text-muted-foreground" aria-hidden />

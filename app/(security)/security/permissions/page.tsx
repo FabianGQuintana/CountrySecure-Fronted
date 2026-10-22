@@ -11,8 +11,8 @@ export default async function PermissionsPage() {
   return (
     <div className="p-4 md:p-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white">Permisos de Ingreso</h1>
-        <p className="text-slate-400 mt-1">Todos los permisos creados por los residentes para visitas y proveedores.</p>
+        <h1 className="text-3xl font-bold text-foreground">Permisos de Ingreso</h1>
+        <p className="text-muted-foreground mt-1">Todos los permisos creados por los residentes para visitas y proveedores.</p>
       </div>
 
       {data ? <PermissionsTable permissions={data} /> : <ErrorState tone="dark" title="No se pudieron cargar los permisos" message={error} />}

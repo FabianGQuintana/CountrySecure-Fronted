@@ -9,8 +9,8 @@ import type { OrderDto } from "@/types/models";
 import { deleteOrder, restoreOrder, updateOrder } from "../actions";
 import { OrderForm } from "./OrderForm";
 
-const card = "bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-100/50 overflow-hidden";
-const cardHeader = "bg-linear-to-r from-purple-50/80 via-violet-50/80 to-pink-50/80 px-6 py-4 border-b border-purple-200/50";
+const card = "bg-card/90 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50 overflow-hidden";
+const cardHeader = "px-6 py-4 border-b border-border/50 bg-background";
 
 export function OrderDetail({ order: initialOrder }: { order: OrderDto }) {
   const router = useRouter();
@@ -37,19 +37,19 @@ export function OrderDetail({ order: initialOrder }: { order: OrderDto }) {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8 bg-background">
       <div className="max-w-5xl mx-auto space-y-6">
-        <button type="button" onClick={() => router.back()} className="flex items-center text-purple-600 hover:text-purple-800 group transition-colors">
+        <button type="button" onClick={() => router.back()} className="flex items-center text-primary hover:text-primary group transition-colors">
           <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
           Volver a servicios
         </button>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold text-primary">
               {order.supplierName}
             </h1>
-            <p className="text-gray-500 mt-1">
+            <p className="text-muted-foreground mt-1">
               {orderTypeLabel(order.orderType)} · {order.description}
             </p>
           </div>
@@ -60,7 +60,7 @@ export function OrderDetail({ order: initialOrder }: { order: OrderDto }) {
           <p
             role={message.type === "error" ? "alert" : "status"}
             className={`flex items-center gap-2 rounded-xl p-4 text-sm font-medium ${
-              message.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200"
+              message.type === "success" ? "bg-success-soft text-success border border-success/30" : "bg-danger-soft text-danger border border-danger/30"
             }`}
           >
             {message.type === "success" && <FiCheck />} {message.text}
@@ -70,12 +70,12 @@ export function OrderDetail({ order: initialOrder }: { order: OrderDto }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className={`${card} lg:col-span-2`}>
             <div className={cardHeader}>
-              <h2 className="text-xl font-semibold text-purple-800 flex items-center">
-                <FiTruck className="mr-3 text-purple-600" /> Datos del servicio
+              <h2 className="text-xl font-semibold text-primary flex items-center">
+                <FiTruck className="mr-3 text-primary" /> Datos del servicio
               </h2>
             </div>
             <div className="p-6">
-              {!active && <p className="mb-4 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3">El servicio está inactivo: activalo para poder editarlo.</p>}
+              {!active && <p className="mb-4 text-sm text-warning bg-warning-soft border border-warning/30 rounded-lg p-3">El servicio está inactivo: activalo para poder editarlo.</p>}
               <OrderForm
                 key={order.id + order.supplierName + order.description + order.orderType}
                 defaultValues={{ supplierName: order.supplierName, description: order.description, orderType: order.orderType }}
@@ -96,10 +96,10 @@ export function OrderDetail({ order: initialOrder }: { order: OrderDto }) {
 
           <div className={card}>
             <div className={cardHeader}>
-              <h2 className="text-xl font-semibold text-purple-800">Estado del servicio</h2>
+              <h2 className="text-xl font-semibold text-primary">Estado del servicio</h2>
             </div>
             <div className="p-6 space-y-4">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 {active
                   ? "Si lo desactivás, deja de aparecer para los residentes al pedir servicios y permisos."
                   : "Al activarlo vuelve a estar disponible para los residentes."}
@@ -109,7 +109,7 @@ export function OrderDetail({ order: initialOrder }: { order: OrderDto }) {
                 onClick={toggleStatus}
                 disabled={isChangingStatus}
                 className={`w-full py-3 rounded-xl font-semibold text-white transition hover:shadow-lg disabled:opacity-50 ${
-                  active ? "bg-linear-to-r from-rose-500 via-pink-500 to-red-400" : "bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-400"
+                  active ? "bg-danger" : "bg-success"
                 }`}
               >
                 {isChangingStatus ? "Procesando..." : active ? "Desactivar servicio" : "Activar servicio"}

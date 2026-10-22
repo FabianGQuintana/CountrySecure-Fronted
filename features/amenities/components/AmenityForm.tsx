@@ -57,7 +57,7 @@ export function AmenityForm({ defaultValues, submitLabel, submittingLabel, disab
       </div>
 
       {errors.root?.message && (
-        <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+        <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">
           {errors.root.message}
         </p>
       )}

@@ -7,8 +7,8 @@ import { OrderStatus, orderTypeLabel } from "@/types/api";
 import { orderSchema, type OrderFormValues, type OrderInput } from "../schemas";
 
 const inputClass =
-  "w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed";
-const labelClass = "block text-sm font-medium text-gray-700 mb-1";
+  "w-full border border-border rounded-lg px-3 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-muted disabled:cursor-not-allowed";
+const labelClass = "block text-sm font-medium text-foreground mb-1";
 
 interface OrderFormProps {
   defaultValues?: OrderFormValues;
@@ -62,21 +62,21 @@ export function OrderForm({ defaultValues, submitLabel, submittingLabel, disable
       </div>
 
       {errors.root?.message && (
-        <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+        <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">
           {errors.root.message}
         </p>
       )}
 
       <div className="flex justify-end gap-3 pt-2">
         {onCancel && (
-          <button type="button" onClick={onCancel} className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+          <button type="button" onClick={onCancel} className="px-5 py-2.5 rounded-lg border border-border text-foreground hover:bg-muted">
             Cancelar
           </button>
         )}
         <button
           type="submit"
           disabled={isSubmitting || disabled || !isDirty}
-          className="px-5 py-2.5 rounded-lg text-white font-medium bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 hover:shadow-lg disabled:opacity-50"
+          className="px-5 py-2.5 rounded-lg text-white font-medium hover:shadow-lg disabled:opacity-50 bg-primary"
         >
           {isSubmitting ? submittingLabel : submitLabel}
         </button>

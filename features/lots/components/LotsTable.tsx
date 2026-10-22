@@ -14,10 +14,10 @@ import { createLot, deleteLot, listLots, restoreLot } from "../actions";
 import { lotSchema, type LotFormOutput, type LotFormValues } from "../schemas";
 
 const STATE_STYLES: Record<LotState, string> = {
-  Inactive: "bg-gray-100 text-gray-700",
-  Available: "bg-purple-50 text-purple-700",
-  Full: "bg-violet-50 text-violet-700",
-  Maintenance: "bg-amber-50 text-amber-700",
+  Inactive: "bg-muted text-foreground",
+  Available: "bg-primary-soft text-primary",
+  Full: "bg-primary-soft text-primary",
+  Maintenance: "bg-warning-soft text-warning",
 };
 
 const FILTERS: TableFilter<LotDto>[] = [
@@ -68,7 +68,7 @@ function CreateLotForm({ onDone, onCancel }: { onDone: () => Promise<void>; onCa
         <FieldError message={errors.lotState?.message} />
       </div>
       {errors.root?.message && (
-        <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{errors.root.message}</p>
+        <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">{errors.root.message}</p>
       )}
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} className={secondaryButtonClass}>Cancelar</button>
@@ -106,8 +106,8 @@ export function LotsTable({ initialLots }: { initialLots: LotDto[] }) {
   );
 
   const columns: Column<LotDto>[] = [
-    { key: "name", header: "Lote", sortValue: (l) => l.lotName, cell: (l) => <span className="font-semibold text-gray-900">{l.lotName}</span> },
-    { key: "block", header: "Manzana", sortValue: (l) => l.blockName, cell: (l) => <span className="text-gray-700">{l.blockName}</span> },
+    { key: "name", header: "Lote", sortValue: (l) => l.lotName, cell: (l) => <span className="font-semibold text-foreground">{l.lotName}</span> },
+    { key: "block", header: "Manzana", sortValue: (l) => l.blockName, cell: (l) => <span className="text-foreground">{l.blockName}</span> },
     {
       key: "state",
       header: "Estado del lote",
@@ -128,7 +128,7 @@ export function LotsTable({ initialLots }: { initialLots: LotDto[] }) {
           type="button"
           onClick={() => toggle(l)}
           className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition ${
-            l.status === "Active" ? "bg-rose-50 text-rose-700 hover:bg-rose-100" : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+            l.status === "Active" ? "bg-danger-soft text-danger hover:bg-danger-soft" : "bg-success-soft text-success hover:bg-success-soft"
           }`}
         >
           {l.status === "Active" ? <FiXCircle /> : <FiCheckCircle />}
@@ -141,20 +141,20 @@ export function LotsTable({ initialLots }: { initialLots: LotDto[] }) {
   const count = (state: LotState) => lots.filter((l) => l.status === "Active" && l.lotState === state).length;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8 space-y-6">
+    <div className="min-h-screen p-4 md:p-8 space-y-6 bg-background">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-1">
+          <h1 className="text-3xl md:text-4xl font-bold mb-1 text-primary">
             Gestión de Lotes
           </h1>
-          <p className="text-gray-500">Lotes y manzanas de la comunidad</p>
+          <p className="text-muted-foreground">Lotes y manzanas de la comunidad</p>
         </div>
         <div className="flex items-center gap-3">
-          <button type="button" onClick={refresh} disabled={isRefreshing} className="flex items-center px-4 py-2 bg-purple-100/80 text-purple-700 rounded-xl hover:bg-purple-200 transition disabled:opacity-50">
+          <button type="button" onClick={refresh} disabled={isRefreshing} className="flex items-center px-4 py-2 bg-primary-soft/80 text-primary rounded-xl hover:bg-primary-soft transition disabled:opacity-50">
             <FiRefreshCw className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
             {isRefreshing ? "Actualizando..." : "Actualizar"}
           </button>
-          <button type="button" onClick={() => setModalOpen(true)} className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 hover:shadow-lg transition">
+          <button type="button" onClick={() => setModalOpen(true)} className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium hover:shadow-lg transition bg-primary">
             <FiPlus className="mr-2" /> Nuevo lote
           </button>
         </div>
@@ -167,14 +167,14 @@ export function LotsTable({ initialLots }: { initialLots: LotDto[] }) {
           { label: "Completos", value: count(LotState.Full) },
           { label: "En mantenimiento", value: count(LotState.Maintenance) },
         ].map((kpi) => (
-          <div key={kpi.label} className="bg-white/90 p-4 rounded-xl border border-purple-200/50">
-            <p className="text-sm text-purple-600">{kpi.label}</p>
-            <p className="text-2xl font-bold text-gray-900">{kpi.value}</p>
+          <div key={kpi.label} className="bg-card/90 p-4 rounded-xl border border-border/50">
+            <p className="text-sm text-primary">{kpi.label}</p>
+            <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
           </div>
         ))}
       </div>
 
-      {error && <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
+      {error && <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">{error}</p>}
 
       <DataTable
         data={lots}

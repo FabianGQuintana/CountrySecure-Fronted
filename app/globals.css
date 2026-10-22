@@ -34,6 +34,8 @@
   --danger-soft: #fee2e2;
   --info: #0284c7;
   --info-soft: #e0f2fe;
+  /* Texto sobre un relleno sólido de estado (bg-success, bg-danger…) */
+  --on-status: #ffffff;
 
   --sidebar: #ffffff;
   --sidebar-foreground: #334155;
@@ -66,6 +68,7 @@
   --danger-soft: #3a1518;
   --info: #38bdf8;
   --info-soft: #0c2a3d;
+  --on-status: #0b0f1a;
 
   --sidebar: #0f1422;
   --sidebar-foreground: #cbd2e1;
@@ -104,6 +107,7 @@
   --color-destructive-foreground: #ffffff;
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
+  --color-on-status: var(--on-status);
 
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
@@ -122,33 +126,38 @@
     color: var(--foreground);
   }
 
-  /* Ícono del selector de fecha/hora visible en ambos modos */
-  .dark input::-webkit-calendar-picker-indicator {
-    filter: invert(0.85);
+  /* Ícono del selector de fecha/hora: con color-scheme el navegador ya lo pinta claro u oscuro */
+  input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.75;
+  }
+  input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
   }
 }
 
-/* Animaciones de entrada livianas: nunca dejan el contenido invisible si el JS tarda */
+/* Animaciones de entrada: solo desplazan, NUNCA ocultan. Si el navegador las demora o las pausa
+   (pestaña en segundo plano, equipo lento), el contenido igual se ve completo desde el primer cuadro. */
 @keyframes cs-fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: none; }
+  from { transform: translateY(10px); }
+  to { transform: none; }
 }
 @keyframes cs-fade-down {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: none; }
+  from { transform: translateY(-10px); }
+  to { transform: none; }
 }
 @keyframes cs-pop {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: none; }
+  from { transform: scale(0.97); }
+  to { transform: none; }
 }
 @keyframes cs-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { transform: translateY(4px); }
+  to { transform: none; }
 }
-.animate-fade-up { animation: cs-fade-up 0.5s ease-out both; }
-.animate-fade-down { animation: cs-fade-down 0.5s ease-out both; }
-.animate-pop { animation: cs-pop 0.4s ease-out both; }
-.animate-fade-in { animation: cs-fade-in 0.3s ease-out both; }
+.animate-fade-up { animation: cs-fade-up 0.35s ease-out both; }
+.animate-fade-down { animation: cs-fade-down 0.35s ease-out both; }
+.animate-pop { animation: cs-pop 0.25s ease-out both; }
+.animate-fade-in { animation: cs-fade-in 0.25s ease-out both; }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,

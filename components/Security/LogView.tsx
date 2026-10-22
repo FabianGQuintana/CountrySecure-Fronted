@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { Search, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { DateInput, Field, Input, Select, primaryButtonClass, secondaryButtonClass } from "@/components/ui/form";
 import { localDateOf } from "@/lib/datetime";
+import { StatusBadge, type StatusTone } from "@/components/ui/StatusBadge";
+import { permissionStatusToText } from "@/types/api";
 import { Button } from "@/components/ui/button";
 import { listPermissionHistory } from "@/features/entry-permissions/actions";
 
@@ -144,14 +146,14 @@ const LogView: React.FC = () => {
 
   const getTypeBadge = (type: string) => {
     const styles: Record<string, string> = {
-      Visit: "bg-purple-500/20 text-purple-300",
-      Maintenance: "bg-orange-500/20 text-orange-300",
+      Visit: "bg-primary/20 text-primary",
+      Maintenance: "bg-warning/20 text-warning",
     };
 
     return (
       <span
         className={`px-2 py-1 rounded text-xs font-semibold ${
-          styles[type] ?? "bg-gray-500/20 text-gray-300"
+          styles[type] ?? "bg-muted-foreground/20 text-muted-foreground"
         }`}
       >
         {type}
@@ -160,36 +162,22 @@ const LogView: React.FC = () => {
   };
 
   const getStatusBadge = (status: string) => {
-    const styles: Record<string, string> = {
-      Pending: "bg-amber-500/20 text-amber-300",
-      Completed: "bg-emerald-500/20 text-emerald-300",
-      Cancelled: "bg-red-500/20 text-red-300",
-      Expired: "bg-gray-500/20 text-gray-300",
-    };
-
-    return (
-      <span
-        className={`px-2 py-1 rounded text-xs font-semibold ${
-          styles[status] ?? "bg-gray-500/20 text-gray-300"
-        }`}
-      >
-        {status}
-      </span>
-    );
+    const tones: Record<string, StatusTone> = { Pending: "warning", Completed: "success", Cancelled: "danger", Expired: "neutral" };
+    return <StatusBadge tone={tones[status] ?? "neutral"}>{permissionStatusToText(status)}</StatusBadge>;
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
+    <div className="min-h-screen p-8 bg-background">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* HEADER */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               {forcedType === "Maintenance"
                 ? "Historial de Servicios"
                 : "Registro de Entradas"}
             </h1>
-            <p className="text-gray-400">Historial completo de movimientos</p>
+            <p className="text-muted-foreground">Historial completo de movimientos</p>
           </div>
         </div>
 
@@ -240,22 +228,22 @@ const LogView: React.FC = () => {
         </div>
 
         {/* TABLA */}
-        <div className="bg-slate-800/50 rounded-xl border border-purple-500/20 overflow-hidden">
+        <div className="bg-card/50 rounded-xl border border-primary/20 overflow-hidden">
           {loading ? (
-            <div className="p-12 text-center text-gray-400">
+            <div className="p-12 text-center text-muted-foreground">
               Cargando historial...
             </div>
           ) : error ? (
-            <div className="p-12 text-center text-red-400">{error}</div>
+            <div className="p-12 text-center text-danger">{error}</div>
           ) : logs.length === 0 ? (
-            <div className="p-12 text-center text-gray-400">
+            <div className="p-12 text-center text-muted-foreground">
               No se encontraron registros
             </div>
           ) : (
             <>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-700/50">
+                  <thead className="bg-muted/50">
                     <tr>
                       {[
                         "Tipo",
@@ -267,7 +255,7 @@ const LogView: React.FC = () => {
                       ].map((h) => (
                         <th
                           key={h}
-                          className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase"
+                          className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"
                         >
                           {h}
                         </th>
@@ -275,28 +263,28 @@ const LogView: React.FC = () => {
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-slate-700">
+                  <tbody className="divide-y divide-border">
                     {paginatedLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-slate-700/30">
+                      <tr key={log.id} className="hover:bg-muted/30">
                         <td className="px-4 py-4">{getTypeBadge(log.type)}</td>
 
-                        <td className="px-4 py-4 text-white">
+                        <td className="px-4 py-4 text-foreground">
                           {log.visitor
                             ? `${log.visitor.nameVisit} ${log.visitor.lastNameVisit}`
                             : log.order?.supplierName ?? "N/A"}
                         </td>
 
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {log.resident
                             ? `${log.resident.name} ${log.resident.lastname}`
                             : "-"}
                         </td>
 
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {formatDateTime(log.entryTime)}
                         </td>
 
-                        <td className="px-4 py-4 text-gray-300">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {formatDateTime(log.departureTime)}
                         </td>
 
@@ -310,8 +298,8 @@ const LogView: React.FC = () => {
               </div>
 
               {/* PAGINACIÓN */}
-              <div className="px-6 py-4 flex justify-between items-center border-t border-slate-700">
-                <span className="text-sm text-gray-400">
+              <div className="px-6 py-4 flex justify-between items-center border-t border-border">
+                <span className="text-sm text-muted-foreground">
                   Página {currentPage} de {totalPages}
                 </span>
 

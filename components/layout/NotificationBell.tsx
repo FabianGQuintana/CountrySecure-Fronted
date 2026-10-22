@@ -82,57 +82,57 @@ export default function NotificationBell() {
   };
 
   return (
-    <div ref={containerRef} className="fixed top-4 right-4 z-30">
+    <div ref={containerRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={unread > 0 ? `Avisos: ${unread} sin leer` : "Avisos"}
         aria-expanded={open}
-        className="relative rounded-full bg-white p-3 text-purple-700 shadow-lg ring-1 ring-purple-100 hover:bg-purple-50"
+        className="relative rounded-full bg-card p-2.5 text-primary ring-1 ring-border hover:bg-primary-soft"
       >
         <Bell size={22} aria-hidden />
         {unread > 0 && (
-          <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-red-600 px-1.5 text-center text-xs font-bold leading-5 text-white">
+          <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-danger px-1.5 text-center text-xs font-bold leading-5 text-on-status">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>
 
       {toastText && !open && (
-        <div role="status" className="absolute right-0 top-14 w-72 rounded-xl bg-emerald-600 p-4 text-sm font-medium text-white shadow-xl">
+        <div role="status" className="absolute right-0 top-14 w-72 rounded-xl bg-success p-4 text-sm font-medium text-on-status shadow-xl">
           {toastText}
         </div>
       )}
 
       {open && (
-        <div className="absolute right-0 top-14 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-gray-200">
-          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-            <h2 className="font-semibold text-gray-900">Avisos</h2>
+        <div className="absolute right-0 top-14 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-card shadow-2xl ring-1 ring-border">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <h2 className="font-semibold text-foreground">Avisos</h2>
             {unread > 0 && (
-              <button type="button" onClick={readAll} className="inline-flex items-center gap-1 text-sm text-purple-700 hover:underline">
+              <button type="button" onClick={readAll} className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
                 <CheckCheck size={16} aria-hidden /> Marcar todo como leído
               </button>
             )}
           </div>
           {items.length === 0 ? (
-            <p className="px-4 py-8 text-center text-sm text-gray-500">No tenés avisos.</p>
+            <p className="px-4 py-8 text-center text-sm text-muted-foreground">No tenés avisos.</p>
           ) : (
-            <ul className="max-h-96 divide-y divide-gray-100 overflow-y-auto">
+            <ul className="max-h-96 divide-y divide-border overflow-y-auto">
               {items.map((n) => (
                 <li key={n.id}>
                   <button
                     type="button"
                     onClick={() => read(n)}
-                    className={`flex w-full items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 ${n.read ? "" : "bg-purple-50/60"}`}
+                    className={`flex w-full items-start gap-3 px-4 py-3 text-left hover:bg-muted ${n.read ? "" : "bg-primary-soft/60"}`}
                   >
                     {n.type === "VisitCheckOut" ? (
-                      <LogOut size={18} className="mt-0.5 shrink-0 text-gray-500" aria-hidden />
+                      <LogOut size={18} className="mt-0.5 shrink-0 text-muted-foreground" aria-hidden />
                     ) : (
-                      <LogIn size={18} className="mt-0.5 shrink-0 text-emerald-600" aria-hidden />
+                      <LogIn size={18} className="mt-0.5 shrink-0 text-success" aria-hidden />
                     )}
                     <span className="min-w-0">
-                      <span className="block text-sm text-gray-900">{n.message}</span>
-                      <span className="block text-xs text-gray-500">{timeFormat.format(new Date(n.createdAt))}</span>
+                      <span className="block text-sm text-foreground">{n.message}</span>
+                      <span className="block text-xs text-muted-foreground">{timeFormat.format(new Date(n.createdAt))}</span>
                     </span>
                   </button>
                 </li>

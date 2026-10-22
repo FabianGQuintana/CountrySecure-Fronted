@@ -66,7 +66,7 @@ function CreatePropertyForm({ lots, onDone, onCancel }: { lots: LotDto[]; onDone
         </select>
         <FieldError message={errors.lotId?.message} />
       </div>
-      {errors.root?.message && <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{errors.root.message}</p>}
+      {errors.root?.message && <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">{errors.root.message}</p>}
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} className={secondaryButtonClass}>Cancelar</button>
         <button type="submit" disabled={isSubmitting} className={primaryButtonClass}>{isSubmitting ? "Creando..." : "Crear propiedad"}</button>
@@ -102,7 +102,7 @@ function AssignOwnerForm({
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-muted-foreground">
         {property.street} {property.propertyNumber} · {property.lotName}
         {property.ownerName ? <> · propietario actual: <b>{property.ownerName}</b></> : null}
       </p>
@@ -115,7 +115,7 @@ function AssignOwnerForm({
           ))}
         </select>
       </div>
-      {error && <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
+      {error && <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">{error}</p>}
       <div className="flex justify-end gap-3 pt-2">
         <button type="button" onClick={onCancel} className={secondaryButtonClass}>Cancelar</button>
         <button type="submit" disabled={saving} className={primaryButtonClass}>{saving ? "Guardando..." : "Asignar"}</button>
@@ -165,16 +165,16 @@ export function PropertiesTable({
       key: "address",
       header: "Dirección",
       sortValue: (p) => `${p.street} ${String(p.propertyNumber).padStart(6, "0")}`,
-      cell: (p) => <span className="font-semibold text-gray-900">{p.street} {p.propertyNumber}</span>,
+      cell: (p) => <span className="font-semibold text-foreground">{p.street} {p.propertyNumber}</span>,
     },
-    { key: "lot", header: "Lote", sortValue: (p) => p.lotName ?? "", cell: (p) => <span className="text-gray-700">{p.lotName ?? "—"}</span> },
-    { key: "owner", header: "Propietario", sortValue: (p) => p.ownerName ?? "", cell: (p) => <span className="text-gray-700">{p.ownerName ?? "Sin asignar"}</span> },
+    { key: "lot", header: "Lote", sortValue: (p) => p.lotName ?? "", cell: (p) => <span className="text-foreground">{p.lotName ?? "—"}</span> },
+    { key: "owner", header: "Propietario", sortValue: (p) => p.ownerName ?? "", cell: (p) => <span className="text-foreground">{p.ownerName ?? "Sin asignar"}</span> },
     {
       key: "state",
       header: "Estado",
       sortValue: (p) => p.propertyStatus,
       cell: (p) => (
-        <span className="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700">
+        <span className="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-primary-soft text-primary">
           {STATUS_LABELS[p.propertyStatus] ?? p.propertyStatus}
         </span>
       ),
@@ -187,7 +187,7 @@ export function PropertiesTable({
       cell: (p) => (
         <div className="flex justify-end gap-2">
           {p.statusAuditoria === "Active" && (
-            <button type="button" onClick={() => setAssigning(p)} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-purple-50 text-purple-700 hover:bg-purple-100 transition">
+            <button type="button" onClick={() => setAssigning(p)} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-primary-soft text-primary hover:bg-primary-soft transition">
               <FiUserCheck /> Asignar
             </button>
           )}
@@ -195,7 +195,7 @@ export function PropertiesTable({
             type="button"
             onClick={() => toggle(p)}
             className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition ${
-              p.statusAuditoria === "Active" ? "bg-rose-50 text-rose-700 hover:bg-rose-100" : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+              p.statusAuditoria === "Active" ? "bg-danger-soft text-danger hover:bg-danger-soft" : "bg-success-soft text-success hover:bg-success-soft"
             }`}
           >
             {p.statusAuditoria === "Active" ? <FiXCircle /> : <FiCheckCircle />}
@@ -207,26 +207,26 @@ export function PropertiesTable({
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8 space-y-6">
+    <div className="min-h-screen p-4 md:p-8 space-y-6 bg-background">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-1">
+          <h1 className="text-3xl md:text-4xl font-bold mb-1 text-primary">
             Gestión de Propiedades
           </h1>
-          <p className="text-gray-500">Viviendas de la comunidad y su propietario</p>
+          <p className="text-muted-foreground">Viviendas de la comunidad y su propietario</p>
         </div>
         <div className="flex items-center gap-3">
-          <button type="button" onClick={refresh} disabled={isRefreshing} className="flex items-center px-4 py-2 bg-purple-100/80 text-purple-700 rounded-xl hover:bg-purple-200 transition disabled:opacity-50">
+          <button type="button" onClick={refresh} disabled={isRefreshing} className="flex items-center px-4 py-2 bg-primary-soft/80 text-primary rounded-xl hover:bg-primary-soft transition disabled:opacity-50">
             <FiRefreshCw className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
             {isRefreshing ? "Actualizando..." : "Actualizar"}
           </button>
-          <button type="button" onClick={() => setCreateOpen(true)} className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 hover:shadow-lg transition">
+          <button type="button" onClick={() => setCreateOpen(true)} className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium hover:shadow-lg transition bg-primary">
             <FiPlus className="mr-2" /> Nueva propiedad
           </button>
         </div>
       </div>
 
-      {error && <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
+      {error && <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">{error}</p>}
 
       <DataTable
         data={properties}

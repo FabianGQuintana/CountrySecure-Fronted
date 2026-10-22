@@ -310,7 +310,7 @@ export default function ScanScreen() {
       onClick={() => setAction(value)}
       aria-pressed={action === value}
       className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-base font-semibold transition ${
-        action === value ? "bg-purple-600 text-white shadow-lg" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+        action === value ? "bg-primary text-primary-foreground shadow-lg" : "bg-card text-muted-foreground hover:bg-muted"
       }`}
     >
       <Icon size={20} aria-hidden /> {label}
@@ -320,10 +320,10 @@ export default function ScanScreen() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4 pt-20 sm:p-8 lg:pt-8">
       <header>
-        <h1 className="flex items-center gap-3 text-3xl font-bold text-white">
-          <ScanLine className="text-purple-400" aria-hidden /> Escanear pase
+        <h1 className="flex items-center gap-3 text-3xl font-bold text-foreground">
+          <ScanLine className="text-primary" aria-hidden /> Escanear pase
         </h1>
-        <p className="mt-1 text-slate-400">
+        <p className="mt-1 text-muted-foreground">
           Apuntá la cámara al QR del visitante. El ingreso se registra automáticamente si el pase es válido.
         </p>
       </header>
@@ -331,7 +331,7 @@ export default function ScanScreen() {
       <div
         role="status"
         className={`flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border px-4 py-3 text-sm ${
-          offline ? "border-amber-500/40 bg-amber-500/10 text-amber-200" : "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+          offline ? "border-warning/40 bg-warning/10 text-warning" : "border-success/30 bg-success/10 text-success"
         }`}
       >
         {offline ? <CloudOff size={18} aria-hidden /> : <Wifi size={18} aria-hidden />}
@@ -341,12 +341,12 @@ export default function ScanScreen() {
             ? `Lista de pases: ${new Date(lastSync).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}`
             : "Lista de pases sin descargar"}
         </span>
-        {pending > 0 && <span className="rounded-full bg-amber-500/30 px-2.5 py-0.5 font-semibold">{pending} pendiente{pending === 1 ? "" : "s"} de enviar</span>}
+        {pending > 0 && <span className="rounded-full bg-warning/30 px-2.5 py-0.5 font-semibold">{pending} pendiente{pending === 1 ? "" : "s"} de enviar</span>}
         <button
           type="button"
           onClick={() => void syncNow()}
           disabled={syncing}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 font-medium hover:bg-white/20 disabled:opacity-50"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-card/10 px-3 py-1.5 font-medium hover:bg-card/20 disabled:opacity-50"
         >
           <RefreshCw size={14} className={syncing ? "animate-spin" : ""} aria-hidden /> Sincronizar
         </button>
@@ -357,27 +357,27 @@ export default function ScanScreen() {
         {modeButton("CheckOut", "Registrar salida", LogOut)}
       </div>
 
-      <section className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-900">
+      <section className="overflow-hidden rounded-2xl border border-border bg-background">
         <div id={READER_ID} className={cameraOn ? "w-full" : "hidden"} />
         {!cameraOn && (
-          <div className="flex flex-col items-center gap-4 px-6 py-14 text-center text-slate-400">
+          <div className="flex flex-col items-center gap-4 px-6 py-14 text-center text-muted-foreground">
             <CameraOff size={56} aria-hidden />
             <p>{cameraError ?? "La cámara está apagada."}</p>
           </div>
         )}
-        <div className="border-t border-slate-700 p-4">
+        <div className="border-t border-border p-4">
           <button
             type="button"
             onClick={toggleCamera}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-purple-600 px-4 py-3 font-semibold text-white hover:bg-purple-700"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 font-semibold text-primary-foreground hover:bg-primary/90"
           >
             <Camera size={20} aria-hidden /> {cameraOn ? "Apagar cámara" : "Activar cámara"}
           </button>
         </div>
       </section>
 
-      <form onSubmit={submitManual} className="space-y-2 rounded-2xl border border-slate-700 bg-slate-900 p-4">
-        <label htmlFor="manual-token" className="text-sm font-medium text-slate-300">
+      <form onSubmit={submitManual} className="space-y-2 rounded-2xl border border-border bg-background p-4">
+        <label htmlFor="manual-token" className="text-sm font-medium text-muted-foreground">
           Ingresar código a mano (o con lector USB)
         </label>
         <div className="flex gap-2">
@@ -389,9 +389,9 @@ export default function ScanScreen() {
             autoCapitalize="off"
             spellCheck={false}
             placeholder="Pegá o escaneá el código del pase"
-            className="min-w-0 flex-1 rounded-xl border border-slate-600 bg-slate-800 px-4 py-3 text-white placeholder:text-slate-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30"
+            className="min-w-0 flex-1 rounded-xl border border-border bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30"
           />
-          <button type="submit" className="rounded-xl bg-slate-700 px-5 py-3 font-semibold text-white hover:bg-slate-600">
+          <button type="submit" className="rounded-xl bg-muted px-5 py-3 font-semibold text-foreground hover:bg-muted">
             Validar
           </button>
         </div>
@@ -399,16 +399,16 @@ export default function ScanScreen() {
 
       {history.length > 0 && (
         <section aria-label="Últimos escaneos" className="space-y-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">Últimos escaneos</h2>
-          <ul className="divide-y divide-slate-800 overflow-hidden rounded-2xl border border-slate-700 bg-slate-900">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Últimos escaneos</h2>
+          <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-background">
             {history.map((entry) => (
               <li key={entry.id} className="flex items-center gap-3 px-4 py-3">
-                <span className={`h-3 w-3 shrink-0 rounded-full ${entry.success ? "bg-emerald-500" : "bg-red-500"}`} aria-hidden />
+                <span className={`h-3 w-3 shrink-0 rounded-full ${entry.success ? "bg-success" : "bg-danger"}`} aria-hidden />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-white">{entry.name}</p>
-                  <p className="text-xs text-slate-400">{entry.title}</p>
+                  <p className="truncate font-medium text-foreground">{entry.name}</p>
+                  <p className="text-xs text-muted-foreground">{entry.title}</p>
                 </div>
-                <time className="text-xs text-slate-500" dateTime={entry.at.toISOString()}>
+                <time className="text-xs text-muted-foreground" dateTime={entry.at.toISOString()}>
                   {entry.at.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                 </time>
               </li>

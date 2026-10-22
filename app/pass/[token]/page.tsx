@@ -32,7 +32,7 @@ export default async function PublicPassPage({ params }: { params: Promise<{ tok
   if (!pass) notFound();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-violet-50 via-purple-50 to-indigo-100 px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center px-4 py-10 bg-background">
       <PassCard pass={pass} />
     </div>
   );

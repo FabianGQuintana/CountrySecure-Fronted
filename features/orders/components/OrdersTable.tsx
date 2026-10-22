@@ -24,7 +24,7 @@ const columns: Column<OrderDto>[] = [
     key: "description",
     header: "Descripción",
     sortValue: (o) => o.description,
-    cell: (o) => <span className="font-medium text-gray-900">{o.description}</span>,
+    cell: (o) => <span className="font-medium text-foreground">{o.description}</span>,
   },
   {
     key: "supplier",
@@ -32,12 +32,12 @@ const columns: Column<OrderDto>[] = [
     sortValue: (o) => o.supplierName,
     cell: (o) => (
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-purple-100/60 rounded-lg" aria-hidden>
-          <FiTruck className="w-4 h-4 text-purple-600" />
+        <div className="p-2 bg-primary-soft/60 rounded-lg" aria-hidden>
+          <FiTruck className="w-4 h-4 text-primary" />
         </div>
         <div>
-          <div className="font-medium text-gray-900">{o.supplierName}</div>
-          <div className="text-xs text-gray-500">Proveedor asignado</div>
+          <div className="font-medium text-foreground">{o.supplierName}</div>
+          <div className="text-xs text-muted-foreground">Proveedor asignado</div>
         </div>
       </div>
     ),
@@ -47,7 +47,7 @@ const columns: Column<OrderDto>[] = [
     header: "Tipo",
     sortValue: (o) => orderTypeLabel(o.orderType),
     cell: (o) => (
-      <span className="inline-flex px-3 py-1 rounded-full text-sm font-medium bg-purple-50 text-purple-700 border border-purple-100">
+      <span className="inline-flex px-3 py-1 rounded-full text-sm font-medium bg-primary-soft text-primary border border-border">
         {orderTypeLabel(o.orderType)}
       </span>
     ),
@@ -60,7 +60,7 @@ const columns: Column<OrderDto>[] = [
     cell: (o) => (
       <Link
         href={`/admin/orders/${o.id}`}
-        className="inline-flex items-center px-4 py-2 text-white rounded-xl text-sm font-medium bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-400 hover:shadow-lg transition-shadow"
+        className="inline-flex items-center px-4 py-2 text-on-status rounded-xl text-sm font-medium hover:shadow-lg transition-shadow bg-success"
       >
         <FiEye className="mr-2" /> Ver detalles
       </Link>
@@ -87,20 +87,20 @@ export function OrdersTable({ initialOrders }: { initialOrders: OrderDto[] }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50/80 via-white/90 to-pink-50/80 p-4 md:p-8 space-y-6">
+    <div className="min-h-screen p-4 md:p-8 space-y-6 bg-background">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 bg-clip-text text-transparent mb-1">
+          <h1 className="text-3xl md:text-4xl font-bold mb-1 text-primary">
             Gestión de Servicios
           </h1>
-          <p className="text-gray-500">Proveedores y servicios disponibles para la comunidad</p>
+          <p className="text-muted-foreground">Proveedores y servicios disponibles para la comunidad</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={refresh}
             disabled={isRefreshing}
-            className="flex items-center px-4 py-2 bg-purple-100/80 text-purple-700 rounded-xl hover:bg-purple-200 transition disabled:opacity-50"
+            className="flex items-center px-4 py-2 bg-primary-soft/80 text-primary rounded-xl hover:bg-primary-soft transition disabled:opacity-50"
           >
             <FiRefreshCw className={`mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
             {isRefreshing ? "Actualizando..." : "Actualizar"}
@@ -108,7 +108,7 @@ export function OrdersTable({ initialOrders }: { initialOrders: OrderDto[] }) {
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium bg-linear-to-r from-purple-600 via-violet-600 to-pink-500 hover:shadow-lg transition"
+            className="flex items-center px-5 py-2.5 text-white rounded-xl font-medium hover:shadow-lg transition bg-primary"
           >
             <FiPlus className="mr-2" />
             Nuevo servicio
@@ -117,7 +117,7 @@ export function OrdersTable({ initialOrders }: { initialOrders: OrderDto[] }) {
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
+        <p role="alert" className="text-sm text-danger bg-danger-soft border border-danger/30 rounded-lg p-3">
           {error}
         </p>
       )}

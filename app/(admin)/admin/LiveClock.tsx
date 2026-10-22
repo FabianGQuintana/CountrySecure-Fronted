@@ -24,7 +24,7 @@ export default function LiveClock({ className }: { className?: string }) {
       <div className={`text-3xl font-bold ${className ?? ""}`}>
         {time ? time.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false }) : "--:--"}
       </div>
-      <div className="text-gray-500 text-sm mt-1">
+      <div className="text-muted-foreground text-sm mt-1">
         {time
           ? time.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
           : " "}

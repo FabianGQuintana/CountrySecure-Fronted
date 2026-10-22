@@ -29,10 +29,10 @@ function formatLastActivity(stats: ResidentStats | null) {
 function Kpis({ stats }: { stats: ResidentStats | null }) {
   const value = (n?: number) => (stats ? String(n ?? 0) : "—");
   const kpis = [
-    { title: "Mis próximas reservas", value: value(stats?.upcomingReservations), icon: <FiCalendar size={28} />, color: "from-blue-400 to-cyan-300" },
-    { title: "Permisos de ingreso activos", value: value(stats?.activePermits), icon: <FiKey size={28} />, color: "from-green-400 to-teal-300" },
-    { title: "Amenities disponibles", value: value(stats?.availableAmenities), icon: <FiHome size={28} />, color: "from-yellow-400 to-orange-300" },
-    { title: "Última actividad", value: formatLastActivity(stats), icon: <FiUser size={28} />, color: "from-purple-400 to-pink-300" },
+    { title: "Mis próximas reservas", value: value(stats?.upcomingReservations), icon: <FiCalendar size={28} />, color: "bg-info" },
+    { title: "Permisos de ingreso activos", value: value(stats?.activePermits), icon: <FiKey size={28} />, color: "bg-success" },
+    { title: "Amenities disponibles", value: value(stats?.availableAmenities), icon: <FiHome size={28} />, color: "bg-warning" },
+    { title: "Última actividad", value: formatLastActivity(stats), icon: <FiUser size={28} />, color: "bg-primary" },
   ];
 
   return (
@@ -48,13 +48,13 @@ function Kpis({ stats }: { stats: ResidentStats | null }) {
             className={`absolute -inset-0.5 bg-linear-to-br ${item.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
           ></div>
 
-          <Card className="relative bg-white border border-gray-200 rounded-2xl shadow-sm">
+          <Card className="relative bg-card border border-border rounded-2xl shadow-sm">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className={`p-3 rounded-xl bg-linear-to-br ${item.color} bg-opacity-20`}>{item.icon}</div>
-                <div className="text-gray-400 text-sm font-medium">{item.value}</div>
+                <div className="text-muted-foreground text-sm font-medium">{item.value}</div>
               </div>
-              <h3 className="text-gray-500 text-sm font-medium">{item.title}</h3>
+              <h3 className="text-muted-foreground text-sm font-medium">{item.title}</h3>
             </CardContent>
           </Card>
         </div>
@@ -67,7 +67,7 @@ async function LiveKpis() {
   const { data, error } = await load(() => api.get<ResidentStats>("/api/stats/resident"));
   return (
     <>
-      {error && <p className="-mt-8 mb-6 text-sm text-rose-500">No se pudieron cargar las métricas: {error}</p>}
+      {error && <p className="-mt-8 mb-6 text-sm text-danger">No se pudieron cargar las métricas: {error}</p>}
       <Kpis stats={data ?? null} />
     </>
   );
@@ -78,18 +78,18 @@ export default async function ResidentDashboard() {
   const user = await auth();
 
   return (
-    <div className="flex bg-linear-to-br from-blue-50 via-white to-green-50">
+    <div className="flex bg-background">
       {/* CONTENEDOR PRINCIPAL */}
-      <div className="w-full p-10 text-gray-900">
+      <div className="w-full p-10 text-foreground">
         {/* HEADER */}
         <div className="mb-12 flex flex-col">
           <h1 className="text-4xl font-bold animate-fade-down">
             Hola,{" "}
-            <span className="bg-linear-to-r from-purple-200 to-purple-500 bg-clip-text text-transparent">
+            <span className="text-primary">
               {user?.name || "Residente"}
             </span>
           </h1>
-          <p className="text-gray-500 text-lg mt-2">Panel de Residente</p>
+          <p className="text-muted-foreground text-lg mt-2">Panel de Residente</p>
         </div>
 
         {/* KPIs */}
@@ -106,19 +106,19 @@ export default async function ResidentDashboard() {
               className="relative group block animate-pop transition-[scale,translate] duration-200 hover:scale-[1.03] hover:-translate-y-1"
               style={{ animationDelay: `${(i + 1) * 0.1}s` }}
             >
-              <div className="absolute -inset-0.5 bg-linear-to-br from-gray-200 to-transparent rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
+              <div className="absolute -inset-0.5 rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500 bg-muted"></div>
 
-              <Card className="relative bg-white border border-gray-200 rounded-2xl shadow p-6 h-full">
+              <Card className="relative bg-card border border-border rounded-2xl shadow p-6 h-full">
                 <CardContent className="h-full flex flex-col">
                   <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 rounded-xl bg-blue-100 text-blue-600 shadow-lg">{item.icon}</div>
-                    <div className="text-gray-400 group-hover:text-cyan-400 transition group-hover:rotate-90">→</div>
+                    <div className="p-3 rounded-xl bg-info-soft text-info shadow-lg">{item.icon}</div>
+                    <div className="text-muted-foreground group-hover:text-info transition group-hover:rotate-90">→</div>
                   </div>
 
                   <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-gray-500 text-sm grow">{item.desc}</p>
+                  <p className="text-muted-foreground text-sm grow">{item.desc}</p>
 
-                  <div className="mt-6 text-sm font-medium text-purple-500 flex items-center transition-[translate] group-hover:translate-x-1">
+                  <div className="mt-6 text-sm font-medium text-primary flex items-center transition-[translate] group-hover:translate-x-1">
                     Acceder <span className="ml-2">↗</span>
                   </div>
                 </CardContent>

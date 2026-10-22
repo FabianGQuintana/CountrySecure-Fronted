@@ -83,14 +83,6 @@ export default function PermitsPage() {
     setSubmitError(null);
   };
 
-  // Un visitante ya registrado completa nombre y apellido solo
-  useEffect(() => {
-    if (!resolvedVisit) return;
-    setFormData((prev) =>
-      prev.nameVisit || prev.lastNameVisit ? prev : { ...prev, nameVisit: resolvedVisit.nameVisit, lastNameVisit: resolvedVisit.lastNameVisit }
-    );
-  }, [resolvedVisit]);
-
   useEffect(() => {
     if (!isMaintenance) return;
     (async () => {
@@ -107,7 +99,14 @@ export default function PermitsPage() {
     let cancelled = false;
     const t = setTimeout(async () => {
       const result = await findVisitsByDni(Number(dni));
-      if (!cancelled) setLookup(result.ok && result.data.length > 0 ? result.data[0] : null);
+      if (cancelled) return;
+      const found = result.ok && result.data.length > 0 ? result.data[0] : null;
+      setLookup(found);
+      // Un visitante ya registrado completa nombre y apellido solo (si todavía están vacíos)
+      if (found)
+        setFormData((prev) =>
+          prev.nameVisit || prev.lastNameVisit ? prev : { ...prev, nameVisit: found.nameVisit, lastNameVisit: found.lastNameVisit }
+        );
     }, 500);
 
     return () => {

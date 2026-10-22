@@ -28,23 +28,17 @@ interface KpiCardProps {
   colorClass: string;
 }
 
-const KpiCard: React.FC<KpiCardProps> = ({
-  title,
-  value,
-  icon: Icon,
-  colorClass,
-}) => (
-  <div
-    className={`p-6 rounded-xl shadow-lg ${colorClass} transition-all hover:shadow-2xl hover:scale-105 duration-300`}
-  >
-    <div className="flex items-center justify-between">
+// Tarjeta neutra con el ícono en el color del indicador: legible en claro y en oscuro
+const KpiCard: React.FC<KpiCardProps> = ({ title, value, icon: Icon, colorClass }) => (
+  <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div className="flex items-center justify-between gap-4">
       <div>
-        <h3 className="text-sm font-semibold text-white/90 uppercase tracking-wide">
-          {title}
-        </h3>
-        <p className="text-4xl font-bold text-white mt-2">{value}</p>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+        <p className="mt-2 text-4xl font-bold text-foreground">{value}</p>
       </div>
-      <Icon className="h-12 w-12 text-white/80" />
+      <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${colorClass}`}>
+        <Icon className="h-7 w-7" />
+      </div>
     </div>
   </div>
 );
@@ -68,19 +62,17 @@ const PaginatorUI: React.FC<PaginatorUIProps> = ({
   if (totalPaginas <= 1) return null;
 
   return (
-    <div className="mt-6 rounded-xl border border-purple-500/30 bg-slate-900/60 backdrop-blur px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-      <span className="text-sm text-gray-300">
-        Página <span className="font-semibold text-white">{paginaActual}</span>{" "}
-        de <span className="font-semibold text-white">{totalPaginas}</span>
+    <div className="mt-6 rounded-xl border border-primary/30 bg-background/60 backdrop-blur px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <span className="text-sm text-muted-foreground">
+        Página <span className="font-semibold text-foreground">{paginaActual}</span>{" "}
+        de <span className="font-semibold text-foreground">{totalPaginas}</span>
       </span>
 
       <div className="flex items-center gap-3">
         <button
           onClick={() => cambiarPagina(paginaActual - 1)}
           disabled={paginaActual === 1}
-          className="px-4 py-2 rounded-lg text-sm font-medium border border-purple-500/30
-                     text-gray-300 hover:bg-purple-600/20 hover:text-white
-                     disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="px-4 py-2 rounded-lg text-sm font-medium border border-primary/30 text-muted-foreground hover:bg-primary/20 hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           ← Anterior
         </button>
@@ -88,15 +80,13 @@ const PaginatorUI: React.FC<PaginatorUIProps> = ({
         <button
           onClick={() => cambiarPagina(paginaActual + 1)}
           disabled={paginaActual === totalPaginas}
-          className="px-4 py-2 rounded-lg text-sm font-medium border border-purple-500/30
-                     text-gray-300 hover:bg-purple-600/20 hover:text-white
-                     disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="px-4 py-2 rounded-lg text-sm font-medium border border-primary/30 text-muted-foreground hover:bg-primary/20 hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           Siguiente →
         </button>
       </div>
 
-      <span className="text-sm text-gray-400">
+      <span className="text-sm text-muted-foreground">
         {pageSize} visitas por página
       </span>
     </div>
@@ -175,16 +165,16 @@ export default function VisitsPageClient() {
 
   if (totalPermissions === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
+      <div className="min-h-screen flex items-center justify-center text-foreground">
         No hay permisos para hoy.
       </div>
     );
   }
 
   return (
-    <div className="min--screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
+    <div className="min--screen py-8 px-4 bg-background">
       <div className="max-w-7xl mx-auto space-y-10">
-        <h1 className="text-5xl font-bold text-white text-center">
+        <h1 className="text-5xl font-bold text-foreground text-center">
           Visitas programadas para hoy
         </h1>
 
@@ -194,24 +184,24 @@ export default function VisitsPageClient() {
             title="Permisos Hoy (Total)"
             value={totalPermissions}
             icon={Clock}
-            colorClass="bg-linear-to-br from-purple-600 to-purple-800"
+            colorClass="bg-primary-soft text-primary"
           />
           <KpiCard
             title="Visitas Activas (Pág.)"
             value={activeVisits}
             icon={CheckCircle}
-            colorClass="bg-linear-to-br from-emerald-600 to-teal-700"
+            colorClass="bg-success-soft text-success"
           />
           <KpiCard
             title="Próximas Entradas (Pág.)"
             value={pendingVisits}
             icon={AlertTriangle}
-            colorClass="bg-linear-to-br from-amber-500 to-orange-600"
+            colorClass="bg-warning-soft text-warning"
           />
         </div>
 
         {/* Cards */}
-        <div className="relative bg-slate-800/50 rounded-xl border border-purple-500/20 p-6 space-y-6">
+        <div className="relative bg-card/50 rounded-xl border border-primary/20 p-6 space-y-6">
           <div
             className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300 ${
               isLoading ? "opacity-50 pointer-events-none" : "opacity-100"
@@ -224,7 +214,7 @@ export default function VisitsPageClient() {
 
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-purple-300 text-sm animate-pulse">
+              <span className="text-primary text-sm animate-pulse">
                 Actualizando página…
               </span>
             </div>

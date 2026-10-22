@@ -57,35 +57,35 @@ export function SecurityMonitor() {
   }, []);
 
   return (
-    <div className="in-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
+    <div className="in-h-screen p-8 bg-background">
       {/* HEADER */}
       <header className="mb-6">
         <div className="flex flex-col md:flex-row md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-10 h-10 rounded-lg bg-purple-600/20 border border-purple-500/30 flex items-center justify-center">
-                <Shield className="text-purple-400" />
+              <div className="w-10 h-10 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
+                <Shield className="text-primary" />
               </div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 Security Control Room
               </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg">
-              <Clock className="w-4 h-4 text-purple-400" />
-              <span className="text-white font-mono text-sm">
+            <div className="flex items-center gap-2 bg-card border border-border px-4 py-2 rounded-lg">
+              <Clock className="w-4 h-4 text-primary" />
+              <span className="text-foreground font-mono text-sm">
                 {currentTime.toLocaleTimeString()}
               </span>
             </div>
 
             <Button variant="ghost" size="icon">
-              <Bell className="text-gray-300" />
+              <Bell className="text-muted-foreground" />
             </Button>
 
             <Button variant="ghost" size="icon">
-              <Settings className="text-gray-300" />
+              <Settings className="text-muted-foreground" />
             </Button>
           </div>
         </div>
@@ -96,16 +96,16 @@ export function SecurityMonitor() {
         {cameras.map((camera) => (
           <div
             key={camera.id}
-            className="bg-black border border-slate-700 overflow-hidden rounded-md"
+            className="bg-black border border-border overflow-hidden rounded-md"
           >
             {/* VIDEO */}
             <div className="relative aspect-video bg-black">
               {isLoading ? (
-                <div className="absolute inset-0 flex justify-center items-center text-gray-500">
-                  <div className="w-24 h-24 border-4 border-t-4 border-purple-400 rounded-full animate-spin"></div>
+                <div className="absolute inset-0 flex justify-center items-center text-muted-foreground">
+                  <div className="w-24 h-24 border-4 border-t-4 border-primary/40 rounded-full animate-spin"></div>
                 </div>
               ) : camera.status === "offline" ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 text-sm">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground text-sm">
                   <VideoOff className="mb-2" />
                   SIGNAL LOST
                 </div>
@@ -135,10 +135,10 @@ export function SecurityMonitor() {
               </div>
 
               {/* OVERLAY BOTTOM (TAPA YOUTUBE) */}
-              <div className="absolute bottom-0 left-0 w-full h-12 bg-black/100 flex items-center justify-between px-3 text-xs font-mono">
-                <span className="text-gray-200">{camera.name}</span>
+              <div className="absolute bottom-0 left-0 w-full h-12 bg-black flex items-center justify-between px-3 text-xs font-mono text-white">
+                <span className="text-foreground">{camera.name}</span>
 
-                <span className="text-gray-400">
+                <span className="text-muted-foreground">
                   {currentTime.toLocaleTimeString()}
                 </span>
               </div>
