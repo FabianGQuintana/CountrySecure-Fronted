@@ -1,18 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
-import { SessionProvider, signOut, useSession } from "next-auth/react";
+import { useEffect, useRef } from "react";
+import { SessionProvider, useSession } from "next-auth/react";
 
 /**
- * Si la sesión quedó inválida (token vencido que no se pudo renovar), cierra la sesión una sola vez
- * y lleva al login con un mensaje, en lugar de dejar al usuario en una sesión "zombi".
+ * Si el access token de la sesión venció (p. ej. al volver a la pestaña después de horas),
+ * recarga la página una sola vez: el proxy lo renueva o, si el refresh token ya no sirve,
+ * borra las cookies y lleva a /login. /api/auth/session nunca renueva tokens por su cuenta.
  */
 function SessionWatcher() {
   const { data: session } = useSession();
+  const reloaded = useRef(false);
 
   useEffect(() => {
-    if (session?.error) {
-      signOut({ callbackUrl: "/login?reason=expired" });
+    if (session?.error && !reloaded.current) {
+      reloaded.current = true;
+      window.location.reload();
     }
   }, [session?.error]);
 

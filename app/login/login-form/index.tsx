@@ -8,13 +8,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
 import { safeCallbackUrl } from "@/lib/routes";
 
+// Motivo por el que el proxy mandó al login (`?reason=`)
+const REASON_MESSAGES: Record<string, string> = {
+  expired: "Tu sesión expiró. Iniciá sesión nuevamente.",
+  unavailable: "No pudimos validar tu sesión porque el servidor no respondió. Iniciá sesión nuevamente.",
+};
+
 export default function LoginFormulario() {
   const [verContraseña, setVerContraseña] = useState(false);
   const [cargando, setCargando] = useState(false);
   const searchParams = useSearchParams();
-  const [error, setError] = useState(
-    searchParams.get("reason") === "expired" ? "Tu sesión expiró. Iniciá sesión nuevamente." : ""
-  );
+  const [error, setError] = useState(REASON_MESSAGES[searchParams.get("reason") ?? ""] ?? "");
 
   const router = useRouter();
 
@@ -42,8 +46,8 @@ export default function LoginFormulario() {
     const session = await getSession();
 
     // Redirección según el rol (o a la página que se intentaba abrir, si es del mismo rol)
+    // Sin router.refresh(): refrescaría /login?reason=… y el proxy descartaría la cookie recién creada
     router.replace(safeCallbackUrl(searchParams.get("callbackUrl"), session?.user?.role));
-    router.refresh();
     setCargando(false);
   }
   return (

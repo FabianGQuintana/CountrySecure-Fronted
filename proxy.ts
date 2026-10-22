@@ -11,23 +11,28 @@ import { LOGIN_PATH, ROLE_PREFIX, homeForRole, isRole, safeCallbackUrl } from "@
  * Proxy (antes "middleware"): ÚNICO dueño del ciclo de vida de la sesión.
  *
  *  1. Protege /admin, /resident y /security según el rol.
- *  2. Renueva el access token cuando está por vencer y GUARDA el token nuevo en la cookie
- *     (solo acá se pueden escribir cookies de forma confiable).
- *  3. Si la sesión no es recuperable, borra la cookie y manda a /login (una sola vez, sin bucles).
- *  4. Si ya hay sesión válida, /login lleva a la home del rol.
+ *  2. Solo en esas rutas renueva el access token cuando está por vencer y GUARDA el token nuevo
+ *     en la cookie (solo acá se pueden escribir cookies de forma confiable).
+ *  3. Si la renovación falla (refresh token inválido, timeout o API caída), borra las cookies de
+ *     sesión y manda a /login una sola vez, sin bucles ni cookies viejas.
+ *  4. /login nunca renueva: con sesión vigente lleva a la home del rol; si la sesión está vencida
+ *     o el login llegó con `reason`, borra las cookies y muestra el formulario.
+ *  5. /api/auth/* (NextAuth) y las rutas públicas quedan fuera del matcher.
  */
 
 const SECRET = process.env.AUTH_SECRET || process.env.JWT_SECRET;
 
 // Se renueva un minuto antes de que venza
 const REFRESH_MARGIN_MS = 60 * 1000;
-const REFRESH_TIMEOUT_MS = 5000;
+const REFRESH_TIMEOUT_MS = 4000;
 
 type RefreshResult =
   | { ok: true; token: JWT }
   | { ok: false; reason: "invalid" | "unavailable" };
 
 async function refreshTokens(token: JWT): Promise<RefreshResult> {
+  if (!token.refreshToken || !token.accessToken) return { ok: false, reason: "invalid" };
+
   try {
     const response = await fetch(`${process.env.API_HOST}/api/auth/refresh`, {
       method: "POST",
@@ -56,28 +61,35 @@ async function refreshTokens(token: JWT): Promise<RefreshResult> {
       },
     };
   } catch (error) {
-    console.error("[proxy] No se pudo renovar el access token:", error);
-    // Timeout o API caída: no es culpa de la sesión, se trata aparte
+    // Timeout o API caída
+    console.warn("[proxy] No se pudo renovar el access token:", error instanceof Error ? error.message : error);
     return { ok: false, reason: "unavailable" };
   }
 }
 
-function needsRefresh(token: JWT) {
-  return !token.accessTokenExpires || Date.now() >= token.accessTokenExpires - REFRESH_MARGIN_MS;
+function isExpired(token: JWT, marginMs = 0) {
+  return !token.accessTokenExpires || Date.now() >= token.accessTokenExpires - marginMs;
 }
 
 function secureCookies() {
   return process.env.NODE_ENV === "production";
 }
 
-function clearSession(response: NextResponse) {
-  response.cookies.set(SESSION_COOKIE_NAME, "", {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    secure: secureCookies(),
-    maxAge: 0,
-  });
+/** Borra la cookie de sesión (y sus variantes troceadas `.0`, `.1`, … o `__Secure-`) que haya mandado el navegador. */
+function clearSession(request: NextRequest, response: NextResponse) {
+  const names = new Set([SESSION_COOKIE_NAME]);
+  for (const { name } of request.cookies.getAll()) {
+    if (name.startsWith(SESSION_COOKIE_NAME) || name.startsWith(`__Secure-${SESSION_COOKIE_NAME}`)) names.add(name);
+  }
+  for (const name of names) {
+    response.cookies.set(name, "", {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      secure: secureCookies() || name.startsWith("__Secure-"),
+      maxAge: 0,
+    });
+  }
   return response;
 }
 
@@ -85,18 +97,10 @@ function redirectToLogin(request: NextRequest, reason?: string, callbackPath?: s
   const url = new URL(LOGIN_PATH, request.url);
   if (callbackPath) url.searchParams.set("callbackUrl", callbackPath);
   if (reason) url.searchParams.set("reason", reason);
-  return clearSession(NextResponse.redirect(url));
+  return clearSession(request, NextResponse.redirect(url));
 }
 
-/** Reenvía la request con la cookie nueva (para que los Server Components vean el token renovado). */
-function nextWithToken(request: NextRequest, encoded: string) {
-  const cookies = request.cookies.getAll().filter((c) => c.name !== SESSION_COOKIE_NAME);
-  const cookieHeader = [...cookies.map((c) => `${c.name}=${c.value}`), `${SESSION_COOKIE_NAME}=${encoded}`].join("; ");
-
-  const headers = new Headers(request.headers);
-  headers.set("cookie", cookieHeader);
-
-  const response = NextResponse.next({ request: { headers } });
+function setSessionCookie(response: NextResponse, encoded: string) {
   response.cookies.set(SESSION_COOKIE_NAME, encoded, {
     httpOnly: true,
     sameSite: "lax",
@@ -107,67 +111,45 @@ function nextWithToken(request: NextRequest, encoded: string) {
   return response;
 }
 
+/** Reenvía la request con la cookie nueva (para que los Server Components vean el token renovado). */
+function nextWithToken(request: NextRequest, encoded: string) {
+  const cookies = request.cookies.getAll().filter((c) => c.name !== SESSION_COOKIE_NAME);
+  const cookieHeader = [...cookies.map((c) => `${c.name}=${c.value}`), `${SESSION_COOKIE_NAME}=${encoded}`].join("; ");
+
+  const headers = new Headers(request.headers);
+  headers.set("cookie", cookieHeader);
+
+  return setSessionCookie(NextResponse.next({ request: { headers } }), encoded);
+}
+
+function handleLogin(request: NextRequest, token: JWT | null) {
+  const hasSessionCookie = request.cookies.getAll().some((c) => c.name.startsWith(SESSION_COOKIE_NAME));
+
+  // Llegó redirigido por una sesión rechazada (p. ej. 401 de la API): se descarta lo que haya
+  // en vez de rebotar a la home del rol con la misma cookie (evita el bucle login <-> panel).
+  if (request.nextUrl.searchParams.has("reason")) {
+    return hasSessionCookie ? clearSession(request, NextResponse.next()) : NextResponse.next();
+  }
+
+  if (token && isRole(token.role) && !token.error && !isExpired(token)) {
+    const target = safeCallbackUrl(request.nextUrl.searchParams.get("callbackUrl"), token.role);
+    return NextResponse.redirect(new URL(target, request.url));
+  }
+
+  // Sin sesión, o vencida/corrupta: se muestra el login sin cookies viejas
+  return hasSessionCookie ? clearSession(request, NextResponse.next()) : NextResponse.next();
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  const isSessionEndpoint = pathname === "/api/auth/session";
-  const isLogin = pathname === LOGIN_PATH;
-
   let token = await getToken({ req: request, secret: SECRET, cookieName: SESSION_COOKIE_NAME });
 
-  // --- Renovación (sobre cualquier ruta cubierta por el matcher) ---
-  let refreshedCookie: string | null = null;
-  let apiUnavailable = false;
-  if (token && needsRefresh(token)) {
-    const result = await refreshTokens(token);
-
-    if (result.ok) {
-      token = result.token;
-      refreshedCookie = await encode({ token, secret: SECRET!, maxAge: SESSION_MAX_AGE_SECONDS });
-    } else if (result.reason === "invalid") {
-      // Sesión irrecuperable: se limpia la cookie.
-      token = null;
-      if (isSessionEndpoint) return clearSession(NextResponse.next());
-      if (isLogin) return clearSession(NextResponse.next());
-      return redirectToLogin(request, "expired", `${pathname}${search}`);
-    } else {
-      // API no disponible: no se destruye la sesión; se corta con un error claro en vez de colgarse.
-      apiUnavailable = true;
-      if (!isLogin && !isSessionEndpoint) {
-        return new NextResponse("El servicio no está disponible. Intentá de nuevo en unos instantes.", {
-          status: 503,
-          headers: { "Retry-After": "5", "Content-Type": "text/plain; charset=utf-8" },
-        });
-      }
-    }
-  }
-
-  const proceed = () => (refreshedCookie ? nextWithToken(request, refreshedCookie) : NextResponse.next());
-
-  // --- /api/auth/session: solo mantiene la cookie al día ---
-  if (isSessionEndpoint) return proceed();
-
-  // --- /login: con sesión válida va directo a la home del rol ---
-  if (isLogin) {
-    if (token && isRole(token.role) && !token.error && !apiUnavailable) {
-      const target = safeCallbackUrl(request.nextUrl.searchParams.get("callbackUrl"), token.role);
-      const response = NextResponse.redirect(new URL(target, request.url));
-      if (refreshedCookie) {
-        response.cookies.set(SESSION_COOKIE_NAME, refreshedCookie, {
-          httpOnly: true,
-          sameSite: "lax",
-          path: "/",
-          secure: secureCookies(),
-          maxAge: SESSION_MAX_AGE_SECONDS,
-        });
-      }
-      return response;
-    }
-    return NextResponse.next();
-  }
+  if (pathname === LOGIN_PATH) return handleLogin(request, token);
 
   // --- Rutas protegidas por rol ---
+  const callbackPath = `${pathname}${search}`;
   if (!token || token.error || !isRole(token.role)) {
-    return redirectToLogin(request, token ? "expired" : undefined, `${pathname}${search}`);
+    return redirectToLogin(request, token ? "expired" : undefined, callbackPath);
   }
 
   const requiredRole = (Object.keys(ROLE_PREFIX) as (keyof typeof ROLE_PREFIX)[]).find(
@@ -178,9 +160,24 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(homeForRole(token.role), request.url));
   }
 
-  return proceed();
+  if (!isExpired(token, REFRESH_MARGIN_MS)) return NextResponse.next();
+
+  // --- Renovación ---
+  const result = await refreshTokens(token);
+  if (result.ok) {
+    token = result.token;
+    const encoded = await encode({ token, secret: SECRET!, maxAge: SESSION_MAX_AGE_SECONDS });
+    return nextWithToken(request, encoded);
+  }
+
+  // API caída pero el access token todavía sirve (estamos dentro del margen): se sigue sin renovar
+  if (result.reason === "unavailable" && !isExpired(token)) return NextResponse.next();
+
+  // Sesión irrecuperable: se borran las cookies y se manda a /login una sola vez
+  return redirectToLogin(request, result.reason === "invalid" ? "expired" : "unavailable", callbackPath);
 }
 
 export const config = {
-  matcher: ["/login", "/admin/:path*", "/resident/:path*", "/security/:path*", "/api/auth/session"],
+  // Sin /api/auth ni rutas públicas: solo el login y los paneles por rol
+  matcher: ["/login", "/admin/:path*", "/resident/:path*", "/security/:path*"],
 };
